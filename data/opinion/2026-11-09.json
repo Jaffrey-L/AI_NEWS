@@ -1,0 +1,90 @@
+{
+  "title": "当代理开始写代码，人的工作要从产出转向判断",
+  "subtitle": "两份近期实践记录提示：生成能力越来越便宜，清楚界定问题、筛选证据与承担最终判断反而成为工作核心。",
+  "sections": [
+    {
+      "heading": "产出越容易，阅读成本越要有人负责",
+      "paragraphs": [
+        {
+          "text": "Simon Willison 描述了自己让编程代理提交大量 PR 的日常，也指出代理写出的说明虽然全面，却可能让审阅者难以迅速判断是否值得继续读。我的判断是，下一阶段的竞争点不在于把说明写得更长，而在于能否让读者用最短时间理解一个改动的意图、风险与证据。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "The PR is my unit of work"
+            }
+          ]
+        },
+        {
+          "text": "他的做法是把简短、经过选择的开头放在前面，把机器生成的详细说明折叠起来。这不是减少透明度，而是重新安排信息的阅读顺序：先给可供判断的结论，再让有需要的人展开细节。我认为 AI 文章也应该采用同样的层次，而不是把十条新闻压缩成另一篇更长的新闻。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "I want human editorial judgement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "把训练从交作业转向进入真实问题",
+      "paragraphs": [
+        {
+          "text": "Latent.Space 记录的课程提出了一个尖锐问题：当编程代理一次提示就能完成去年的作业，原样重复那份作业还在训练什么？报道中的做法是让学生理解陌生仓库、提出改动，并面对真实开源维护者。这里值得借鉴的是把任务难度放在问题定义、上下文理解与协作上，而不是单纯增加生成的代码量。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "coding agent can finish last year’s homework"
+            }
+          ]
+        },
+        {
+          "text": "一个可执行的工作方法是：先写下要改变的用户结果和不可破坏的约束，再让代理提出候选；评审时重点看它依据了哪些原始资料、哪些假设尚未验证，以及失败时如何退回。最后才看实现速度。这个顺序是我的实践建议，不是课程已证明的普遍结论；具体团队仍需用自己的项目验证。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "an unfamiliar repo, propose a change"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "给观点保留反驳的入口",
+      "paragraphs": [
+        {
+          "text": "这些材料分别来自个人开发经验和一门课程的报道，不能直接推出所有组织都应采用同一流程。真正有用的观点应当允许读者顺着证据回到原文，检查我是否过度概括。因此本站把每段论点旁的来源和短证据直接展示出来，并保留原始新闻列表；文章可以鲜明，证据链也必须能被质疑。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "The full agent-written essay then follows in a <details><summary> ."
+            },
+            {
+              "sourceId": "S3",
+              "evidence": "open-source maintainers into the course"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Hide your slop PR descriptions behind <details><summary>",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-11-09",
+      "url": "https://simonwillison.net/2026/Nov/9/details-summary/"
+    },
+    {
+      "id": "S3",
+      "title": "[One Million AI Engineer Special] How Stanford Teaches AI-Native Engineering — Mihail Eric, Monaco",
+      "sourceName": "Latent.Space",
+      "publishedAt": "2026-11-08",
+      "url": "https://latent.space/p/one_million_ai_engineer_special_how_stanford_teaches_ai-native_engineering_mihail_eric_monaco/"
+    }
+  ],
+  "editionDate": "2026-11-09",
+  "generatedAt": "2026-11-09T08:21:18.132855+00:00",
+  "windowDays": 3,
+  "model": "assistant-seed"
+}
