@@ -1,0 +1,15 @@
+{
+  "name": "ai-daily-radar",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python -m http.server 8000",
+    "validate:frontend": "playwright test --config=playwright.config.mjs",
+    "validate:data": "python scripts/validate_news_data.py",
+    "sync:news": "python scripts/update_ai_news.py"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0"
+  }
+}

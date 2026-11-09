@@ -1,0 +1,12 @@
+{
+  "latest": "data/digests/latest.md",
+  "digests": [
+    {
+      "date": "2026-05-18",
+      "path": "data/digests/2026-05-18.md",
+      "itemCount": 130,
+      "topStoryCount": 10,
+      "generatedAt": "2026-05-18T08:15:00.761887+00:00"
+    }
+  ]
+}

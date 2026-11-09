@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Daily Radar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css?v=20260519-linked-prompts">
+</head>
+<body>
+  <div class="bg"></div>
+  <header class="hero shell">
+    <div>
+      <span class="eyebrow">AI INTELLIGENCE BRIEFING · YEAR TO DATE</span>
+      <h1>AI Daily Radar</h1>
+      <p>&#38754;&#21521; AI &#29233;&#22909;&#32773;&#19982;&#20225;&#19994;&#24212;&#29992;&#35266;&#23519;&#32773;&#30340;&#21069;&#27839;&#24773;&#25253;&#21488;&#65306;&#32858;&#28966;&#25216;&#26415;&#26356;&#26032;&#12289;&#37325;&#35201;&#21151;&#33021;&#19982; Agent / Prompt / Vibe coding &#23454;&#25112;&#26041;&#27861;&#12290;</p>
+    </div>
+    <div class="badges">
+      <span>12H &#33258;&#21160;&#26356;&#26032;</span>
+      <span>A/B/C &#20449;&#28304;&#20998;&#32423;</span>
+      <span>2026 YTD</span>
+    </div>
+  </header>
+
+  <section class="shell overview" aria-label="Daily summary">
+    <article class="kpi">
+      <small>&#20170;&#26085;&#24635;&#26465;&#30446;</small>
+      <strong id="kpiTotal">-</strong>
+    </article>
+    <article class="kpi">
+      <small>&#20225;&#19994;&#24212;&#29992;&#30456;&#20851;</small>
+      <strong id="kpiEnterprise">-</strong>
+    </article>
+    <article class="kpi">
+      <small>A&#32423;&#20449;&#28304;&#21344;&#27604;</small>
+      <strong id="kpiAGrade">-</strong>
+    </article>
+    <article class="kpi">
+      <small>&#23454;&#25112;&#26041;&#27861;&#26465;&#30446;</small>
+      <strong id="kpiPractice">-</strong>
+    </article>
+  </section>
+
+  <section class="shell trend-radar" aria-label="Seven day AI trends">
+    <div class="trend-radar-head">
+      <div>
+        <span class="eyebrow small">7-DAY SIGNAL</span>
+        <h2>7 &#22825;&#36235;&#21183;&#38647;&#36798;</h2>
+      </div>
+      <p id="trendMeta">&#25353;&#20844;&#21496;&#12289;&#27169;&#22411;&#19982;&#20027;&#39064;&#33258;&#21160;&#27719;&#24635;&#12290;</p>
+    </div>
+    <div class="trend-grid">
+      <article>
+        <h3>&#20844;&#21496;&#28909;&#24230;</h3>
+        <div id="companyTrends" class="trend-list"></div>
+      </article>
+      <article>
+        <h3>&#27169;&#22411;&#28909;&#24230;</h3>
+        <div id="modelTrends" class="trend-list"></div>
+      </article>
+      <article>
+        <h3>&#20027;&#39064;&#28909;&#24230;</h3>
+        <div id="topicTrends" class="trend-list"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="shell top-briefing" aria-label="Top AI stories">
+    <div class="top-briefing-head">
+      <div>
+        <span class="eyebrow small">EDITORIAL PRIORITY</span>
+        <h2>&#20170;&#26085;&#24517;&#30475; Top 10</h2>
+      </div>
+      <div class="source-health-summary">
+        <p id="sourceHealth"></p>
+        <button id="sourceHealthToggle" type="button">&#26597;&#30475;&#26469;&#28304;&#35814;&#24773;</button>
+      </div>
+    </div>
+    <div id="topStories" class="top-stories"></div>
+    <div id="sourceHealthPanel" class="source-health-panel" hidden></div>
+  </section>
+
+  <section class="shell digest-export" aria-label="Daily digest export">
+    <div class="digest-export-head">
+      <div>
+        <span class="eyebrow small">DAILY BRIEF EXPORT</span>
+        <h2>&#20170;&#26085;&#31616;&#25253;&#21253;</h2>
+        <p id="digestMeta">&#24050;&#22522;&#20110; Top 10&#12289;7 &#22825;&#36235;&#21183;&#12289;&#26041;&#27861;&#35770;&#21644;&#26469;&#28304;&#20581;&#24247;&#29983;&#25104;&#65292;&#21487;&#30452;&#25509;&#22797;&#21046;&#25110;&#24402;&#26723;&#12290;</p>
+        <p id="digestArchiveMeta" class="archive-meta"></p>
+      </div>
+      <div class="digest-actions">
+        <button id="copyBriefBtn" class="primary-action" type="button">&#22797;&#21046;&#20170;&#26085;&#31616;&#25253;</button>
+        <button id="copyWechatBtn" type="button">&#22797;&#21046;&#24494;&#20449;/&#39134;&#20070;&#29256;</button>
+        <a id="serverDigestLink" class="button-link" href="./data/digests/latest.md" target="_blank" rel="noreferrer noopener">&#25171;&#24320;&#26381;&#21153;&#22120;&#24402;&#26723;</a>
+        <button id="copyMarkdownBtn" type="button">&#22797;&#21046; Markdown</button>
+        <button id="downloadDigestBtn" type="button">&#19979;&#36733; .md</button>
+      </div>
+    </div>
+    <div id="digestQualityChips" class="digest-quality" aria-label="Brief quality status"></div>
+    <div class="digest-preview-grid">
+      <article class="digest-readable-card">
+        <span class="eyebrow small">READABLE PREVIEW</span>
+        <div id="digestReadablePreview"></div>
+      </article>
+      <article class="digest-channel-card">
+        <span class="eyebrow small">WECHAT / FEISHU</span>
+        <div id="digestWechatPreview"></div>
+      </article>
+    </div>
+    <details class="digest-source">
+      <summary>&#26597;&#30475; Markdown &#28304;&#30721;</summary>
+      <textarea id="digestPreview" readonly aria-label="Daily digest markdown source"></textarea>
+    </details>
+    <p id="digestStatus" class="digest-status" role="status"></p>
+  </section>
+
+  <main class="shell layout">
+    <aside class="panel filters">
+      <h2>&#24773;&#25253;&#25511;&#21046;&#21488;</h2>
+      <label>&#20998;&#31867;<select id="categoryFilter"></select></label>
+      <label>&#20449;&#28304;&#32423;&#21035;
+        <select id="gradeFilter">
+          <option value="all">&#20840;&#37096;</option>
+          <option value="A">A&#32423;</option>
+          <option value="B">B&#32423;</option>
+          <option value="C">C&#32423;</option>
+        </select>
+      </label>
+      <label>&#26469;&#28304;<select id="sourceFilter"></select></label>
+      <label>&#38405;&#35835;&#29366;&#24577;
+        <select id="readingFilter">
+          <option value="all">&#20840;&#37096;</option>
+          <option value="unread">&#26410;&#35835;</option>
+          <option value="read">&#24050;&#35835;</option>
+          <option value="favorite">&#24050;&#25910;&#34255;</option>
+          <option value="later">&#31245;&#21518;&#35835;</option>
+        </select>
+      </label>
+      <label>&#20869;&#23481;&#36136;&#37327;
+        <select id="qualityFilter">
+          <option value="default">&#39640;&#36136;&#37327;&#40664;&#35748;</option>
+          <option value="top">&#21482;&#30475; Top &#20505;&#36873;</option>
+          <option value="all">&#26597;&#30475;&#20840;&#37096;</option>
+          <option value="archive">&#24402;&#26723;/&#20302;&#20248;&#20808;&#32423;</option>
+        </select>
+      </label>
+      <div class="date-presets" aria-label="Date presets">
+        <button class="preset-btn" type="button" data-days="7">&#26368;&#36817;7&#22825;</button>
+        <button class="preset-btn" type="button" data-days="30">&#26368;&#36817;30&#22825;</button>
+        <button class="preset-btn active" type="button" data-days="year">&#20170;&#24180;</button>
+        <button class="preset-btn" type="button" data-days="all">&#20840;&#37096;</button>
+      </div>
+      <label>&#24320;&#22987;&#26085;&#26399;
+        <span class="date-field"><input id="startDateFilter" type="date"><button class="date-picker-btn" type="button" data-target="startDateFilter">&#36873;&#25321;</button></span>
+      </label>
+      <label>&#32467;&#26463;&#26085;&#26399;
+        <span class="date-field"><input id="endDateFilter" type="date"><button class="date-picker-btn" type="button" data-target="endDateFilter">&#36873;&#25321;</button></span>
+      </label>
+      <label>&#20851;&#38190;&#35789;<input id="searchInput" type="text" placeholder="OpenAI / Agent / Vibe"></label>
+      <label>&#25490;&#24207;
+        <select id="sortFilter">
+          <option value="latest">&#25353;&#26102;&#38388;&#65288;&#26368;&#26032;&#65289;</option>
+          <option value="importance">&#25353;&#37325;&#35201;&#32423;&#21035;</option>
+        </select>
+      </label>
+      <button id="applyBtn" type="button">&#26597;&#35810;</button>
+      <button id="resetBtn" type="button">&#37325;&#32622;&#31579;&#36873;</button>
+    </aside>
+
+    <section class="panel stream">
+      <div class="stream-header">
+        <h2>&#21069;&#27839;&#20449;&#24687;&#27969;</h2>
+        <p id="resultCount"></p>
+      </div>
+      <div id="newsList" class="news-list"></div>
+    </section>
+  </main>
+
+  <section class="panel sources shell">
+    <h2>&#26680;&#24515;&#26469;&#28304;&#27744;</h2>
+    <div class="source-groups">
+      <article><h3>&#26680;&#24515;AI&#20844;&#21496;</h3><ul id="companySources"></ul></article>
+      <article><h3>&#26680;&#24515;AI&#21338;&#20027;</h3><ul id="creatorSources"></ul></article>
+      <article><h3>AI&#20010;&#20154;&#20844;&#21496;&#22823;&#31070;</h3><ul id="soloSources"></ul></article>
+    </div>
+  </section>
+
+  <footer class="shell">
+    <p>&#25968;&#25454;&#26469;&#28304;&#65306;<code>data/news.json</code>&#65292;&#27599; 12 &#23567;&#26102;&#33258;&#21160;&#21516;&#27493;&#12290;</p>
+  </footer>
+
+  <script src="./app.js?v=20260519-linked-prompts"></script>
+</body>
+</html>
