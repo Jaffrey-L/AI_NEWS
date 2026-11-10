@@ -154,9 +154,11 @@ function renderOpinionArticle(article, status) {
         const summary = document.createElement("summary");
         summary.appendChild(sourceLink(source, `${source.sourceName} · ${source.publishedAt} · 原文 ↗`));
         detail.appendChild(summary);
-        const quote = document.createElement("blockquote");
-        quote.textContent = citation.evidence;
-        detail.appendChild(quote);
+        if (citation.evidence) {
+          const quote = document.createElement("blockquote");
+          quote.textContent = citation.evidence;
+          detail.appendChild(quote);
+        }
         citations.appendChild(detail);
       });
       block.appendChild(citations);

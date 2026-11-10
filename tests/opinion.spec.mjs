@@ -46,11 +46,11 @@ test("treats article text as text, not executable markup", async ({ page }) => {
   await expect(page.locator("#opinionArticle p").filter({ hasText: "<img" })).toBeVisible();
 });
 
-test("shows the seeded article and keeps its reading column inside a narrow viewport", async ({ page }) => {
+test("shows the verified article and keeps its reading column inside a narrow viewport", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.locator("#opinionArticle h3")).toContainText("人的工作要从产出转向判断");
-  await expect(page.locator("#opinionMeta")).toContainText("AI 示例首刊");
+  await expect(page.locator("#opinionArticle h3")).toContainText("人需要重新学会做减法");
+  await expect(page.locator("#opinionMeta")).toContainText("AI 自动撰写");
   await expect(page.locator("#opinionArticle a").first()).toHaveAttribute("href", /^https:\/\//);
   const box = await page.locator(".opinion").boundingBox();
   expect(box.x).toBeGreaterThanOrEqual(0);

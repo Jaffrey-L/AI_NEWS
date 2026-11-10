@@ -30,15 +30,15 @@ python3 scripts/validate_news_data.py
 
 ## Publish an AI opinion article
 
-Set `OPENAI_API_KEY` and `AI_NEWS_MODEL` in the server job environment, then run:
+Set `AI_NEWS_MODEL` and a provider key in the server job environment. The default provider is OpenAI (`OPENAI_API_KEY`). To use DeepSeek's Responses API, set `AI_NEWS_PROVIDER=deepseek`, `AI_NEWS_MODEL=deepseek-flash`, and `DEEPSEEK_API_KEY`. The endpoint is selected from a fixed allowlist; the key never chooses an arbitrary URL. Then run:
 
 ```bash
 python3 scripts/generate_opinion.py
 ```
 
-The job selects recent sources from `data/news.json`, asks the model for a Chinese opinion article, and checks every cited evidence excerpt against the selected source text. It publishes `data/opinion/latest.json` without an editorial approval step. If the model, sources, or citation checks fail, the prior article stays live and `data/opinion/status.json` reports the failed update. The model key is never sent to the browser. Source text is an excerpt, so this check confirms a quoted span and link, not that every interpretation is correct.
+The job shortlists sources from `data/news.json`, checks the publisher's URL or page for the original publication date, then asks the model for a Chinese opinion article. An undated, unreachable, or out-of-window source is excluded even if the feed says it is recent. Every cited evidence excerpt must match selected source text; displayed excerpts are kept short. It publishes `data/opinion/latest.json` without an editorial approval step. If the model, sources, or citation checks fail, the prior article stays live and `data/opinion/status.json` reports the failed update. The model key is never sent to the browser. The excerpt check confirms a quoted span and link, not that every interpretation is correct.
 
-The publisher makes one model request per scheduled run, with a 120-second request timeout and a 5,000-output-token cap. Usage cost depends on the configured model and current provider pricing; watch the job log and provider usage before increasing frequency.
+The publisher makes one model request per scheduled run, with a 120-second request timeout and a 5,000-output-token cap. Usage cost depends on the configured model and current provider pricing; watch the job log and provider usage before increasing frequency. DeepSeek's [Responses API documentation](https://api-docs.deepseek.com/guides/responses_api/) lists its compatible endpoint and models.
 
 The article section shows a clear waiting state until the first successful run. Test the publisher without an API request using:
 

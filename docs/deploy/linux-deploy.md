@@ -164,7 +164,7 @@ EnvironmentFile=/etc/ai-news-sync.env
 
 This avoids `PermissionError` when the job updates `data/news.json`.
 
-Set `AI_NEWS_MODEL` and `OPENAI_API_KEY` in `/etc/ai-news-sync.env`, readable only by the service user. For cron, provide those variables through a protected job environment before enabling the new command. The article generator runs without a human approval step. A failed generation keeps the previous article visible and writes failure status; check the job log and `data/opinion/status.json` for the last attempt.
+Set `AI_NEWS_MODEL` and a provider key in `/etc/ai-news-sync.env`, readable only by the service user. The default is OpenAI with `OPENAI_API_KEY`; for DeepSeek, set `AI_NEWS_PROVIDER=deepseek`, `AI_NEWS_MODEL=deepseek-flash`, and `DEEPSEEK_API_KEY`. For cron, provide those variables through a protected job environment before enabling the new command. The article generator runs without a human approval step. A failed generation keeps the previous article visible and writes failure status; check the job log and `data/opinion/status.json` for the last attempt.
 
 Before enabling the systemd timer, create that environment file with permissions limited to the service user, for example `sudo install -m 600 -o www-data -g www-data /dev/null /etc/ai-news-sync.env`, then edit it locally. Do not put the model key in the repository or in browser code.
 
