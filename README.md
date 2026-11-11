@@ -1,6 +1,6 @@
 # AI 周读
 
-The homepage leads with a source-linked weekly AI interpretation, starting from the most recent completed week. Readers can select earlier weeks. Every paragraph links to the original publisher and its date; the previous news dashboard is kept below as background material.
+The homepage shows a source-linked weekly AI interpretation, starting from the most recent completed week. Readers can select earlier weeks and open original publications from links within each interpretation. The separate news dashboard is no longer shown.
 
 It tracks:
 

@@ -36,7 +36,17 @@ test("weekly interpretation leads and every argument links to its original", asy
   await expect(page.locator("#opinionArticle .opinion-citations a").first()).toHaveAttribute("href", "https://example.com/one");
   await page.locator("#opinionArticle details").first().locator("summary").click({ position: { x: 5, y: 5 } });
   await expect(page.locator("#opinionArticle blockquote").first()).toContainText("Original source evidence");
-  expect(await page.locator(".opinion").evaluate((element) => element.compareDocumentPosition(document.querySelector(".overview")) & Node.DOCUMENT_POSITION_FOLLOWING)).toBeTruthy();
+  await expect(page.locator(".source-intro, .overview, .trend-radar, .top-briefing, .digest-export, .layout, .sources")).toHaveCount(0);
+});
+
+test("loads only the weekly article and its cited originals", async ({ page }) => {
+  const fetched = [];
+  page.on("request", (request) => fetched.push(request.url()));
+  await mockArchive(page, [week]);
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("#opinionArticle h3")).toHaveText(article.title);
+  await expect(page.locator("#opinionArticle .opinion-citations a")).toHaveCount(2);
+  expect(fetched.some((url) => url.endsWith("/data/news.json") || url.endsWith("/sources.json"))).toBe(false);
 });
 
 test("week archive keeps the last article if another week fails", async ({ page }) => {
