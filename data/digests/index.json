@@ -2,11 +2,11 @@
   "latest": "data/digests/latest.md",
   "digests": [
     {
-      "date": "2026-11-09",
-      "path": "data/digests/2026-11-09.md",
-      "itemCount": 137,
+      "date": "2026-11-11",
+      "path": "data/digests/2026-11-11.md",
+      "itemCount": 163,
       "topStoryCount": 10,
-      "generatedAt": "2026-11-09T07:38:49.734012+00:00"
+      "generatedAt": "2026-11-11T11:15:55.737703+00:00"
     }
   ]
 }

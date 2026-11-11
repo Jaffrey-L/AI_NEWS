@@ -1,46 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 周读 · 原文可查的每周解读</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=20261111-weekly-focus">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 周读 · 每周一次，只讲需要知道的</title>
+<link rel="stylesheet" href="./workspace.css?v=3">
 </head>
 <body>
-  <div class="bg"></div>
-  <header class="hero shell">
-    <div>
-      <span class="eyebrow">AI WEEKLY READING · ORIGINAL SOURCES</span>
-      <h1>AI 周读</h1>
-      <p>每周先读一篇有判断的解读。重点追踪核心 AI 博主与大公司的原文；观点下方可查发布日期、引文与原始链接。</p>
-    </div>
-    <div class="badges">
-      <span>按周追踪解读</span>
-      <span>原文可追溯</span>
-      <span>历史按周阅读</span>
-    </div>
-  </header>
-
-  <section class="shell opinion" aria-label="AI 每周解读">
-    <div class="opinion-head">
-      <div>
-        <span class="eyebrow small">WEEKLY INTERPRETATION · SOURCE LINKED</span>
-        <h2>每周解读</h2>
-      </div>
-      <div class="opinion-controls">
-        <label for="weekSelect">阅读周次</label>
-        <select id="weekSelect" aria-label="选择历史周次"></select>
-      </div>
-    </div>
-    <p id="opinionMeta" class="opinion-meta" role="status">正在读取每周解读…</p>
-    <article id="opinionArticle" class="opinion-article" aria-live="polite"></article>
-    <nav id="weekArchive" class="week-archive" aria-label="历史解读"></nav>
-    <p class="week-archive-note">仅展示已核到足够原文的周次；资料不足的周次留空。</p>
-  </section>
-
-  <script src="./app.js?v=20261111-weekly-focus"></script>
+<nav class="nav"><div class="nav-in">
+  <div class="brand"><div class="mark">AI</div><b>AI 周读</b><span>每周一次，只讲需要知道的</span></div>
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-v="week">AI 周读</button>
+    <button class="tab" data-v="amazon">亚马逊</button>
+    <button class="tab" data-v="sources">AI 承接</button>
+    <button class="tab" data-v="journey">读者旅途</button>
+  </div>
+  <div class="nav-right">
+    <span class="updated" id="updated"></span>
+    <select class="wkpick" id="wkpick" aria-label="选择周读期数"></select>
+  </div>
+</div></nav>
+<main class="wrap">
+  <section id="v-week"></section>
+  <section id="v-sources" class="hide"></section>
+  <section id="v-amazon" class="hide"></section>
+  <section id="v-journey" class="hide"></section>
+</main>
+<footer><div class="wrap">
+  <div>周读观点附原文出处；亚马逊页列公开网站文章与发布日期。网站文章不代表社交平台原帖。</div>
+  <div style="margin-top:6px">本站使用免费公开来源，不调用付费 X 接口。</div>
+</div></footer>
+<script src="./data/site-payload.js?v=3"></script>
+<script src="./app.js?v=3" defer></script>
 </body>
 </html>

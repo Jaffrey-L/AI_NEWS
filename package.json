@@ -7,7 +7,10 @@
     "serve": "python -m http.server 8000",
     "validate:frontend": "playwright test --config=playwright.config.mjs",
     "validate:data": "python scripts/validate_news_data.py",
+    "validate:amazon": "python scripts/validate_amazon_news.py",
     "sync:news": "python scripts/update_ai_news.py",
+    "sync:amazon": "python scripts/update_amazon_news.py",
+    "build:site": "python scripts/build_site_payload.py",
     "publish:opinion": "python scripts/generate_opinion.py",
     "publish:weekly": "python scripts/generate_weekly.py",
     "validate:opinion": "python -m unittest discover -s tests -p test_generate_opinion.py"

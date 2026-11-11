@@ -1,5 +1,6 @@
 """The published archive must not attribute a source to the wrong week."""
 
+import gzip
 import json
 import sys
 import unittest
@@ -10,10 +11,31 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from generate_weekly import OUT_DIR, openai_feed_supplement, rebuild_index, select_week_sources, week_key, week_start
+from generate_weekly import FEEDS, OUT_DIR, _feed_dates, openai_feed_supplement, rebuild_index, select_week_sources, week_key, week_start
+from update_ai_news import RSS_SOURCES, fetch_text
 
 
 class WeeklyEditionTests(unittest.TestCase):
+    def test_gzip_feed_is_read_for_collection_and_date_verification(self):
+        xml = b"""<rss><channel><item><title>Model research</title>
+        <link>https://deepmind.google/blog/model-research/</link>
+        <pubDate>Tue, 03 Nov 2026 12:00:00 GMT</pubDate></item></channel></rss>"""
+
+        class GzipResponse(BytesIO):
+            headers = {"Content-Encoding": "gzip"}
+
+        with patch("update_ai_news.urllib.request.urlopen", return_value=GzipResponse(gzip.compress(xml))):
+            self.assertIn("Model research", fetch_text("https://deepmind.google/blog/rss.xml"))
+        with patch("generate_weekly.urllib.request.urlopen", return_value=GzipResponse(gzip.compress(xml))):
+            self.assertEqual(_feed_dates("Google DeepMind", "https://deepmind.google/blog/rss.xml"),
+                             {"https://deepmind.google/blog/model-research": "2026-11-03"})
+
+    def test_weekly_date_verification_uses_collector_feeds(self):
+        self.assertEqual(FEEDS, {source["name"]: source["url"] for source in RSS_SOURCES})
+        catalog = json.loads((Path(__file__).resolve().parents[1] / "sources.json").read_text(encoding="utf-8"))
+        self.assertEqual(set(FEEDS.values()),
+                         {source["url"] for source in catalog["gradedSources"] if source["grade"] == "A"})
+
     def test_official_feed_supplement_stays_in_an_anchored_week(self):
         feed = b"""<rss><channel>
         <item><title>Agent research</title><link>https://openai.com/index/agent-research/</link>
