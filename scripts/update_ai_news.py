@@ -1,3 +1,4 @@
+import gzip
 import json
 import re
 import urllib.parse
@@ -30,7 +31,9 @@ TOP_QUALITY_SCORE = 80
 
 RSS_SOURCES = [
     {"name": "OpenAI", "url": "https://openai.com/news/rss.xml", "category": CORE_CATEGORY, "tags": ["OpenAI", "official"], "importance": 5},
+    {"name": "Google DeepMind", "url": "https://deepmind.google/blog/rss.xml", "userAgent": "AI-NEWS/1.0", "category": CORE_CATEGORY, "tags": ["Google DeepMind", "official", "research"], "importance": 5},
     {"name": "NVIDIA", "url": "https://blogs.nvidia.com/blog/category/deep-learning/feed/", "category": CORE_CATEGORY, "tags": ["NVIDIA", "official"], "importance": 4},
+    {"name": "Mistral AI", "url": "https://mistral.ai/rss.xml", "category": CORE_CATEGORY, "tags": ["Mistral AI", "official"], "importance": 4},
     {"name": "Hugging Face", "url": "https://huggingface.co/blog/feed.xml", "category": PRACTICE_CATEGORY, "tags": ["Hugging Face", "open-source", "practice"], "importance": 4},
     {"name": "Microsoft AI", "url": "https://www.microsoft.com/en-us/ai/blog/feed", "userAgent": "AI-NEWS/1.0", "category": CORE_CATEGORY, "tags": ["Microsoft AI", "official"], "importance": 4},
     {"name": "Andrej Karpathy", "url": "https://karpathy.bearblog.dev/feed/", "category": CREATOR_CATEGORY, "tags": ["Andrej Karpathy", "vibecoding", "agent", "creator"], "importance": 5},
@@ -170,7 +173,10 @@ def load_source_pool():
 def fetch_text(url, timeout=8, user_agent="Mozilla/5.0"):
     req = urllib.request.Request(url, headers={"User-Agent": user_agent})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+        raw = resp.read()
+        if resp.headers.get("Content-Encoding", "").lower() == "gzip":
+            raw = gzip.decompress(raw)
+        return raw.decode("utf-8", errors="replace")
 
 
 def google_news_rss(query):

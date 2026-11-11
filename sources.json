@@ -73,7 +73,9 @@
   ],
   "gradedSources": [
     { "name": "OpenAI News RSS", "grade": "A", "url": "https://openai.com/news/rss.xml" },
+    { "name": "Google DeepMind Blog RSS", "grade": "A", "url": "https://deepmind.google/blog/rss.xml" },
     { "name": "NVIDIA AI Blog RSS", "grade": "A", "url": "https://blogs.nvidia.com/blog/category/deep-learning/feed/" },
+    { "name": "Mistral AI RSS", "grade": "A", "url": "https://mistral.ai/rss.xml" },
     { "name": "Hugging Face Blog RSS", "grade": "A", "url": "https://huggingface.co/blog/feed.xml" },
     { "name": "Microsoft AI RSS", "grade": "A", "url": "https://www.microsoft.com/en-us/ai/blog/feed" },
     { "name": "Andrej Karpathy Blog RSS", "grade": "A", "url": "https://karpathy.bearblog.dev/feed/" },

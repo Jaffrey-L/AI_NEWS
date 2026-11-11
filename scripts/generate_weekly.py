@@ -7,6 +7,7 @@ edition. A week needs at least two publishers; missing weeks stay unpublished.
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 import os
 import sys
@@ -36,7 +37,9 @@ OUT_DIR = ROOT / "data" / "weekly"
 CORE_CATEGORIES = {"核心AI公司新闻", "核心AI博主"}
 FEEDS = {
     "OpenAI": "https://openai.com/news/rss.xml",
+    "Google DeepMind": "https://deepmind.google/blog/rss.xml",
     "NVIDIA": "https://blogs.nvidia.com/blog/category/deep-learning/feed/",
+    "Mistral AI": "https://mistral.ai/rss.xml",
     "Hugging Face": "https://huggingface.co/blog/feed.xml",
     "Microsoft AI": "https://www.microsoft.com/en-us/ai/blog/feed",
     "Andrej Karpathy": "https://karpathy.bearblog.dev/feed/",
@@ -79,11 +82,18 @@ def _url_key(url: str) -> str:
     return url.rstrip("/").lower()
 
 
+def _feed_root(url: str) -> ET.Element:
+    request = urllib.request.Request(url, headers={"User-Agent": "AI-NEWS/1.0"})
+    with urllib.request.urlopen(request, timeout=15) as response:
+        raw = response.read(6_000_000)
+        if getattr(response, "headers", {}).get("Content-Encoding", "").lower() == "gzip":
+            raw = gzip.decompress(raw)
+    return ET.fromstring(raw)
+
+
 def _feed_dates(source_name: str, feed_url: str) -> dict[str, str]:
-    request = urllib.request.Request(feed_url, headers={"User-Agent": "AI-NEWS/1.0"})
     try:
-        with urllib.request.urlopen(request, timeout=15) as response:
-            root = ET.fromstring(response.read(6_000_000))
+        root = _feed_root(feed_url)
     except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError, ET.ParseError):
         return {}
     dates = {}
@@ -149,10 +159,8 @@ def openai_feed_supplement(weeks: set[str], max_per_week: int = 4) -> list[dict]
     """Add official dated excerpts where another original already anchors the week."""
     if not weeks:
         return []
-    request = urllib.request.Request(FEEDS["OpenAI"], headers={"User-Agent": "AI-NEWS/1.0"})
     try:
-        with urllib.request.urlopen(request, timeout=15) as response:
-            root = ET.fromstring(response.read(6_000_000))
+        root = _feed_root(FEEDS["OpenAI"])
     except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError, ET.ParseError):
         return []
     today = datetime.now(timezone.utc).date()
