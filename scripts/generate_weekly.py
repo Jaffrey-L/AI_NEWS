@@ -31,6 +31,7 @@ from generate_opinion import (
     validate_article,
 )
 from update_ai_news import strip_html
+from generate_cards import request_cards
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "data" / "weekly"
@@ -255,6 +256,49 @@ def rebuild_index(out_dir: Path = OUT_DIR) -> dict:
     index = {"updatedAt": datetime.now(timezone.utc).isoformat(), "weeks": editions}
     _write_json_atomic(out_dir / "index.json", index)
     return index
+
+
+def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Path = OUT_DIR,
+                          model_client=request_article, card_client=request_cards,
+                          resolver=resolve_publication_date) -> bool:
+    """Publish one completed edition only after article and cards both validate."""
+    if start.weekday() != 0 or start + timedelta(days=6) >= datetime.now(timezone.utc).date():
+        raise ValueError("week is not complete")
+    key = week_key(start)
+    path = out_dir / f"{key}.json"
+    if path.exists():
+        return False
+    payload = json.loads(news_file.read_text(encoding="utf-8"))
+    items = verify_dates(payload.get("items", []) + payload.get("archiveItems", []),
+                         out_dir / "verified-dates.json", resolver)
+    selected = [item for item in items if week_start(_day(item["date"])) == start]
+    if len({item["sourceName"] for item in selected}) < 2:
+        known = {item["sourceUrl"] for item in selected}
+        selected.extend(item for item in openai_feed_supplement({key})
+                        if item["sourceUrl"] not in known)
+    sources = select_week_sources(selected, start)
+    if len({source["sourceName"] for source in sources}) < 2:
+        return False  # A quiet source week is not a collector failure.
+    provider = os.environ.get("AI_NEWS_PROVIDER", "deepseek").strip().lower()
+    if provider not in PROVIDERS:
+        raise ValueError("unsupported AI_NEWS_PROVIDER")
+    model = os.environ.get("AI_NEWS_MODEL", "deepseek-flash").strip()
+    api_key = os.environ.get(PROVIDERS[provider][1], "").strip()
+    if not model or not api_key:
+        raise RuntimeError("model and provider key must be configured")
+    draft = model_client(sources, 7, model, api_key, weekly_instructions(start))
+    article = validate_article(draft, sources)
+    cards = card_client(sources, model, api_key)
+    source_ids = {source["id"] for source in article["sources"]}
+    source_ids.update(source_id for rows in cards.values() for card in rows for source_id in card["src"])
+    article["sources"] = [{field: source[field] for field in ("id", "title", "sourceName", "publishedAt", "url")}
+                          for source in sources if source["id"] in source_ids]
+    edition = {**article, **cards, "week": key, "weekStart": start.isoformat(),
+               "weekEnd": (start + timedelta(days=6)).isoformat(),
+               "generatedAt": datetime.now(timezone.utc).isoformat(), "model": model}
+    _write_json_atomic(path, edition)
+    rebuild_index(out_dir)
+    return True
 
 
 def generate(news_file: Path = NEWS_FILE, out_dir: Path = OUT_DIR, max_weeks: int | None = None,

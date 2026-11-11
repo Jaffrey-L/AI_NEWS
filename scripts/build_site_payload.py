@@ -22,7 +22,10 @@ def main():
     for entry in index["weeks"]:
         doc = read(ROOT / entry["path"])
         week = {**doc, "week": entry["week"], "weekStart": entry["weekStart"], "weekEnd": entry["weekEnd"]}
-        selection = cards.get(entry["week"])
+        selection = doc.get("cards") or ({key: doc[key] for key in ("news", "watch", "learn")}
+                                         if all(key in doc for key in ("news", "watch", "learn")) else None)
+        if selection is None:
+            selection = cards.get(entry["week"])
         if selection is None:
             excerpts = [p["text"] for section in doc.get("sections", []) for p in section.get("paragraphs", []) if p.get("text")]
             selection = {"news": [{"text": text, "src": list(dict.fromkeys(c["sourceId"] for c in p.get("citations", [])))} for section in doc.get("sections", []) for p in section.get("paragraphs", []) if p.get("text")][:3], "watch": [], "learn": []}
@@ -51,6 +54,7 @@ def main():
         "builtAt": datetime.now(timezone.utc).isoformat(),
         "weeks": weeks,
         "amazon": amazon,
+        "updateStatus": read(DATA / "update-status.json") if (DATA / "update-status.json").exists() else {},
         "srcStatus": {
             "direct": direct,
             "query": query,

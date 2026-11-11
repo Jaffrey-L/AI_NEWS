@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-11T11:02:45.371161+00:00",
+  "updatedAt": "2026-11-11T12:08:23.371876+00:00",
   "sourceType": "public_publisher_websites_not_wechat_posts",
   "articles": [
     {
@@ -297,5 +297,124 @@
       "summary": "深入18个城市50个产业带，聚焦转型路径、AI赋能、全链路解决方案三大议题"
     }
   ],
-  "errors": []
+  "errors": [],
+  "ai": {
+    "week": "2026-W46",
+    "date": "2026-11-11",
+    "sources": [
+      {
+        "id": "A1",
+        "title": "谷歌假日100榜单发布，今年海外流行送什么礼？",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.cifnews.com/article/190050",
+        "excerpt": "谷歌假日100榜单发布，今年海外流行送什么礼？。多个品牌榜上有名",
+        "bucket": "news"
+      },
+      {
+        "id": "A2",
+        "title": "亚马逊服务商授权升级，年底前必须重新授权",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.cifnews.com/article/190041",
+        "excerpt": "亚马逊服务商授权升级，年底前必须重新授权。",
+        "bucket": "watch"
+      },
+      {
+        "id": "A3",
+        "title": "紧急提醒！深圳APEC管控，跨境发货全线延误-AMZ123跨境导航",
+        "sourceName": "AMZ123",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.amz123.com/t/KAEmOGMG",
+        "excerpt": "紧急提醒！深圳APEC管控，跨境发货全线延误-AMZ123跨境导航。深圳空运挤兑",
+        "bucket": "watch"
+      },
+      {
+        "id": "A4",
+        "title": "欧盟敲定IOSS改革，取消150欧元货值门槛-AMZ123跨境导航",
+        "sourceName": "AMZ123",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.amz123.com/t/lqyO2aLR",
+        "excerpt": "欧盟敲定IOSS改革，取消150欧元货值门槛-AMZ123跨境导航。欧盟委员会强调，本次改革没有新增税种，也没有调整税率，只是变更税款征收环节与责任主体。",
+        "bucket": "watch"
+      },
+      {
+        "id": "A5",
+        "title": "亚马逊重型大件难做？Humhold用三招破局",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.cifnews.com/article/190042",
+        "excerpt": "亚马逊重型大件难做？Humhold用三招破局。",
+        "bucket": "learn"
+      },
+      {
+        "id": "A6",
+        "title": "一个仓库搞定TikTok、Temu、独立站全渠道发货——亚马逊MCF了解一下",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.cifnews.com/article/190043",
+        "excerpt": "一个仓库搞定TikTok、Temu、独立站全渠道发货——亚马逊MCF了解一下。",
+        "bucket": "learn"
+      },
+      {
+        "id": "A7",
+        "title": "输入一个ASIN，自动生成亚马逊QA",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-10",
+        "url": "https://www.cifnews.com/article/190031",
+        "excerpt": "输入一个ASIN，自动生成亚马逊QA。输入一个ASIN，自动生成亚马逊QA",
+        "bucket": "learn"
+      }
+    ],
+    "cards": {
+      "news": [],
+      "watch": [
+        {
+          "text": "亚马逊服务商授权升级，年底前必须重新授权。",
+          "src": [
+            "A2"
+          ],
+          "ai": true
+        },
+        {
+          "text": "深圳APEC管控导致跨境发货全线延误，深圳空运出现挤兑。",
+          "src": [
+            "A3"
+          ],
+          "ai": true
+        },
+        {
+          "text": "欧盟敲定IOSS改革，取消150欧元货值门槛；欧盟委员会表示本次改革没有新增税种，也没有调整税率，只是变更税款征收环节与责任主体。",
+          "src": [
+            "A4"
+          ],
+          "ai": true
+        }
+      ],
+      "learn": [
+        {
+          "text": "Humhold 分享破解亚马逊重型大件难题的做法。",
+          "src": [
+            "A5"
+          ],
+          "ai": true
+        },
+        {
+          "text": "介绍用亚马逊MCF以一个仓库完成TikTok、Temu、独立站全渠道发货。",
+          "src": [
+            "A6"
+          ],
+          "ai": true
+        },
+        {
+          "text": "介绍输入一个ASIN即可自动生成亚马逊QA。",
+          "src": [
+            "A7"
+          ],
+          "ai": true
+        }
+      ]
+    },
+    "model": "deepseek-flash"
+  }
 }
