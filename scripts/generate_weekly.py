@@ -38,11 +38,14 @@ FEEDS = {
     "OpenAI": "https://openai.com/news/rss.xml",
     "NVIDIA": "https://blogs.nvidia.com/blog/category/deep-learning/feed/",
     "Hugging Face": "https://huggingface.co/blog/feed.xml",
+    "Microsoft AI": "https://www.microsoft.com/en-us/ai/blog/feed",
     "Andrej Karpathy": "https://karpathy.bearblog.dev/feed/",
     "Simon Willison": "https://simonwillison.net/atom/everything/",
     "One Useful Thing": "https://www.oneusefulthing.org/feed",
     "Latent.Space": "https://www.latent.space/feed",
     "Interconnects": "https://www.interconnects.ai/feed",
+    "The Batch": "https://charonhub.deeplearning.ai/rss/",
+    "Chip Huyen": "https://huyenchip.com/feed.xml",
     "Lilian Weng": "https://lilianweng.github.io/index.xml",
 }
 

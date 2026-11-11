@@ -32,13 +32,13 @@ RSS_SOURCES = [
     {"name": "OpenAI", "url": "https://openai.com/news/rss.xml", "category": CORE_CATEGORY, "tags": ["OpenAI", "official"], "importance": 5},
     {"name": "NVIDIA", "url": "https://blogs.nvidia.com/blog/category/deep-learning/feed/", "category": CORE_CATEGORY, "tags": ["NVIDIA", "official"], "importance": 4},
     {"name": "Hugging Face", "url": "https://huggingface.co/blog/feed.xml", "category": PRACTICE_CATEGORY, "tags": ["Hugging Face", "open-source", "practice"], "importance": 4},
-    {"name": "Microsoft AI", "url": "https://blogs.microsoft.com/ai/feed/", "category": CORE_CATEGORY, "tags": ["Microsoft AI", "official"], "importance": 4},
+    {"name": "Microsoft AI", "url": "https://www.microsoft.com/en-us/ai/blog/feed", "userAgent": "AI-NEWS/1.0", "category": CORE_CATEGORY, "tags": ["Microsoft AI", "official"], "importance": 4},
     {"name": "Andrej Karpathy", "url": "https://karpathy.bearblog.dev/feed/", "category": CREATOR_CATEGORY, "tags": ["Andrej Karpathy", "vibecoding", "agent", "creator"], "importance": 5},
     {"name": "Simon Willison", "url": "https://simonwillison.net/atom/everything/", "category": CREATOR_CATEGORY, "tags": ["Simon Willison", "llm-engineering", "creator"], "importance": 5},
     {"name": "One Useful Thing", "url": "https://www.oneusefulthing.org/feed", "category": CREATOR_CATEGORY, "tags": ["Ethan Mollick", "enterprise", "creator"], "importance": 5},
     {"name": "Latent.Space", "url": "https://www.latent.space/feed", "category": CREATOR_CATEGORY, "tags": ["swyx", "agent", "creator"], "importance": 5},
     {"name": "Interconnects", "url": "https://www.interconnects.ai/feed", "category": CREATOR_CATEGORY, "tags": ["Nathan Lambert", "research", "creator"], "importance": 5},
-    {"name": "The Batch", "url": "https://www.deeplearning.ai/the-batch/feed/", "category": CREATOR_CATEGORY, "tags": ["deeplearning.ai", "newsletter", "creator"], "importance": 4},
+    {"name": "The Batch", "url": "https://charonhub.deeplearning.ai/rss/", "category": CREATOR_CATEGORY, "tags": ["deeplearning.ai", "newsletter", "creator"], "importance": 4},
     {"name": "Chip Huyen", "url": "https://huyenchip.com/feed.xml", "category": CREATOR_CATEGORY, "tags": ["Chip Huyen", "ml-systems", "creator"], "importance": 4},
     {"name": "Lilian Weng", "url": "https://lilianweng.github.io/index.xml", "category": CREATOR_CATEGORY, "tags": ["Lilian Weng", "agent", "research"], "importance": 4},
 ]
@@ -167,8 +167,8 @@ def load_source_pool():
     }
 
 
-def fetch_text(url, timeout=8):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+def fetch_text(url, timeout=8, user_agent="Mozilla/5.0"):
+    req = urllib.request.Request(url, headers={"User-Agent": user_agent})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return resp.read().decode("utf-8", errors="replace")
 
@@ -668,7 +668,7 @@ def collect_rss():
 
     def collect_one(source):
         try:
-            parsed = parse_feed_items(fetch_text(source["url"], timeout=8), source["name"], source["category"], "A", source["tags"], source["importance"], limit=40)
+            parsed = parse_feed_items(fetch_text(source["url"], timeout=8, user_agent=source.get("userAgent", "Mozilla/5.0")), source["name"], source["category"], "A", source["tags"], source["importance"], limit=40)
             parsed = [item for item in parsed if keep_item(item)]
             return source, parsed, None
         except Exception as exc:
