@@ -1,0 +1,107 @@
+{
+  "title": "从“能完成”到“可复现”：本周 AI 治理与评测的同一个焦虑",
+  "subtitle": "OpenAI 连续抛出青少年安全蓝图与失准报告框架，Hugging Face 的智能体一致性讨论指向同一件事：能力之外的可靠性正在成为主线",
+  "sections": [
+    {
+      "heading": "安全叙事从“原则”走向“路线图”和“披露机制”",
+      "paragraphs": [
+        {
+          "text": "本周 OpenAI 的两份材料都带有明显的制度化色彩。9 月 18 日的澳大利亚青少年安全蓝图，不再只是泛泛的安全承诺，而是被描述为一套分柱推进的行动框架，用“six-pillar roadmap”来组织面向年轻人的保护与赋权。这类做法的变化点在于：安全议题开始被包装成可对外解释、可被政策方对接的结构化方案，而不是一次性的原则声明。对实际使用者的影响是间接但真实的——平台侧围绕未成年人的功能限制、默认设置和审查口径，未来更可能以这类框架为依据成形。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "a six-pillar roadmap for safer AI experiences"
+            }
+          ]
+        },
+        {
+          "text": "两天前发布的失准报告框架，则把另一类风险推进到运营层面。OpenAI 称其建立了一套用于追踪、调查和披露模型失准的机制，并同时公布了六份关于模型意外或令人担忧行为的报告。这里的信号值得重视：失准不再被当作孤立的偶发事件私下处理，而是被纳入“记录—调查—公开”的流程。需要分清的是，资料只能支持“框架存在并有六份报告”这一事实，至于披露尺度是否足够、报告是否覆盖真实高频问题，属于外部推断，本周材料并未给出答案。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "tracking, investigating, and disclosing model misalignment"
+            }
+          ]
+        },
+        {
+          "text": "把两条线放在一起看，本周 OpenAI 的姿态更像是在补“过程性证据”：青少年安全给的是事前设计的分柱路线，失准披露给的是事后追踪的流程。对开发者而言，这意味着与平台打交道时，安全与对齐逐渐从口号变成可被要求提交的文档与流程记录；对普通用户而言，短期内感知有限，但一旦事故进入披露轨道，公众对模型行为的可见度会提高。我的判断是，这类框架真正的价值不在发布当天，而在它是否持续产出可验证的案例。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "alongside six reports of unexpected or concerning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "智能体的真正门槛：一次成功不算成功",
+      "paragraphs": [
+        {
+          "text": "Hugging Face 本周转载的讨论提出了一个看似朴素却戳中痛点的问题：你的智能体把任务做成了，它还能再做一次吗？标题本身就把评测焦点从单次成功率转向可重复性。这与过去一年多常见的演示文化形成对照——一次漂亮的端到端跑通很容易剪成视频，但在真实工作流里，用户需要的是稳定复现，而不是抽奖式的好运。需要说明的是，资料仅为标题与转述性摘要，具体方法、指标和实验结论无法从本周材料确认，因此不宜替它补充细节。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "Your Agent Aced the Task. Will It"
+            }
+          ]
+        },
+        {
+          "text": "这一提问与 OpenAI 的失准披露框架在逻辑上是同源的：二者都在追问模型在重复运行中的行为稳定性，而非峰值能力。差异在于视角，前者面向开发者评测，后者面向厂商治理。对实际使用的影响可以落到很具体的层面：团队在选型和验收时，应把多次重复运行的方差、边界条件下的退化、以及失败后的可诊断性纳入考察，而不是只看一次基准分数。这是我的判断，属于基于资料方向的推断，而非本周原文的结论。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "Your agent works in rehearsal, but during the live demo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "本周的独立判断",
+      "paragraphs": [
+        {
+          "text": "本周没有出现新模型或新能力的重磅发布，主线反而是“如何证明它可靠”。OpenAI 用分柱路线图和失准披露流程把安全与对齐工程化，Hugging Face 一侧则把智能体评测的提问从“能不能”推进到“稳不稳”。三者共同指向一个更成熟的阶段：AI 的竞争点正在从演示效果转向可重复、可解释、可追责。对使用者最务实的动作，是在自己的验收清单里增加重复运行与异常披露两项，而不是等待厂商给出统一答案。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "protect and empower young people"
+            },
+            {
+              "sourceId": "S3",
+              "evidence": "a framework for tracking, investigating, and disclosing"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Introducing the Australian Youth Safety Blueprint",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-09-18",
+      "url": "https://openai.com/index/australian-youth-safety-blueprint"
+    },
+    {
+      "id": "S2",
+      "title": "Your Agent Aced the Task. Will It Do It Again?",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-09-15",
+      "url": "https://huggingface.co/blog/ibm-research/altk-evolve-consistency"
+    },
+    {
+      "id": "S3",
+      "title": "Our framework for reporting model misalignment",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-09-16",
+      "url": "https://openai.com/index/model-misalignment-reporting-framework"
+    }
+  ],
+  "week": "2026-W38",
+  "weekStart": "2026-09-14",
+  "weekEnd": "2026-09-20",
+  "generatedAt": "2026-11-11T07:14:32.105149+00:00",
+  "model": "deepseek-flash"
+}

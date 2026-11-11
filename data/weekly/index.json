@@ -1,0 +1,86 @@
+{
+  "updatedAt": "2026-11-11T07:15:35.505197+00:00",
+  "weeks": [
+    {
+      "week": "2026-W45",
+      "weekStart": "2026-11-02",
+      "weekEnd": "2026-11-08",
+      "title": "当 AI 走进看不见答案的地方：本周的三个信号",
+      "subtitle": "从湿实验室评测、无痕法律智能体到 SQLite 扩展，本周的看点不是新模型，而是“如何验证与嵌入”",
+      "sourceCount": 8,
+      "path": "./data/weekly/2026-W45.json"
+    },
+    {
+      "week": "2026-W44",
+      "weekStart": "2026-10-26",
+      "weekEnd": "2026-11-01",
+      "title": "AI 从“能用”走向“可信与可管”：本周的三条暗线",
+      "subtitle": "一边是 Agent 深入法律、金融、企业工作流，一边是“Black October”式的安全账单——能力扩张与信任成本正在同速上涨",
+      "sourceCount": 8,
+      "path": "./data/weekly/2026-W44.json"
+    },
+    {
+      "week": "2026-W43",
+      "weekStart": "2026-10-19",
+      "weekEnd": "2026-10-25",
+      "title": "AI 落地进入“基础设施期”：安全合作与工程化训练成为本周主线",
+      "subtitle": "从 OpenAI 的两项安全合作到 Hugging Face 上的训练与硬件适配讨论，本周的信号不在模型能力，而在“怎么把模型用进真实系统”。",
+      "sourceCount": 4,
+      "path": "./data/weekly/2026-W43.json"
+    },
+    {
+      "week": "2026-W42",
+      "weekStart": "2026-10-12",
+      "weekEnd": "2026-10-18",
+      "title": "开源模型下沉端侧，闭源巨头缺席的一周",
+      "subtitle": "2026-10-12 至 10-18：NVIDIA 与 Meta 把开放权重推向本地智能体，但数据中心故事正在被桌面场景改写",
+      "sourceCount": 3,
+      "path": "./data/weekly/2026-W42.json"
+    },
+    {
+      "week": "2026-W41",
+      "weekStart": "2026-10-05",
+      "weekEnd": "2026-10-11",
+      "title": "成本曲线开始决定 AI 产品的形状",
+      "subtitle": "本周观察：模型能力之外的“每任务成本”与开源自制，正在重写落地节奏",
+      "sourceCount": 3,
+      "path": "./data/weekly/2026-W41.json"
+    },
+    {
+      "week": "2026-W40",
+      "weekStart": "2026-09-28",
+      "weekEnd": "2026-10-04",
+      "title": "GPT-6 的“调参说明书”与语音评测的地基",
+      "subtitle": "本周大公司话语从“模型多强”转向“怎么用好、怎么评好”",
+      "sourceCount": 4,
+      "path": "./data/weekly/2026-W40.json"
+    },
+    {
+      "week": "2026-W38",
+      "weekStart": "2026-09-14",
+      "weekEnd": "2026-09-20",
+      "title": "从“能完成”到“可复现”：本周 AI 治理与评测的同一个焦虑",
+      "subtitle": "OpenAI 连续抛出青少年安全蓝图与失准报告框架，Hugging Face 的智能体一致性讨论指向同一件事：能力之外的可靠性正在成为主线",
+      "sourceCount": 3,
+      "path": "./data/weekly/2026-W38.json"
+    },
+    {
+      "week": "2026-W27",
+      "weekStart": "2026-06-29",
+      "weekEnd": "2026-07-05",
+      "title": "从“用得多”到“改自己”：AI 本周的两条暗线",
+      "subtitle": "ChatGPT 采用数据与自我改进工程学，指向同一个问题：系统如何变得更可靠、更强",
+      "sourceCount": 3,
+      "path": "./data/weekly/2026-W27.json"
+    },
+    {
+      "week": "2026-W26",
+      "weekStart": "2026-06-22",
+      "weekEnd": "2026-06-28",
+      "title": "模型更强，但真正的变化在用法",
+      "subtitle": "本周观察：OpenAI预告新模型、明确代理工作价值，技术社区则回到理论地基思考如何组织算力与数据",
+      "sourceCount": 3,
+      "path": "./data/weekly/2026-W26.json"
+    }
+  ]
+}

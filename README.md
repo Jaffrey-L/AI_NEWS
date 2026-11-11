@@ -1,6 +1,6 @@
-# AI Daily Radar
+# AI 周读
 
-AI Daily Radar leads with an automatically written AI opinion article. Each paragraph links to the source and shows a short, exact evidence excerpt. The original news dashboard remains below the article.
+The homepage leads with a source-linked weekly AI interpretation, starting from the most recent completed week. Readers can select earlier weeks. Every paragraph links to the original publisher and its date; the previous news dashboard is kept below as background material.
 
 It tracks:
 
@@ -28,25 +28,25 @@ python3 scripts/update_ai_news.py
 python3 scripts/validate_news_data.py
 ```
 
-## Publish an AI opinion article
+## Publish weekly interpretations
 
 Set `AI_NEWS_MODEL` and a provider key in the server job environment. The default provider is OpenAI (`OPENAI_API_KEY`). To use DeepSeek's Responses API, set `AI_NEWS_PROVIDER=deepseek`, `AI_NEWS_MODEL=deepseek-flash`, and `DEEPSEEK_API_KEY`. The endpoint is selected from a fixed allowlist; the key never chooses an arbitrary URL. Then run:
 
 ```bash
-python3 scripts/generate_opinion.py
+python3 scripts/generate_weekly.py
 ```
 
-The job shortlists sources from `data/news.json`, checks the publisher's URL or page for the original publication date, then asks the model for a Chinese opinion article. An undated, unreachable, or out-of-window source is excluded even if the feed says it is recent. Every cited evidence excerpt must match selected source text; displayed excerpts are kept short. It publishes `data/opinion/latest.json` without an editorial approval step. If the model, sources, or citation checks fail, the prior article stays live and `data/opinion/status.json` reports the failed update. The model key is never sent to the browser. The excerpt check confirms a quoted span and link, not that every interpretation is correct.
+The job shortlists core company and creator sources from `data/news.json`, checks original publication dates against publisher feeds or pages, and groups them by completed ISO week. When a week has one verified non-OpenAI original, the dated OpenAI official feed may supplement that week. It publishes an edition only when two publishers can be cited. Missing weeks remain missing rather than receiving invented commentary. Existing editions remain untouched if a later model run fails. Each new edition is written to `data/weekly/YYYY-Www.json`; `data/weekly/index.json` drives the archive. The model key is never sent to the browser. A matching excerpt and link do not prove that every interpretation is correct.
 
-The publisher makes one model request per scheduled run, with a 120-second request timeout and a 5,000-output-token cap. Usage cost depends on the configured model and current provider pricing; watch the job log and provider usage before increasing frequency. DeepSeek's [Responses API documentation](https://api-docs.deepseek.com/guides/responses_api/) lists its compatible endpoint and models.
+The publisher makes one model request per unpublished eligible week, with a 120-second request timeout and a 5,000-output-token cap per request. Use `--max-weeks N` for a bounded historical backfill. Usage cost depends on the configured model and current provider pricing. DeepSeek's [Responses API documentation](https://api-docs.deepseek.com/guides/responses_api/) lists its compatible endpoint and models.
 
-The article section shows a clear waiting state until the first successful run. Test the publisher without an API request using:
+Test the publisher without an API request using:
 
 ```bash
-python3 -m unittest discover -s tests -p test_generate_opinion.py
+python3 -m unittest discover -s tests -p 'test_generate_*.py'
 ```
 
-The repository includes a one-time AI-authored seed article dated 2026-11-09 so the layout can be previewed before the scheduled model job is configured. Its `model` field is `assistant-seed`; it is not presented as an API run. The next successful scheduled run replaces it.
+The old single-article publisher remains for compatibility when no weekly edition exists. The site already contains source-checked weekly editions, so normal readers see the weekly archive first.
 
 ## Frontend Validation
 

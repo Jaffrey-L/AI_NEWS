@@ -3,37 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Daily Radar</title>
+  <title>AI 周读 · 原文可查的每周解读</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=20260519-linked-prompts">
+  <link rel="stylesheet" href="./styles.css?v=20261111-weekly">
 </head>
 <body>
   <div class="bg"></div>
   <header class="hero shell">
     <div>
-      <span class="eyebrow">AI INTELLIGENCE BRIEFING · YEAR TO DATE</span>
-      <h1>AI Daily Radar</h1>
-      <p>AI 自主整理近期资料，提出鲜明观点与可尝试的实践方法；每段论据都可展开证据、打开原文。下方保留完整新闻资料供继续探索。</p>
+      <span class="eyebrow">AI WEEKLY READING · ORIGINAL SOURCES</span>
+      <h1>AI 周读</h1>
+      <p>每周先读一篇有判断的解读。重点追踪核心 AI 博主与大公司的原文；观点下方可查发布日期、引文与原始链接。</p>
     </div>
     <div class="badges">
-      <span>12H &#33258;&#21160;&#26356;&#26032;</span>
-      <span>A/B/C &#20449;&#28304;&#20998;&#32423;</span>
-      <span>2026 YTD</span>
+      <span>按周追踪解读</span>
+      <span>原文可追溯</span>
+      <span>历史按周阅读</span>
     </div>
   </header>
 
-  <section class="shell opinion" aria-label="AI 观点文章">
+  <section class="shell opinion" aria-label="AI 每周解读">
     <div class="opinion-head">
       <div>
-        <span class="eyebrow small">AI OPINION · SOURCE LINKED</span>
-        <h2>最新 AI 观点与实践</h2>
+        <span class="eyebrow small">WEEKLY INTERPRETATION · SOURCE LINKED</span>
+        <h2>每周解读</h2>
       </div>
-      <p id="opinionMeta" role="status">正在读取最新文章…</p>
+      <div class="opinion-controls">
+        <label for="weekSelect">阅读周次</label>
+        <select id="weekSelect" aria-label="选择历史周次"></select>
+      </div>
     </div>
+    <p id="opinionMeta" class="opinion-meta" role="status">正在读取每周解读…</p>
     <article id="opinionArticle" class="opinion-article" aria-live="polite"></article>
+    <nav id="weekArchive" class="week-archive" aria-label="历史解读"></nav>
+    <p class="week-archive-note">仅展示已核到足够原文的周次；资料不足的周次留空。</p>
   </section>
+
+  <div class="shell source-intro" id="sourceArchive">
+    <span class="eyebrow small">SOURCE TRAIL</span>
+    <h2>解读背后的资料</h2>
+    <p>下面的趋势、简报和新闻条目供追查背景；每周解读以文中链接的原始发布为依据。</p>
+  </div>
 
   <section class="shell overview" aria-label="Daily summary">
     <article class="kpi">
@@ -202,6 +214,6 @@
     <p>&#25968;&#25454;&#26469;&#28304;&#65306;<code>data/news.json</code>&#65292;&#27599; 12 &#23567;&#26102;&#33258;&#21160;&#21516;&#27493;&#12290;</p>
   </footer>
 
-  <script src="./app.js?v=20260519-linked-prompts"></script>
+  <script src="./app.js?v=20261111-weekly"></script>
 </body>
 </html>

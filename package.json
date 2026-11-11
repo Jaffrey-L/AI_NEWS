@@ -9,6 +9,7 @@
     "validate:data": "python scripts/validate_news_data.py",
     "sync:news": "python scripts/update_ai_news.py",
     "publish:opinion": "python scripts/generate_opinion.py",
+    "publish:weekly": "python scripts/generate_weekly.py",
     "validate:opinion": "python -m unittest discover -s tests -p test_generate_opinion.py"
   },
   "devDependencies": {
