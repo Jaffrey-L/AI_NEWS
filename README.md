@@ -1,77 +1,36 @@
 # AI 周读
 
-The homepage shows a source-linked weekly AI interpretation, starting from the most recent completed week. Readers can select earlier weeks and open original publications. The Amazon tab shows dated, linked articles from the requested publishers' public websites and three official Amazon RSS feeds. The AI 承接 tab lists source status and the full Amazon article archive. Public website articles are not represented as WeChat posts.
+静态站点：<https://jaffrey-l.github.io/AI_NEWS/>。周读整理已结束的一周；亚马逊页每天补充正在进行的一周。每条 AI 解读都与原站标题、摘要分开显示，并链接到原文。
 
-It tracks:
+## 自动更新
 
-- Core AI company news
-- AI builders and creators
-- Solo/small-company AI builders
-- Vibe Coding / Prompt / Agent practice
+`.github/workflows/refresh-editions.yml` 在北京时间每天 07:30 刷新亚马逊页，每周一 08:30 刷新上一完整周的 AI 周读。GitHub Actions 的定时任务可能延迟；公开仓库长期无活动时可能被自动停用，需要检查 Actions 状态。
 
-## Quick Start
+工作流使用仓库 Secret `DEEPSEEK_API_KEY`，模型为 `deepseek-flash`。密钥只传给生成脚本，不进入页面或版本库。采集使用公开网页和 RSS，不调用付费 X 接口。
+
+每块最多三条。生成内容必须引用本次输入的 HTTPS 原文，且引用摘录必须逐字出现在输入中。未达到条件的条目不发布。来源没有当周新文章是正常的空结果。若采集、生成或引用校验失败，保留上一期内容，页面显示失败和保留的周次；工作流标红供维护人处理。
+
+本地复现：
 
 ```bash
+AI_NEWS_PROVIDER=deepseek AI_NEWS_MODEL=deepseek-flash DEEPSEEK_API_KEY=... python3 scripts/run_auto_update.py --mode amazon
+AI_NEWS_PROVIDER=deepseek AI_NEWS_MODEL=deepseek-flash DEEPSEEK_API_KEY=... python3 scripts/run_auto_update.py --mode weekly
+python3 -m unittest discover -s tests -p 'test_*.py'
 python3 -m http.server 8000
 ```
 
-Open:
+失败命令返回非零，同时写入 `data/update-status.json` 并重建 `data/site-payload.js`。提交并发布这两个文件后读者才会看到故障提示。旧的手工周读和文章归档仍在 `data/weekly/`；自动任务只处理目标周次，不重写已发布周读。
 
-```text
-http://127.0.0.1:8000
-```
+## 费用估算
 
-## Update News Data
+按每月 4 次周读文章、约 34 次三块摘要请求估算，假设总输入 20 万 tokens、输出 10 万 tokens，并在非高峰时运行，[DeepSeek Flash 当前价格](https://api-docs.deepseek.com/quick_start/pricing/)折合约 **$0.09/月**。留出采集波动和重复失败重试，预计 **$0.10–$0.30/月**；实际费用以服务商用量记录为准。
 
-```bash
-python3 scripts/update_ai_news.py
-python3 scripts/validate_news_data.py
-```
-
-## Publish weekly interpretations
-
-Set `AI_NEWS_MODEL` and a provider key in the server job environment. The default provider is OpenAI (`OPENAI_API_KEY`). To use DeepSeek's Responses API, set `AI_NEWS_PROVIDER=deepseek`, `AI_NEWS_MODEL=deepseek-flash`, and `DEEPSEEK_API_KEY`. The endpoint is selected from a fixed allowlist; the key never chooses an arbitrary URL. Then run:
+## 页面验证
 
 ```bash
-python3 scripts/generate_weekly.py
-```
-
-The job shortlists core company and creator sources from `data/news.json`, checks original publication dates against publisher feeds or pages, and groups them by completed ISO week. When a week has one verified non-OpenAI original, the dated OpenAI official feed may supplement that week. It publishes an edition only when two publishers can be cited. Missing weeks remain missing rather than receiving invented commentary. Existing editions remain untouched if a later model run fails. Each new edition is written to `data/weekly/YYYY-Www.json`; `data/weekly/index.json` drives the archive. The model key is never sent to the browser. A matching excerpt and link do not prove that every interpretation is correct.
-
-The AI collector polls 16 company and creator RSS/Atom feeds. `sources.json` also lists a broader query pool; a name in that pool is not proof that its article has entered a published edition. The Amazon collector reads four public websites corresponding to the five requested account names (雨果网 and 雨果跨境 share one site), plus three official Amazon RSS feeds. It stores only dated titles, short metadata descriptions, and original links. WeChat originals are not collected. The paid X API is not used under the zero-cost requirement; Andrej Karpathy's public blog remains in the free RSS pool.
-
-Refresh the free Amazon snapshot and rebuild the static reader:
-
-```bash
-python3 scripts/update_amazon_news.py
-python3 scripts/validate_amazon_news.py
-python3 scripts/build_site_payload.py
-```
-
-The Amazon page's three summary groups contain only articles dated within the current Monday–Sunday week; each article appears in at most one group. Older articles remain in the AI 承接 archive. The three groups show original titles and links, without generated descriptions. `data/editorial-cards.json` contains the reviewed excerpts for the existing nine AI weekly editions. A newly published week without reviewed cards uses cited paragraph excerpts for “大事” and leaves the other two groups empty until editorial review. Run `build_site_payload.py` after publishing a weekly edition. This is a manual static-site update; there is no paid or scheduled model run in the zero-cost deployment.
-
-The model publisher below is a manual, optional tool. It is not scheduled or configured in the zero-cost deployment because provider API requests can incur charges. The existing weekly archive remains readable without a model API.
-
-The publisher makes one model request per unpublished eligible week, with a 120-second request timeout and a 5,000-output-token cap per request. Use `--max-weeks N` for a bounded historical backfill. Usage cost depends on the configured model and current provider pricing. DeepSeek's [Responses API documentation](https://api-docs.deepseek.com/guides/responses_api/) lists its compatible endpoint and models.
-
-Test the publisher without an API request using:
-
-```bash
-python3 -m unittest discover -s tests -p 'test_generate_*.py'
-```
-
-The old single-article publisher remains for compatibility when no weekly edition exists. The site already contains source-checked weekly editions, so normal readers see the weekly archive first.
-
-## Frontend Validation
-
-```bash
-npm install
+npm ci
 npx playwright install chromium
 npm run validate:frontend
 ```
 
-## Deployment
-
-For Linux deployment, see:
-
-[docs/deploy/linux-deploy.md](docs/deploy/linux-deploy.md)
+部署和失败处置见 [docs/deploy/linux-deploy.md](docs/deploy/linux-deploy.md)。

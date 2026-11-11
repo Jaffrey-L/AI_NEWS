@@ -59,6 +59,9 @@ a{color:inherit;text-decoration:none}
 .ans .srcrow{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .schip{font-size:11px;color:var(--ink2);background:#f4f6f9;border-radius:6px;padding:1px 7px;border:1px solid var(--line2);cursor:pointer;transition:.15s}
 .schip:hover{background:var(--accent-soft);border-color:#d5dbff;color:var(--accent)}
+.ai-label{color:var(--accent);font-size:11px;font-weight:700}
+.amazon-article a,.ans li a{overflow-wrap:anywhere}
+.ans li .ai-original{display:block;margin-top:5px;font-size:12px}
 .ans .empty{font-size:13px;color:var(--ink3);line-height:1.7;background:#fafbfc;border:1px dashed var(--line);border-radius:9px;padding:10px 12px}
 
 /* ---------- layout ---------- */

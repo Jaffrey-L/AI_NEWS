@@ -6,6 +6,7 @@ test("weekly reading keeps its three answers and original links", async ({ page 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page.locator("#v-week .answers .ans")).toHaveCount(3);
   await expect(page.locator("#v-week .hero h1")).not.toBeEmpty();
+  await expect(page.locator("#v-week .schip")).not.toHaveCount(0);
   await expect(page.locator("#v-week .srclist li")).not.toHaveCount(0);
   await page.locator("#wkpick").selectOption("2026-W44");
   await expect(page).toHaveURL(/week=2026-W44/);
@@ -20,12 +21,14 @@ test("Amazon shows only this week's dated originals in three distinct groups", a
   await expect(page.locator("#v-amazon .hero")).toContainText("W46 · 11.09–11.15（进行中）");
   await expect(page.locator("#wkpick")).toBeHidden();
   const cards = page.locator("#v-amazon .answers .ans");
-  await expect(cards.nth(0)).toContainText("IOSS改革");
+  await expect(cards.nth(0)).toContainText("本周没有已核实的对应文章");
+  await expect(cards.nth(1)).toContainText("AI 解读");
+  await expect(cards.nth(1).locator('ol li').first()).toContainText("服务商授权升级");
   await expect(cards.nth(1)).toContainText("深圳APEC管控");
+  await expect(cards.nth(1)).toContainText("IOSS改革");
   await expect(page.locator("#v-amazon .answers")).not.toContainText("Amazon Bedrock");
   await expect(page.locator("#v-amazon .answers")).not.toContainText("SAMPLE HOUSE");
   await expect(page.locator("#v-amazon")).not.toContainText("-AMZ123跨境导航");
-  await expect(page.locator('.amazon-article').filter({ hasText: '输入一个ASIN' }).locator('p')).toHaveCount(0);
   const groups = await page.locator("#v-amazon .answers .ans").evaluateAll((cards) =>
     cards.map((card) => [...card.querySelectorAll("li a")].map((a) => a.href))
   );

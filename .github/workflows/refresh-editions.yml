@@ -1,0 +1,84 @@
+name: Refresh AI and Amazon editions
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Beijing 07:30 daily and Monday 08:30; GitHub cron uses UTC.
+    - cron: '30 23 * * *'
+    - cron: '30 0 * * 1'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Edition to refresh
+        required: true
+        type: choice
+        options: [amazon, weekly]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: refresh-editions
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Refresh and validate issue
+        id: refresh
+        if: github.event_name != 'push'
+        env:
+          AI_NEWS_PROVIDER: deepseek
+          AI_NEWS_MODEL: deepseek-flash
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_MODE: ${{ inputs.mode }}
+        run: |
+          if [ "$EVENT_NAME" = workflow_dispatch ]; then mode="$INPUT_MODE"
+          elif [ "$SCHEDULE" = '30 0 * * 1' ]; then mode=weekly
+          else mode=amazon; fi
+          set +e
+          python scripts/run_auto_update.py --mode "$mode"
+          result=$?
+          set -e
+          echo "result=$result" >> "$GITHUB_OUTPUT"
+      - name: Publish validated data or failure notice
+        if: github.event_name != 'push'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data
+          if ! git diff --cached --quiet; then
+            git commit -m 'Refresh published AI news data'
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+      - name: Prepare public site only
+        run: |
+          mkdir -p public/data
+          cp index.html app.js workspace.css public/
+          cp data/site-payload.js public/data/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - name: Deploy static site
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Flag failed refresh
+        if: github.event_name != 'push' && steps.refresh.outputs.result != '0'
+        run: exit 1

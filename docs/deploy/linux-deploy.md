@@ -1,39 +1,9 @@
-# Static site deployment
+# 静态站点与自动更新
 
-The public site is served from `main` by GitHub Pages at <https://jaffrey-l.github.io/AI_NEWS/>. No model API, paid feed, cron job, database, or server process is required to read the checked-in weekly editions and Amazon articles.
+GitHub Pages 由 Actions 从 `main` 生成静态包并发布：<https://jaffrey-l.github.io/AI_NEWS/>。Pages 的构建来源须设为 **GitHub Actions**；工作流用 `GITHUB_TOKEN` 提交数据时不会触发旧的分支发布。页面只读取静态数据；服务器无需数据库、运行中的 Python 服务或模型密钥。
 
-## Refresh the checked-in data
+仓库 Actions 工作流每天 07:30 北京时间更新亚马逊期、每周一 08:30 更新上一个完整周读。它先采集、生成并验证，再提交 `data/`。失败时保留旧内容，提交失败状态并让工作流变红。维护人检查 Actions 失败日志和页面提示；修复来源或模型问题后，使用 `workflow_dispatch` 选择 `amazon` 或 `weekly` 重跑。不能把没有新文章当成采集失败。
 
-Run these commands locally before committing a new snapshot:
+需要在仓库 Actions secrets 中配置 `DEEPSEEK_API_KEY`。不要把值写进代码、日志或页面。GitHub Actions 的 `GITHUB_TOKEN` 需有 `contents: write` 权限；工作流已声明此权限。若分支规则阻止工作流推送，要按仓库现有审核规则调整发布路径。
 
-```bash
-python3 scripts/update_ai_news.py
-python3 scripts/validate_news_data.py
-python3 scripts/update_amazon_news.py
-python3 scripts/validate_amazon_news.py
-python3 scripts/build_site_payload.py
-```
-
-`update_ai_news.py` writes the news snapshot and dated daily digest. `update_amazon_news.py` reads public publisher pages and official Amazon feeds; it keeps the previous Amazon snapshot if a source fails. `build_site_payload.py` combines the checked-in weekly editions, reviewed card excerpts, source registry, and Amazon snapshot for the static frontend. A new weekly edition without reviewed cards uses linked excerpts for its news card and leaves unsupported cards empty.
-
-The model-based weekly publisher is optional and may incur provider charges. It is not part of this zero-cost deployment or any scheduled job.
-
-## Check the page
-
-```bash
-python3 -m http.server 8000
-```
-
-In another terminal:
-
-```bash
-npm install
-npx playwright install chromium
-SITE_URL=http://127.0.0.1:8000 npm run validate:frontend
-```
-
-The public deployment follows an approved merge to `main`. Check the GitHub Pages build status, then open the public URL and verify the current weekly interpretation, its original links, the Amazon week label, source archive, and mobile layout. A successful merge alone does not prove that Pages has published the new commit.
-
-## Optional Linux mirror
-
-If a separate Linux mirror is needed, serve the repository as static files from the directory containing `index.html`. The page loads `workspace.css`, `app.js`, and `data/site-payload.js` with relative paths. Keep these files together. A static Nginx root with `try_files $uri $uri/ =404` is sufficient; the frontend does not need a Python or Node process in production.
+发布后检查 Actions、Pages 构建、首页、两个页签的原文链接和更新提示。成功提交不等于 Pages 已完成部署。Linux 镜像站若有需要，可直接把含 `index.html`、`workspace.css`、`app.js` 和 `data/site-payload.js` 的目录作为静态根目录。
