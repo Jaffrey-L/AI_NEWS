@@ -73,11 +73,13 @@ def sync(base_url: str = BASE_URL, root: Path = ROOT, fetch=fetch_file) -> bool:
                 target = candidate / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(content)
+            candidate.chmod(0o755)
             os.replace(candidate, release)
             candidate = None
         finally:
             if candidate is not None:
                 shutil.rmtree(candidate)
+    release.chmod(0o755)
 
     current = root / "current"
     if current.is_symlink() and current.readlink() == Path("releases") / release_name:
