@@ -1,0 +1,160 @@
+{
+  "title": "AI 从“能用”走向“可信与可管”：本周的三条暗线",
+  "subtitle": "一边是 Agent 深入法律、金融、企业工作流，一边是“Black October”式的安全账单——能力扩张与信任成本正在同速上涨",
+  "sections": [
+    {
+      "heading": "Agent 不再只是演示，开始进入“长任务”",
+      "paragraphs": [
+        {
+          "text": "本周最值得注意的变化不是又多了几个模型，而是 Agent 被明确放到“长时间、跨流程”的场景里讨论。Latent.Space 对 Arca 的访谈把关键词落在持久记忆与自定义 harness 上：他们讨论的是“跨越数天”的 agentic workflows，而不是一次对话完成一个任务。这其实改变了评估标准——衡量重点从“单轮回答质量”转向“状态能否持续、上下文能否积累、失败后能否恢复”。对实际使用者来说，这意味着选型时更该问：它的记忆存在哪里、由谁清理、出错时谁负责。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "Arca's head of AI discusses persistent memory,"
+            }
+          ]
+        },
+        {
+          "text": "企业侧的动作与之呼应。OpenAI 与 ServiceNow 的扩围，明确把模型与 Agent 塞进既有工作流，同时把工作流能力反向接入 ChatGPT 和 Codex。这种“双向嵌入”比单纯 API 接入更实：Agent 的产出要能被工单、审批等系统接收，才算真正落地。我的判断是，2026 年下半年的竞争焦点已从“谁的模型强”转向“谁的 Agent 能嵌进别人的系统还不添乱”，集成深度会成为比榜单更硬的护城河。",
+          "citations": [
+            {
+              "sourceId": "S8",
+              "evidence": "OpenAI and ServiceNow expand their partnership to"
+            }
+          ]
+        },
+        {
+          "text": "法律场景是另一个样本。OpenAI 介绍的 Legora 用模型、ChatGPT 与 Codex 加速合同分析和法律流程，叙事重点放在“把人解放去做更高价值的工作”。这类表述本身需要打折扣看，但它至少说明一件事：垂直 Agent 的价值主张正从“替代律师”收敛为“接管可结构化的工作”。用户若照此评估工具，应优先看合同条款抽取、比对这类可验证环节的准确率，而非泛泛的“智能程度”。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "See how Legora uses OpenAI models, ChatGPT,"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "安全账单：Agent 越可信，攻击面越值钱",
+      "paragraphs": [
+        {
+          "text": "与能力扩张同步到来的，是本周最刺眼的一篇技术复盘。Parameter Labs 披露的攻击链针对 ChatGPT 的 HTML 预览沙箱：借助 MathLive 虚拟键盘的 postMessage 处理、innerHTML 注入、以及 CSP 放行域中的 YouTube oEmbed 反射，最终可在 ChatGPT 页面执行脚本，窃取私密数据或以用户身份操作。Simon Willison 记录的结束语是 OpenAI 已修复并支付 5,000 美元赏金，他认为对这个级别的漏洞“有点便宜”。这不是旧闻，而是本周对“沙箱是否真的隔离”的一次公开校验。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "The end result: you could create a"
+            }
+          ]
+        },
+        {
+          "text": "更宏观的信号来自 Interconnects：作者自陈上周因一连串关键漏洞披露（PHP2Shell、GitLab 长期漏洞）而造出“Black October”一词，并把它视为 AI 模型网络风险开始兑现的时刻。这里要分清事实与推断：漏洞披露是事实，“AI 模型导致风险兑现”是作者的判断框架。但对普通用户和团队，可操作的结论是一致的——当 Agent 获得更多权限与更长运行时间，账号、分享链接、第三方库这类“外围”环节的权重会显著上升。",
+          "citations": [
+            {
+              "sourceId": "S5",
+              "evidence": "Last week coined the term “Black October“"
+            }
+          ]
+        },
+        {
+          "text": "把两条线放在一起看，会出现一个不太舒服的结论：本周 Agent 的“信任”更多来自产品叙事和集成公告，而“不信任”的证据则来自可复现的攻击链。判断一个 Agent 产品是否成熟，或许应看它是否公开披露过沙箱边界、权限模型与漏洞响应流程，而不是只看演示视频。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "It's important that HTML in these stays"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "开源与工具链：低调但影响日常使用",
+      "paragraphs": [
+        {
+          "text": "开源侧本周有两处小事值得记。Hugging Face 上 LiquidAI 的 LFM3 主打“构建专门化的多模态模型”，方向是让团队基于较小基座做垂直定制，而非一味追逐通用大模型。与此同时，Latent.Space 的 AINews 提到 Mistral 的开源权重发布与前沿监控，说明开放权重仍是每周议题。我的判断是，专用化小模型会在客服、质检、文档处理这类边界清晰的场景里更快进入生产，因为它们更容易被审计和替换。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "Build specialized multimodal models with LFM3 from"
+            },
+            {
+              "sourceId": "S7",
+              "evidence": "Mistral’s open-weight release, frontier monitoring, and the"
+            }
+          ]
+        },
+        {
+          "text": "工具链层面，Simon Willison 发布的 datasette-llm 0.1a9 是个不起眼但典型的改进：插件现在会自动拾取 LLM 的默认模型，用户不必再显式指定 default_model 就能启动 Datasette Agent。这类“少一步配置”的改动，往往比模型升级更影响日常使用频率。它也暗示一个趋势：Agent 的可用性瓶颈，正在从模型能力转向默认值与集成体验。",
+          "citations": [
+            {
+              "sourceId": "S6",
+              "evidence": "It now picks up the default model"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Legora is building the agentic operating system for legal work",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-10-28",
+      "url": "https://openai.com/index/legora"
+    },
+    {
+      "id": "S2",
+      "title": "How We Took Over ChatGPT Accounts",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-10-31",
+      "url": "https://simonwillison.net/2026/Oct/31/how-we-took-over-chatgpt-accounts/"
+    },
+    {
+      "id": "S3",
+      "title": "Agents Prompt People: Using Agents for Long-Horizon Financial Work",
+      "sourceName": "Latent.Space",
+      "publishedAt": "2026-10-31",
+      "url": "https://latent.space/p/arca/"
+    },
+    {
+      "id": "S4",
+      "title": "Build specialized multimodal models with LFM3",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-10-27",
+      "url": "https://huggingface.co/blog/LiquidAI/lfm3"
+    },
+    {
+      "id": "S5",
+      "title": "Was I wrong about open models & cyber risks?",
+      "sourceName": "Interconnects",
+      "publishedAt": "2026-10-30",
+      "url": "https://www.interconnects.ai/p/was-i-wrong-about-open-models-and"
+    },
+    {
+      "id": "S6",
+      "title": "datasette-llm 0.1a9",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-10-31",
+      "url": "https://simonwillison.net/2026/Oct/31/datasette-llm/"
+    },
+    {
+      "id": "S7",
+      "title": "[AINews] Building AIE CODE: The top Coding Agent Conference",
+      "sourceName": "Latent.Space",
+      "publishedAt": "2026-10-30",
+      "url": "https://latent.space/p/ainews-building-aie-code-the-top-coding-agent-conference/"
+    },
+    {
+      "id": "S8",
+      "title": "OpenAI and ServiceNow expand partnership across enterprise workflows",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-10-28",
+      "url": "https://openai.com/index/openai-servicenow-partnership-expansion"
+    }
+  ],
+  "week": "2026-W44",
+  "weekStart": "2026-10-26",
+  "weekEnd": "2026-11-01",
+  "generatedAt": "2026-11-11T07:01:08.642015+00:00",
+  "model": "deepseek-flash"
+}

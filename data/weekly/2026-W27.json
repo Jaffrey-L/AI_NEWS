@@ -1,0 +1,107 @@
+{
+  "title": "从“用得多”到“改自己”：AI 本周的两条暗线",
+  "subtitle": "ChatGPT 采用数据与自我改进工程学，指向同一个问题：系统如何变得更可靠、更强",
+  "sections": [
+    {
+      "heading": "一、采用侧：增长不再只是“更多用户”，而是“更深使用”",
+      "paragraphs": [
+        {
+          "text": "OpenAI 本周发布的 Signals 数据，标题看似平淡，但措辞值得注意：它强调的不只是用户规模，而是“用户增加使用量、探索更多能力”。这意味着采用指标的重心从拉新转向存量用户的深度。对实际使用者的影响是：产品迭代会更偏向功能覆盖与场景拓展，而不是单纯降低门槛；对企业选型而言，评估重点也应从“多少人用”转向“用得多深、覆盖多少能力”。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "users increasing usage, exploring more capabilities, and"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "二、工程侧：把“自我改进”从哲学命题拆成可操作的系统问题",
+      "paragraphs": [
+        {
+          "text": "Lilian Weng 本周的长文是本周最值得细读的原文。她把递归自我改进的讨论，从“模型直接改自己的权重”这种狭义想象，扩展到“模型改进训练管线与部署系统，从而催生更好的后继模型”。这是个重要的观点位移：自我改进不再是科幻式的单点突破，而是工程流水线层面的加速循环。她同时指出前沿实验室的研发速度已被证明大幅加快。我的判断是，这条线索对实际使用的含义更现实——你短期内不会看到模型自己重写自己，但会看到训练、评测、部署工具链的迭代节奏明显变快，模型换代周期缩短。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "the model improves the training pipeline and"
+            },
+            {
+              "sourceId": "S2",
+              "evidence": "The speed of research development in AI"
+            }
+          ]
+        },
+        {
+          "text": "值得注意的是，Weng 明确区分了狭义与广义两种反馈回路：前者是改写权重，后者是改进管线与部署系统。这一区分本身就是本周的观点增量——它把“自我改进”从不可证伪的宏大叙事，拉回到可度量、可分阶段推进的工程议题。对开发者的实际启示是：与其等待模型自我进化，不如关注如何构建更好的“驾驭”层，让现有模型在更优的管线中被更充分地利用。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "the model rewriting its own weights directly,"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "三、可靠性侧：一个 18 年前的 bug 说明“变强”也要靠“变稳”",
+      "paragraphs": [
+        {
+          "text": "OpenAI 同周发布的另一篇工程文章，看似与自我改进无关，实则互补。工程师用大规模 core dump 分析排查罕见的基础设施崩溃，同时发现了一个硬件故障和一个长期存在的软件 bug。这条原文的价值不在于“修了个 bug”，而在于展示了一种方法：用大规模数据做流行病学式的故障归因。我的判断是，这与 Weng 的管线视角是同一枚硬币的两面——自我改进的前提是系统可观测、可诊断；没有可靠的工程底座，更快的迭代只会放大故障。对实际使用的影响是，平台稳定性与可观测性投入会继续加码，而这最终会体现在用户侧的可用性上。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "used large-scale core dump analysis to debug"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "四、本周判断：增长、改进、稳定三条线正在合流",
+      "paragraphs": [
+        {
+          "text": "把三篇原文放在一起看，本周的主线不是某个新模型发布，而是三条线在合流：采用侧追求更深的使用，研究侧把自我改进工程化，工程侧用数据方法保障可靠性。需要说明的是，以上关于“合流”的判断是我的推断，资料本身并未直接建立三者之间的因果联系。但可以确认的事实是：OpenAI 在同一天既谈采用扩展也谈基础设施排障，而 Weng 把自我改进明确落到训练管线与部署系统上。对读者的实际建议是：评估 AI 进展时，少看单点能力榜单，多看管线迭代速度与系统可靠性——这两者才是决定你手上工具半年后好不好用的关键变量。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "New OpenAI Signals data shows how ChatGPT"
+            },
+            {
+              "sourceId": "S2",
+              "evidence": "which in turn enables"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "How ChatGPT adoption has expanded",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-06-30",
+      "url": "https://openai.com/index/how-chatgpt-adoption-has-expanded"
+    },
+    {
+      "id": "S2",
+      "title": "Harness Engineering for Self-Improvement",
+      "sourceName": "Lilian Weng",
+      "publishedAt": "2026-07-04",
+      "url": "https://lilianweng.github.io/posts/2026-07-04-harness/"
+    },
+    {
+      "id": "S3",
+      "title": "Core dump epidemiology: fixing an 18-year-old bug",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-06-30",
+      "url": "https://openai.com/index/core-dump-epidemiology-data-infrastructure-bug"
+    }
+  ],
+  "week": "2026-W27",
+  "weekStart": "2026-06-29",
+  "weekEnd": "2026-07-05",
+  "generatedAt": "2026-11-11T07:15:13.975359+00:00",
+  "model": "deepseek-flash"
+}

@@ -1,0 +1,155 @@
+{
+  "title": "当 AI 走进看不见答案的地方：本周的三个信号",
+  "subtitle": "从湿实验室评测、无痕法律智能体到 SQLite 扩展，本周的看点不是新模型，而是“如何验证与嵌入”",
+  "sections": [
+    {
+      "heading": "湿实验室：评测开始逼近真实数据",
+      "paragraphs": [
+        {
+          "text": "本周 OpenAI 发布了一个值得留意的评测方向：把智能体放进日常湿实验室场景，考察其解读原始实验数据的能力。这延续了一个趋势——评测重心从“考试式问答”转向“脏数据、真流程”。我的判断是，这类基准的价值不在分数本身，而在于它倒逼团队把实验室里的非结构化记录当作一等输入来设计产品；短期内它对通用助手的使用体验影响有限，但对科研工具类应用的选型和验收会更有参照。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "OpenAI introduces BioBasicsBench, a 100-task benchmark measuring"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "法律智能体：在看不到工作过程时如何验证",
+      "paragraphs": [
+        {
+          "text": "Latent.Space 本周的访谈抛出一个更尖锐的工程难题：Legora 的智能体在法律事务所执行任务，而公司本身看不到这些工作轨迹，因为数据归属客户。这直接动摇了“先看 trace 再改 prompt”的常规迭代路径。结合同一访谈标题提到的评估与计费模式变化，我倾向于认为，垂直行业智能体的竞争力会逐渐从模型能力转向“在不可观测条件下建立信任”的能力——用合成场景、客户侧反馈和更严的权限边界来替代传统可观测性。这对实际使用者的含义是：选择行业智能体时，应重点问它如何证明效果，而不是只看演示。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "Legora can’t read a single trace of"
+            },
+            {
+              "sourceId": "S6",
+              "evidence": "Evals without traces, million-cell tabular reviews, and"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "开发者侧：把好奇心快速变成可比较的证据",
+      "paragraphs": [
+        {
+          "text": "Simon Willison 本周的两条记录，恰好展示了个人开发者与 AI 协作的成熟形态。其一，他因遛狗时的一个念头，让 Claude 帮他用 C 和 Rust 分别实现 SQLite 的 parse_number() 扩展，并比较体积与性能：Rust 版本分别为 321 KB 和 298 KB，C 版本仅 14 KB，但 Rust 更快，原因是其等价于 strtod 的实现“快一倍”。其二，Datasette Apps 0.3a0 把 LLM 生成的 HTML 应用纳入权限与审批流程，写入查询需要用户先批准。前者说明 AI 让“小实验—量化结论—研究报告”的闭环变短，后者说明代理能力扩张时，护栏正在同步细化。我的判断是，本周真正的产品信号在这里：让 AI 写代码已不稀奇，让它遵守权限、留下可审计的授权记录，才是能否进入生产的分水岭。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "the Rust extension was 321 KB (using"
+            },
+            {
+              "sourceId": "S2",
+              "evidence": "Turns out that's because the Rust equivalent"
+            },
+            {
+              "sourceId": "S5",
+              "evidence": "Granting a write query requires approval from"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "企业与硬件：嵌入现有工作流的两种姿态",
+      "paragraphs": [
+        {
+          "text": "OpenAI 与 Cisco 的合作把模型能力嵌入企业安全防护，强调把网络情报与模型结合以构建更具适应性的防御；Hugging Face 上的 Phonon TTS 则主打高质量端上语音并宣称在基准上领先。这两条都属于“能力落地”而非“能力竞赛”，但证据强度不同：前者讲述的是集成思路，后者是带基准声明的发布，实际表现仍需独立验证。我在本周材料中看不到足够的细节去判断它们谁更成熟，因此不宜过度解读。可以确定的是，AI 大公司本周的动作都指向同一件事——把模型塞进既有流程，而非要求用户改变流程。",
+          "citations": [
+            {
+              "sourceId": "S8",
+              "evidence": "Cisco combines network intelligence with OpenAI models"
+            },
+            {
+              "sourceId": "S7",
+              "evidence": "Launching High-Quality On-Device Speech That Tops the"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "我的判断",
+      "paragraphs": [
+        {
+          "text": "综合本周，最值得关注的不是某个发布，而是“验证方式”的多元化：湿实验室用专门基准衡量原始数据处理，法律行业在无法查看轨迹的前提下做评估，个人开发者用小规模对照实验得出可复现的结论。对实际使用者的建议是：评估 AI 工具时，优先问“它如何证明自己在你的数据上有效”，再问“它有多强”。至于机器人学习等方向，本周仅有标题级信息，我不做延伸推断。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "ToyBlocks: A controlled world for robot learning"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Measuring how AI agents handle everyday wet-lab science",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-11-06",
+      "url": "https://openai.com/index/measuring-how-ai-agents-handle-wet-lab-science"
+    },
+    {
+      "id": "S2",
+      "title": "parse_number() as a SQLite extension: C vs Rust",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-11-08",
+      "url": "https://simonwillison.net/2026/Nov/8/sqlite-parse-number-c-vs-rust/"
+    },
+    {
+      "id": "S3",
+      "title": "Building Legal Agents When You Can't See the Data",
+      "sourceName": "Latent.Space",
+      "publishedAt": "2026-11-02",
+      "url": "https://latent.space/p/building_legal_agents_when_you_can_t_see_the_data_-_jacob_lauritzen_cto_of_legora/"
+    },
+    {
+      "id": "S4",
+      "title": "ToyBlocks: A controlled world for robot learning and evaluation",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-11-06",
+      "url": "https://huggingface.co/blog/allenai/toyblocks"
+    },
+    {
+      "id": "S5",
+      "title": "datasette-apps 0.3a0",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-11-04",
+      "url": "https://simonwillison.net/2026/Nov/4/datasette-apps/"
+    },
+    {
+      "id": "S6",
+      "title": "Building AI for Lawyers",
+      "sourceName": "Latent.Space",
+      "publishedAt": "2026-11-02",
+      "url": "https://latent.space/p/building-ai-for-lawyers-jacob-lauritzen-cto-of-legora/"
+    },
+    {
+      "id": "S7",
+      "title": "A Closer Look at Phonon TTS. Launching High-Quality On-Device Speech That Tops the Benchmarks.",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-11-05",
+      "url": "https://huggingface.co/blog/phonon-tts"
+    },
+    {
+      "id": "S8",
+      "title": "How Cisco defends at machine speed with OpenAI",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-11-03",
+      "url": "https://openai.com/index/cisco-cyber"
+    }
+  ],
+  "week": "2026-W45",
+  "weekStart": "2026-11-02",
+  "weekEnd": "2026-11-08",
+  "generatedAt": "2026-11-11T07:00:57.838289+00:00",
+  "model": "deepseek-flash"
+}

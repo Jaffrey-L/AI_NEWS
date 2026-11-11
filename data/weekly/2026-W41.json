@@ -1,0 +1,98 @@
+{
+  "title": "成本曲线开始决定 AI 产品的形状",
+  "subtitle": "本周观察：模型能力之外的“每任务成本”与开源自制，正在重写落地节奏",
+  "sections": [
+    {
+      "heading": "一、当“更便宜”变成模型选择的第一变量",
+      "paragraphs": [
+        {
+          "text": "本周最值得注意的信号来自 Asana 的案例：它用 Codex 中的新模型把浏览器 Agent 做便宜、做快，这实际上是在提示企业选型逻辑的转向。原文给出的量化结果是“Using GPT-6 Astra in Codex, Asana made its browser agent 76x cheaper and 5x faster in tests to offer customers more capable models.” 这里的重点不是某个模型代号，而是成本与延迟同时改善后，Agent 从“演示可用”变成“可以规模化跑”。我的判断是：2026 年下半年企业在 Agent 场景会越来越少问“哪个模型最强”，而更多问“每个任务花多少钱、能不能承受失败重试”，这会让模型切换与路由成为产品架构的一部分，而不是一次性的技术选型。需说明的是，76x 是该案例测试中的数字，不能外推为普遍水平，能否复现取决于任务形态与调用方式。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "Asana made its browser agent 76x cheaper"
+            }
+          ]
+        },
+        {
+          "text": "这个案例还有一个容易被忽略的组织含义。原文说 Asana 这么做是为了“to offer customers more capable models”，也就是说成本下降不是单纯省钱，而是把节省下来的预算换成更强的能力，再交付给用户。这形成一种“成本换能力”的正循环：先压单位成本，再把多出来的额度用于更复杂的推理和更长链路。对实际使用者的影响是，产品经理会更敢于设计多步、多工具的任务流程，而工程团队则必须把预算、缓存、重试策略显式做成可观测指标，否则成本优势会在长尾请求里被悄悄吃掉。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "to offer customers more capable models"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "二、开源侧的“自己做出来”与闭源侧的“公布过程”",
+      "paragraphs": [
+        {
+          "text": "Hugging Face 本周的文章给了“自己造一个所需模型”的具体例子：用领域图片微调视觉模型，也用专门的数据制作图像编辑模型。它讨论的是围绕窄任务制作数据、训练并测试模型，而不是等待一个通用模型包办所有需求。与 Asana 案例放在一起看，我的判断是：团队会更频繁地在“优化现成工作流”和“为窄场景自制模型”之间比较成本与效果；这两条路都需要可重复的评测，不能只看演示。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "The model that didn't exist, so you made it yourself"
+            }
+          ]
+        },
+        {
+          "text": "OpenAI 本周公布数学进展的方式，则代表了另一种策略：不只给结论，还给过程。原文说明它“publishes new results on open problems in mathematics from an internal frontier model”，并且同步公开 Lean 证明形式化与研究细节。我的判断是，形式化证明是当前最适合被公开检验的 AI 产出形态之一，因为对错可以被机器验证，这能部分缓解外界对“模型自说自话”的怀疑。但也要分清事实与推测：本周公开的是结果与形式化材料，不等于这些方法已经能稳定解决一般性数学问题；其对普通使用者的直接影响有限，对研究者则意味着可以更快地检查、复现与扩展。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "publishes new results on open problems in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "三、本周的实际影响：把“能力”翻译成“每任务账本”",
+      "paragraphs": [
+        {
+          "text": "把三条资料放在一起看，本周没有单一的能力跃升主宰讨论，变化更多发生在使用路径上：一边是通过工程调整降低智能体的单次成本，一边是为特定任务自制模型，另一边是用形式化材料展示数学研究进展。我的判断是，实际产品应把每个任务的成本、延迟、失败率和人工复核开销放在同一本账里；选模型或训练方法时，也要返回原文和可复现结果核对。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "The model that didn't exist, so you made it yourself"
+            },
+            {
+              "sourceId": "S3",
+              "evidence": "shares Lean proof formalizations and research details"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Asana cuts model costs 76x in browser tests with GPT-6.1 Sol",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-10-09",
+      "url": "https://openai.com/index/asana-browser-agent"
+    },
+    {
+      "id": "S2",
+      "title": "The model that didn't exist, so you made it yourself",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-10-08",
+      "url": "https://huggingface.co/blog/building-with-ml-intern"
+    },
+    {
+      "id": "S3",
+      "title": "Sharing AI progress in mathematics",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-10-06",
+      "url": "https://openai.com/index/sharing-ai-progress-in-mathematics"
+    }
+  ],
+  "week": "2026-W41",
+  "weekStart": "2026-10-05",
+  "weekEnd": "2026-10-11",
+  "generatedAt": "2026-11-11T07:14:01.987909+00:00",
+  "model": "deepseek-flash"
+}

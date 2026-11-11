@@ -1,0 +1,133 @@
+{
+  "title": "GPT-6 的“调参说明书”与语音评测的地基",
+  "subtitle": "本周大公司话语从“模型多强”转向“怎么用好、怎么评好”",
+  "sections": [
+    {
+      "heading": "从“发布模型”到“教你怎么用”",
+      "paragraphs": [
+        {
+          "text": "本周最值得注意的信号，不是又一次能力跃升，而是 OpenAI 在 10 月 2 日配合 GPT-6 家族推出的实践指南：它把重点放在“选哪个模型、推理力度调到多少、提示词和技能怎么写、工具怎么协同”这些落地细节上。这说明大公司对自家模型的叙事正在从发布即高潮，转向配套方法论——模型进入生产环境后，真正的门槛不在能不能调用，而在怎么调出一个稳定、可控的工作流。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "Learn how startups can choose GPT-6 models,"
+            }
+          ]
+        },
+        {
+          "text": "这种转向对实际使用的影响很直接：过去团队常常把不同任务都塞给同一个最大最强的模型，现在更合理的做法是按任务难度分层选型、明确推理预算。我的判断是，GPT-6 家族被拆成多个型号，本质上是把“成本—延迟—质量”的取舍交回给使用者，指南就是这份取舍的操作手册。但资料只提到指南覆盖选型与调优，并未给出任何具体基准数字，所以“分层能省多少”仍需实测，不能预先当成结论。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "coordinate tools, and prepare workflows for production"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "企业侧的样板：从试点走向内嵌",
+      "paragraphs": [
+        {
+          "text": "10 月 1 日 OpenAI 放出 Albertsons 的案例，关键词是 ChatGPT Enterprise 加 API 双轨并用，目标是让内部团队更快、让数百万顾客的购物更省事。这条信息本身不新，但它和 GPT-6 指南放在同一周，构成一个连贯的叙事：企业采购的不只是聊天入口，而是嵌进流程的接口。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "using ChatGPT Enterprise and the OpenAI API"
+            }
+          ]
+        },
+        {
+          "text": "需要分清事实与推断。事实是这家零售商同时用了企业版和 API；推断是这代表“内部提效 + 面向顾客”两条线并行。资料没有说明具体落地场景和效果指标，所以把它读成“零售 AI 已成熟”是过度解读。更稳妥的读法是：大公司正在用零售这类高频、多角色场景做样板，为后续行业卖案例。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "make grocery shopping easier for millions of"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "数据的瓶颈浮上来：合成训练数据",
+      "paragraphs": [
+        {
+          "text": "Hugging Face 10 月 2 日出现 AutoSynthData 的博客，主题是为企业智能体生成训练数据。这恰好补上了前两段的缺口：模型选型和工具编排解决“怎么用”，而智能体要真正干活，还需要大量贴合企业流程的样本，真人标注成本高、覆盖窄，合成数据因此成为显性议题。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "AutoSynthData: Generating Training Data for Enterprise Agents"
+            }
+          ]
+        },
+        {
+          "text": "原文的方法不只是让模型生成更多样本，还把任务是否可完成、结果能否验证放进生成流程。这提示企业团队：合成数据的价值取决于验证环节，生成规模本身不足以证明智能体更可靠。我的判断是，企业 AI 的竞争会越来越依赖贴近实际工作流的数据和可计算的验收标准；这仍需在各自场景中验证，不能由单篇案例直接外推。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "turn those capability gaps into training data"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "语音评测：被忽视的基础设施",
+      "paragraphs": [
+        {
+          "text": "9 月 30 日的 Open TTS Leaderboard 同样值得记一笔：它瞄准的是多语言语音合成与声音克隆的可扩展评测。相比文本模型有成熟榜单，语音领域长期缺少统一、可复现的比较口径，这直接导致选型靠听感、克隆效果靠个案。榜单出现，意味着这一块开始有公共度量。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "Scalable Evaluation for Multilingual Text-to-Speech and Voice"
+            }
+          ]
+        },
+        {
+          "text": "把它和本周前三条连起来看，会浮现一条主线：大公司和社区都在补“使用侧”的基础设施——选型指南、企业样板、合成数据、评测榜单。这比单点能力发布更能影响日常使用，因为它降低了试错成本。当然，榜单的价值取决于评测维度是否覆盖真实场景，资料没有展开具体指标，所以“可 scalable”目前只能理解为方向，而非质量保证。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "Open TTS Leaderboard: Scalable Evaluation for Multilingual"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "A model guide for the GPT-6 family",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-10-02",
+      "url": "https://openai.com/index/practical-guide-building-gpt-6"
+    },
+    {
+      "id": "S2",
+      "title": "AutoSynthData: Generating Training Data for Enterprise Agents",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-10-02",
+      "url": "https://huggingface.co/blog/ServiceNow-AI/autosynthdata"
+    },
+    {
+      "id": "S3",
+      "title": "How Albertsons Companies is reimagining retail from the inside out",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-10-01",
+      "url": "https://openai.com/index/albertsons-reimagining-retail"
+    },
+    {
+      "id": "S4",
+      "title": "Open TTS Leaderboard: Scalable Evaluation for Multilingual Text-to-Speech and Voice Cloning",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-09-30",
+      "url": "https://huggingface.co/blog/open-tts-leaderboard"
+    }
+  ],
+  "week": "2026-W40",
+  "weekStart": "2026-09-28",
+  "weekEnd": "2026-10-04",
+  "generatedAt": "2026-11-11T07:14:11.602144+00:00",
+  "model": "deepseek-flash"
+}

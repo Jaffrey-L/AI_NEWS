@@ -211,13 +211,14 @@ def _instructions(window_days: int) -> str:
     )
 
 
-def request_article(sources: list[dict], window_days: int, model: str, api_key: str) -> dict:
+def request_article(sources: list[dict], window_days: int, model: str, api_key: str,
+                    instructions: str | None = None) -> dict:
     provider = os.environ.get("AI_NEWS_PROVIDER", "openai").strip().lower()
     if provider not in PROVIDERS:
         raise ValueError("unsupported AI_NEWS_PROVIDER")
     request_body = {
         "model": model,
-        "instructions": _instructions(window_days),
+        "instructions": instructions or _instructions(window_days),
         "input": json.dumps({"sources": sources}, ensure_ascii=False),
         "text": {"format": {"type": "json_schema", "name": "ai_opinion_article", "strict": True, "schema": ARTICLE_SCHEMA}},
         "max_output_tokens": 5000,

@@ -1,0 +1,138 @@
+{
+  "title": "模型更强，但真正的变化在用法",
+  "subtitle": "本周观察：OpenAI预告新模型、明确代理工作价值，技术社区则回到理论地基思考如何组织算力与数据",
+  "sections": [
+    {
+      "heading": "一、新模型预告：能力边界右移，安全被提为并列卖点",
+      "paragraphs": [
+        {
+          "text": "OpenAI本周预告了GPT-5.6 Sol，给出的能力描述集中在编码、科学和网络安全三个方向，并强调配套其“最先进的安全栈”。这条消息的价值不在于又出现一个版本号，而在于头部公司把能力跃升和安全机制作为同一产品叙事推出。对实际使用者而言，这意味着未来选型时，安全与合规不再是外挂议题，而是与编码、科学推理等能力并列的基础指标。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "OpenAI previews GPT-5.6 Sol, a next-generation model"
+            }
+          ]
+        },
+        {
+          "text": "不过需要区分事实与推断：目前公开的只是“preview”，资料并未给出具体评测分数、开放时间或定价细节。因此，任何关于它“已经能替代某类岗位”的说法都缺乏本周证据支持。更稳妥的判断是：面向开发者的下一步关注点，应从单纯比较跑分，转向观察安全栈是否影响可用性，例如网络安全类任务是否因策略限制而需要额外审批。这种限制会直接改变产品设计中的任务拆分方式，而非仅仅是合规文档上的一句话。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "a next-generation model with stronger capabilities in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "二、代理工作研究：任务变长，组织流程才是瓶颈",
+      "paragraphs": [
+        {
+          "text": "OpenAI本周另一份研究把焦点放在代理对工作的改造上，称AI代理正在承接更长、更复杂的任务，并在不同角色上扩展生产力。这条结论对使用端的直接影响是：评估AI的方式不能只看单次对话质量，而要看一个任务链能走多远、需要多少人工介入。如果代理能持续处理长任务，那么工作流设计就应从“给提示词”转向“定义可验收的中间状态”，否则长任务失败时很难定位责任。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "A new OpenAI research paper shows how"
+            }
+          ]
+        },
+        {
+          "text": "我的判断是，这份研究对实际使用的价值大于模型预览，因为它把讨论从能力峰值拉回到工作组织。代理承担更长任务后，真正的瓶颈往往不在模型本身，而在权限划分、结果审核和跨角色交接。资料只说明研究覆盖“跨角色”的生产力扩展，并未提供具体行业数据，因此不能据此断言某职业会被替代。务实的做法是先把可拆分、可回滚的中长任务交给代理试跑，保留人工检查点，再决定是否扩大委托范围。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "enabling longer, more complex tasks and expanding"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "三、Scaling Laws再审视：理论没变，分配问题更现实",
+      "paragraphs": [
+        {
+          "text": "相比公司发布，Lilian Weng本周的博客更像一次“回到地基”的梳理。文章重申训练损失随模型规模、数据规模和算力按幂律可预测下降，并把scaling laws定位为描述算力、损失、模型大小与数据之间关系的框架；核心问题是如何在模型规模与数据之间最优分配宝贵算力。对使用者而言，这不是新结论，但它提醒我们：模型能力的提升并非无条件的，预训练阶段的分配策略会传导到下游产品的成本与延迟。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "the training loss $L$ decreases predictably as"
+            }
+          ]
+        },
+        {
+          "text": "Weng特别强调要在模型规模与数据之间做最优算力分配，这一点与本周另外两条资料形成呼应：更强的模型和更长的代理任务，背后都对应更高的推理与训练开销。因此，“本周有什么新模型”之外，更值得问的是单位任务成本如何变化。由于资料没有给出GPT-5.6 Sol的参数或训练细节，无法判断它是否延续了同一条幂律曲线；把scaling laws直接套到新模型上属于推断，而非本周事实。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "at its core, it is about how"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "四、本周判断：从“能不能做”转向“怎么组织”",
+      "paragraphs": [
+        {
+          "text": "把三条资料放在一起看，本周的主线不是某个版本号，而是能力、任务长度和算力分配三个变量同时被讨论。模型在编码、科学、网络安全上的能力增强，与代理承担更长任务的方向一致；而Weng的梳理则提醒这些提升都受算力与数据分配的约束。对实际使用的影响是，团队应同时建立三项习惯：按安全策略评估可用性、按任务链长度设计验收点、按算力成本核算代理的使用边界。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "stronger capabilities in coding, science, and cybersecurity"
+            },
+            {
+              "sourceId": "S3",
+              "evidence": "enabling longer, more complex tasks"
+            },
+            {
+              "sourceId": "S2",
+              "evidence": "how to allocate precious compute optimally"
+            }
+          ]
+        },
+        {
+          "text": "需要克制的方面同样明确：本周资料中没有公开的定量评测、没有代理落地的行业明细，也没有新模型的开放日程。因此，把这次preview说成“已经改变工作方式”会混淆事实与预期。更可靠的结论是方向性的——头部公司正在把安全与代理能力一起产品化，而技术社区在提醒能力提升背后的资源约束。使用者若能在下周就把任务拆分和成本核算做起来，会比等待跑分更能提前获得收益。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "paired with its most"
+            },
+            {
+              "sourceId": "S3",
+              "evidence": "expanding productivity across roles"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Previewing GPT-5.6 Sol: a next-generation model",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-06-26",
+      "url": "https://openai.com/index/previewing-gpt-5-6-sol"
+    },
+    {
+      "id": "S2",
+      "title": "Scaling Laws, Carefully",
+      "sourceName": "Lilian Weng",
+      "publishedAt": "2026-06-24",
+      "url": "https://lilianweng.github.io/posts/2026-06-24-scaling-laws/"
+    },
+    {
+      "id": "S3",
+      "title": "How agents are transforming work",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-06-25",
+      "url": "https://openai.com/index/how-agents-are-transforming-work"
+    }
+  ],
+  "week": "2026-W26",
+  "weekStart": "2026-06-22",
+  "weekEnd": "2026-06-28",
+  "generatedAt": "2026-11-11T07:15:26.738612+00:00",
+  "model": "deepseek-flash"
+}

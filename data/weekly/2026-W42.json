@@ -1,0 +1,130 @@
+{
+  "title": "开源模型下沉端侧，闭源巨头缺席的一周",
+  "subtitle": "2026-10-12 至 10-18：NVIDIA 与 Meta 把开放权重推向本地智能体，但数据中心故事正在被桌面场景改写",
+  "sections": [
+    {
+      "heading": "一、NVIDIA 把“开放”从数据中心拉到桌面",
+      "paragraphs": [
+        {
+          "text": "本周最明确的一次产品转向来自 NVIDIA。10 月 15 日，它发布 Nemotron 3.5 Super VL，并同时推出两款边缘模型：Bolt 74B-A9B 24GB 和 Bolt E4B 4GB。关键不在参数规模，而在官方措辞——Super VL 被定位为“open 120-billion-parameter model”，Bolt 74B 则明确用于“local agentic workloads”。这意味着英伟达不再只讲“更强的云端推理”，而是把开放权重和端侧常驻智能体放进同一条产品线。我的判断是：这是在为本地代理式 AI 铺硬件与模型的双重入口，模型开放只是表层，真正意图是让更多桌面设备继续绑定其算力生态。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "an open 120-billion-parameter model that delivers the"
+            }
+          ]
+        },
+        {
+          "text": "更值得关注的是 24GB 与 4GB 两档的并列。24GB 版本强调“balance intelligence and speed per GB”，4GB 版本则把门槛压到消费级设备。这与过去一年“端侧只能跑小模型、复杂任务回云端”的默认分工不同：NVIDIA 在暗示，本地智能体的能力上限正在被重新定义。对实际使用的影响是，开发者需要重新评估“云端调用 + 本地兜底”的架构，尤其是对延迟敏感、数据不便出端的场景。当然，资料只给出定位，没有给出实测基准，Bolt 系列能否在真实桌面任务上兑现“per GB”的效率承诺，仍需独立评测验证。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "optimized to balance intelligence and speed per"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "二、Meta 的开放权重，补上了多模态这一块",
+      "paragraphs": [
+        {
+          "text": "同一天，Hugging Face 上线 Meta 的 Muse Spark Open，标题直接写明“open-weight frontier multimodal mixture-of-experts model”。这延续了 Meta 以开放权重争夺开发者心智的路线，但“frontier”与“multimodal”两个词放在一起，说明开放阵营正在从纯文本追赶到多模态前沿。对使用者而言，意义在于：此前高端多模态能力基本锁在闭源 API 里，现在至少多了一个可自托管的选项，这对需要把视觉理解嵌入私有流程的团队是实质变化。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "open-weight frontier multimodal mixture-of-experts model from Meta"
+            }
+          ]
+        },
+        {
+          "text": "不过要分清事实与推断。资料只确认了模型属性和发布渠道，没有给出参数规模、许可证条款或基准成绩。因此不能据此断言它已比肩闭源前沿模型，也不能说它“本周改变了竞争格局”。我的判断更保守：这是一次站位明确的发布，把“开放权重 + 多模态 + MoE”组合成对开发者的吸引力，但真实影响取决于权重是否可商用、推理成本是否可控，这些本周资料无法支持。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "Welcome Muse Spark Open: open-weight frontier multimodal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "三、Liquid AI 的端侧叙事，与 NVIDIA 形成同向合力",
+      "paragraphs": [
+        {
+          "text": "10 月 13 日，Hugging Face 上的 LFM2.5-24B-A2B 把关键词定为“fast, private agents on-device”。虽然资料摘录很短，但“on-device”和“private”两个词与 NVIDIA 的 Bolt 系列指向同一方向：本地、私有、低延迟的智能体。三家发布放在一周内看，端侧不再是大厂发布会的边角料，而是开放模型竞争的新前线。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "Run fast, private agents on-device with LFM2.5-24B-A2B"
+            }
+          ]
+        },
+        {
+          "text": "但这里必须克制。LFM2.5-24B-A2B 的摘录只说明发布主题，没有性能数据，也没有说明“private”是指本地推理还是数据处理方式。把它与 NVIDIA 的 24GB 档直接对比是不严谨的。我的判断是：本周真正形成趋势的，是“端侧智能体”作为共同叙事被多家同时采用，而不是某一款模型已经证明领先。对实际使用的影响是，选型时不能只看参数和内存占用，还要看是否支持工具调用、长上下文和离线更新，这些本周资料都未覆盖。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "Run fast, private agents on-device with LFM2.5-24B-A2B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "四、本周的判断：开放权重在向下走，但证据链不完整",
+      "paragraphs": [
+        {
+          "text": "把三条资料放在一起，本周的主线不是某个模型刷新榜单，而是开放权重模型集体向“端侧、私有、常驻智能体”下沉。NVIDIA 用 Super VL 与 Bolt 双线并进，Meta 用多模态开放权重补位，Liquid AI 用 on-device 叙事呼应。这与前几个季度“开放模型追赶云端旗舰”的叙事有明显位移：竞争焦点从“谁更大”转向“谁能在本地跑起来”。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "NVIDIA today released Nemotron 3.5 Super VL"
+            }
+          ]
+        },
+        {
+          "text": "这几篇发布资料展示了产品方向，却不足以直接回答哪款模型在你的任务里更强、更便宜。我的判断是：本周适合更新架构假设，把本地智能体作为可选方案纳入设计；最终选型仍应测试目标设备上的工具调用、多轮任务稳定性、推理成本和私有数据处理方式。尤其要把厂商标称的内存档位与实际可用体验分开记录。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "Run fast, private agents on-device with LFM2.5-24B-A2B"
+            },
+            {
+              "sourceId": "S1",
+              "evidence": "Nemotron 3.5 Bolt 74B-A9B"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Open From Data Center to Desktop: NVIDIA Expands Nemotron Family With Highest Efficiency Super VL and Bolt Models",
+      "sourceName": "NVIDIA",
+      "publishedAt": "2026-10-15",
+      "url": "https://blogs.nvidia.com/blog/nemotron-3-5-super-vl/"
+    },
+    {
+      "id": "S2",
+      "title": "Run fast, private agents on-device with LFM2.5-24B-A2B",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-10-13",
+      "url": "https://huggingface.co/blog/LiquidAI/lfm25-24b-a2b"
+    },
+    {
+      "id": "S3",
+      "title": "Welcome Muse Spark Open: open-weight frontier multimodal mixture-of-experts model from Meta",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-10-15",
+      "url": "https://huggingface.co/blog/meta-muse-spark-open"
+    }
+  ],
+  "week": "2026-W42",
+  "weekStart": "2026-10-12",
+  "weekEnd": "2026-10-18",
+  "generatedAt": "2026-11-11T07:01:21.059687+00:00",
+  "model": "deepseek-flash"
+}
