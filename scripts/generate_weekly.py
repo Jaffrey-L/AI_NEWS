@@ -38,6 +38,8 @@ CORE_CATEGORIES = {"核心AI公司新闻", "核心AI博主"}
 FEEDS = {
     "OpenAI": "https://openai.com/news/rss.xml",
     "Google DeepMind": "https://deepmind.google/blog/rss.xml",
+    "Google AI": "https://blog.google/innovation-and-ai/technology/ai/rss/",
+    "Google Research": "https://research.google/blog/rss/",
     "NVIDIA": "https://blogs.nvidia.com/blog/category/deep-learning/feed/",
     "Mistral AI": "https://mistral.ai/rss.xml",
     "Hugging Face": "https://huggingface.co/blog/feed.xml",

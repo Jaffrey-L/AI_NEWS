@@ -32,6 +32,8 @@ TOP_QUALITY_SCORE = 80
 RSS_SOURCES = [
     {"name": "OpenAI", "url": "https://openai.com/news/rss.xml", "category": CORE_CATEGORY, "tags": ["OpenAI", "official"], "importance": 5},
     {"name": "Google DeepMind", "url": "https://deepmind.google/blog/rss.xml", "userAgent": "AI-NEWS/1.0", "category": CORE_CATEGORY, "tags": ["Google DeepMind", "official", "research"], "importance": 5},
+    {"name": "Google AI", "url": "https://blog.google/innovation-and-ai/technology/ai/rss/", "userAgent": "AI-NEWS/1.0", "category": CORE_CATEGORY, "tags": ["Google AI", "official", "Gemini"], "importance": 5},
+    {"name": "Google Research", "url": "https://research.google/blog/rss/", "userAgent": "AI-NEWS/1.0", "category": CORE_CATEGORY, "tags": ["Google Research", "official", "research"], "importance": 4},
     {"name": "NVIDIA", "url": "https://blogs.nvidia.com/blog/category/deep-learning/feed/", "category": CORE_CATEGORY, "tags": ["NVIDIA", "official"], "importance": 4},
     {"name": "Mistral AI", "url": "https://mistral.ai/rss.xml", "category": CORE_CATEGORY, "tags": ["Mistral AI", "official"], "importance": 4},
     {"name": "Hugging Face", "url": "https://huggingface.co/blog/feed.xml", "category": PRACTICE_CATEGORY, "tags": ["Hugging Face", "open-source", "practice"], "importance": 4},

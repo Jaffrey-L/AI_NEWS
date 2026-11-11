@@ -3,6 +3,8 @@
     "OpenAI",
     "Anthropic",
     "Google DeepMind",
+    "Google AI",
+    "Google Research",
     "Meta AI",
     "xAI",
     "Microsoft AI",
@@ -68,12 +70,21 @@
     "\u767d\u5ba6\u6210",
     "\u963f\u6587\u83cc"
   ],
+  "amazonSources": [
+    { "name": "雨果网", "publicUrl": "https://www.cifnews.com/", "status": "public_site_verified", "note": "Public publisher site; not a direct WeChat article feed. Shares the site with 雨果跨境." },
+    { "name": "雨果跨境", "publicUrl": "https://www.cifnews.com/", "status": "public_site_verified", "note": "Public publisher site; not a direct WeChat article feed. Do not count as a second independent publisher." },
+    { "name": "AMZ123", "publicUrl": "https://www.amz123.com/t", "status": "public_site_verified", "note": "Public 跨境头条 site; not a direct WeChat article feed." },
+    { "name": "亚马逊全球开店", "publicUrl": "https://globalselling.amazon.com/en/news-center", "status": "public_site_verified", "note": "Official Amazon China news center; not a direct WeChat article feed." },
+    { "name": "亚马逊广告", "publicUrl": "https://advertising.amazon.com/zh-cn/library/newsroom", "status": "public_site_verified", "note": "Official Amazon Ads newsroom; not a direct WeChat article feed." }
+  ],
   "plannedSources": [
-    { "name": "Amazon", "status": "planned", "note": "Placeholder only; no original feed or published weekly citation yet." }
+    { "name": "Amazon articles", "status": "planned", "note": "Five named accounts have public web counterparts, but no dated Amazon articles have entered the collected dataset yet." }
   ],
   "gradedSources": [
     { "name": "OpenAI News RSS", "grade": "A", "url": "https://openai.com/news/rss.xml" },
     { "name": "Google DeepMind Blog RSS", "grade": "A", "url": "https://deepmind.google/blog/rss.xml" },
+    { "name": "Google AI Blog RSS", "grade": "A", "url": "https://blog.google/innovation-and-ai/technology/ai/rss/" },
+    { "name": "Google Research Blog RSS", "grade": "A", "url": "https://research.google/blog/rss/" },
     { "name": "NVIDIA AI Blog RSS", "grade": "A", "url": "https://blogs.nvidia.com/blog/category/deep-learning/feed/" },
     { "name": "Mistral AI RSS", "grade": "A", "url": "https://mistral.ai/rss.xml" },
     { "name": "Hugging Face Blog RSS", "grade": "A", "url": "https://huggingface.co/blog/feed.xml" },
