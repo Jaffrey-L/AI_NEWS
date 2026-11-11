@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-11T15:36:46.314102+00:00",
+  "updatedAt": "2026-11-11T15:45:36.222180+00:00",
   "sourceType": "public_publisher_websites_not_wechat_posts",
   "articles": [
     {
@@ -322,6 +322,15 @@
       },
       {
         "id": "A3",
+        "title": "亚马逊日本站和澳大利亚站带电产品合规要求更新",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.cifnews.com/article/190063",
+        "excerpt": "亚马逊日本站和澳大利亚站带电产品合规要求更新。",
+        "bucket": "watch"
+      },
+      {
+        "id": "A4",
         "title": "紧急提醒！深圳APEC管控，跨境发货全线延误-AMZ123跨境导航",
         "sourceName": "AMZ123",
         "publishedAt": "2026-11-11",
@@ -330,16 +339,16 @@
         "bucket": "watch"
       },
       {
-        "id": "A4",
-        "title": "欧盟敲定IOSS改革，取消150欧元货值门槛-AMZ123跨境导航",
-        "sourceName": "AMZ123",
+        "id": "A5",
+        "title": "只改了一个预计送达时间，亚马逊订单当天就回来了",
+        "sourceName": "雨果网／雨果跨境",
         "publishedAt": "2026-11-11",
-        "url": "https://www.amz123.com/t/lqyO2aLR",
-        "excerpt": "欧盟敲定IOSS改革，取消150欧元货值门槛-AMZ123跨境导航。欧盟委员会强调，本次改革没有新增税种，也没有调整税率，只是变更税款征收环节与责任主体。",
-        "bucket": "watch"
+        "url": "https://www.cifnews.com/article/190064",
+        "excerpt": "只改了一个预计送达时间，亚马逊订单当天就回来了。",
+        "bucket": "learn"
       },
       {
-        "id": "A5",
+        "id": "A6",
         "title": "亚马逊重型大件难做？Humhold用三招破局",
         "sourceName": "雨果网／雨果跨境",
         "publishedAt": "2026-11-11",
@@ -348,7 +357,7 @@
         "bucket": "learn"
       },
       {
-        "id": "A6",
+        "id": "A7",
         "title": "一个仓库搞定TikTok、Temu、独立站全渠道发货——亚马逊MCF了解一下",
         "sourceName": "雨果网／雨果跨境",
         "publishedAt": "2026-11-11",
@@ -361,21 +370,21 @@
       "news": [],
       "watch": [
         {
-          "text": "亚马逊服务商授权升级，年底前必须重新授权。",
+          "text": "亚马逊服务商授权升级，来源称年底前必须重新授权。",
           "src": [
             "A2"
           ],
           "ai": true
         },
         {
-          "text": "深圳因 APEC 管控导致跨境发货全线延误，出现空运挤兑。",
+          "text": "亚马逊日本站和澳大利亚站带电产品合规要求更新。",
           "src": [
             "A3"
           ],
           "ai": true
         },
         {
-          "text": "欧盟敲定 IOSS 改革，取消 150 欧元货值门槛；欧盟委员会强调，本次改革没有新增税种，也没有调整税率，只是变更税款征收环节与责任主体。",
+          "text": "深圳APEC管控，来源称跨境发货全线延误、深圳空运挤兑。",
           "src": [
             "A4"
           ],
@@ -384,16 +393,23 @@
       ],
       "learn": [
         {
-          "text": "围绕亚马逊重型大件难做，Humhold 用三招破局。",
+          "text": "案例称只改了一个预计送达时间，亚马逊订单当天就回来了。",
           "src": [
             "A5"
           ],
           "ai": true
         },
         {
-          "text": "通过一个仓库完成 TikTok、Temu、独立站全渠道发货，可了解亚马逊 MCF。",
+          "text": "Humhold用三招应对亚马逊重型大件难做的问题。",
           "src": [
             "A6"
+          ],
+          "ai": true
+        },
+        {
+          "text": "介绍亚马逊MCF：一个仓库承接TikTok、Temu、独立站全渠道发货。",
+          "src": [
+            "A7"
           ],
           "ai": true
         }
