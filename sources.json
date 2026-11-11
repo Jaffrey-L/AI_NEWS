@@ -77,8 +77,13 @@
     { "name": "亚马逊全球开店", "publicUrl": "https://globalselling.amazon.com/en/news-center", "status": "public_site_verified", "note": "Official Amazon China news center; not a direct WeChat article feed." },
     { "name": "亚马逊广告", "publicUrl": "https://advertising.amazon.com/zh-cn/library/newsroom", "status": "public_site_verified", "note": "Official Amazon Ads newsroom; not a direct WeChat article feed." }
   ],
+  "amazonOfficialSources": [
+    { "name": "About Amazon · AI", "url": "https://www.aboutamazon.com/news/tag/artificial-intelligence/feed", "status": "rss_verified" },
+    { "name": "About Amazon · Innovation", "url": "https://www.aboutamazon.com/news/innovation-at-amazon/feed", "status": "rss_verified" },
+    { "name": "AWS 机器学习博客", "url": "https://aws.amazon.com/blogs/machine-learning/feed/", "status": "rss_verified" }
+  ],
   "plannedSources": [
-    { "name": "Amazon articles", "status": "planned", "note": "Five named accounts have public web counterparts, but no dated Amazon articles have entered the collected dataset yet." }
+    { "name": "WeChat original posts", "status": "not_collected", "note": "Corresponding public publisher articles are collected separately; they are not the named accounts' original WeChat posts." }
   ],
   "gradedSources": [
     { "name": "OpenAI News RSS", "grade": "A", "url": "https://openai.com/news/rss.xml" },
