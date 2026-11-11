@@ -1,4 +1,5 @@
 import json
+import io
 import sys
 import tempfile
 import unittest
@@ -9,12 +10,13 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 import run_auto_update as updater
-from generate_cards import validate_cards
+from generate_cards import request_cards, validate_cards
 
 
 class CardChecks(unittest.TestCase):
     def setUp(self):
         self.source = {"id": "A1", "url": "https://example.com/original", "bucket": "watch",
+                       "title": "The seller fee changed on Wednesday",
                        "excerpt": "The seller fee changed on Wednesday for every merchant."}
         self.card = {"text": "平台费用变化需要卖家核对新收费表。", "sourceId": "A1",
                      "evidence": "seller fee changed on Wednesday"}
@@ -48,6 +50,26 @@ class CardChecks(unittest.TestCase):
             with self.subTest(text=text), self.assertRaises(ValueError):
                 validate_cards({"news": [], "watch": [{**self.card, "text": text,
                     "evidence": source["excerpt"]}], "learn": []}, [source])
+
+    def test_invalid_evidence_gets_one_regeneration_before_publication(self):
+        def response(evidence):
+            return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
+                {"type": "output_text", "text": json.dumps({"news": [], "watch": [
+                    {**self.card, "evidence": evidence}], "learn": []})}]}]}).encode("utf-8"))
+
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[
+            response("not present in the source"), response(self.source["title"]),
+        ]) as model_request:
+            cards = request_cards([self.source], "deepseek-flash", "test-key", amazon=True)
+        self.assertEqual(cards["watch"][0]["src"], ["A1"])
+        self.assertEqual(model_request.call_count, 2)
+
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[
+            response("not present in the source"), response("still not present"),
+        ]) as model_request:
+            with self.assertRaises(ValueError):
+                request_cards([self.source], "deepseek-flash", "test-key", amazon=True)
+        self.assertEqual(model_request.call_count, 2)
 
 
 class SafeRefresh(unittest.TestCase):

@@ -75,7 +75,7 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
         raise ValueError("model credentials are not configured")
     instructions = (
         "根据给定的原站标题和摘要，写简短中文 AI 解读。每块最多3条，不够就少写。"
-        "每条仅引用一个原文 ID；evidence 逐字复制对应 excerpt 中至少12个连续字符。"
+        "每条仅引用一个原文 ID；evidence 逐字复制该来源的完整 title，不能改写、加引号或省略字符。"
         "只陈述原文已有事实，不增加建议、行动号召或未经原文支持的用途。"
         "数字、范围、程度、否定和限定词必须照原文，不得把“不受直接影响”写成“受影响较小”，"
         "也不得把“接近”写成“达到”。不补造数字、来源或链接。"
@@ -97,18 +97,33 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
     }
     if provider == "deepseek":
         body["reasoning"] = {"effort": "none"}
-    request = urllib.request.Request(
-        PROVIDERS[provider][0], data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}, method="POST")
-    try:
-        with urllib.request.urlopen(request, timeout=120) as response:
-            payload = json.load(response)
-    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
-        raise RuntimeError("card model request failed") from exc
-    if payload.get("status") != "completed":
-        raise ValueError("card model response incomplete")
-    for item in payload.get("output", []):
-        for content in item.get("content", []):
-            if content.get("type") == "output_text" and content.get("text"):
-                return validate_cards(json.loads(content["text"]), sources)
-    raise ValueError("card model returned no text")
+    for attempt in range(2):
+        if attempt:
+            body["instructions"] = instructions + (
+                "上次的原文证据或卡片校验未通过。请重新生成，并逐字复制对应来源的完整 title 到 evidence。"
+            )
+        request = urllib.request.Request(
+            PROVIDERS[provider][0], data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}, method="POST")
+        try:
+            with urllib.request.urlopen(request, timeout=120) as response:
+                payload = json.load(response)
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
+            raise RuntimeError("card model request failed") from exc
+        if payload.get("status") != "completed":
+            raise ValueError("card model response incomplete")
+        for item in payload.get("output", []):
+            for content in item.get("content", []):
+                if content.get("type") == "output_text" and content.get("text"):
+                    try:
+                        return validate_cards(json.loads(content["text"]), sources)
+                    except ValueError:
+                        if attempt:
+                            raise
+                    break
+            else:
+                continue
+            break
+        else:
+            raise ValueError("card model returned no text")
+    raise ValueError("card model failed validation")
