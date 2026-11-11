@@ -784,7 +784,7 @@ def event_key(item):
 def enrich_article_bodies(items):
     prioritized = sorted(items, key=lambda item: (item.get("date", ""), item.get("readingScore", 0), item.get("importance", 0)), reverse=True)
     fetched = 0
-    candidates = [item for item in prioritized if item.get("sourceUrl", "").startswith("http")][: ARTICLE_FETCH_LIMIT * 3]
+    candidates = diverse_fetch_candidates(prioritized, ARTICLE_FETCH_LIMIT * 3)
 
     def fetch_article(item):
         try:
@@ -794,7 +794,9 @@ def enrich_article_bodies(items):
 
     with ThreadPoolExecutor(max_workers=ARTICLE_WORKERS) as executor:
         futures = [executor.submit(fetch_article, item) for item in candidates]
-        for future in as_completed(futures):
+        # Consume in publisher-diverse order. Completion order favors fast hosts
+        # and used to spend all twelve successful fetches on one publisher.
+        for future in futures:
             if fetched >= ARTICLE_FETCH_LIMIT:
                 break
             item, article_text = future.result()
@@ -804,6 +806,24 @@ def enrich_article_bodies(items):
                 apply_intelligence_fields(item)
                 fetched += 1
     return fetched
+
+
+def diverse_fetch_candidates(prioritized, limit):
+    eligible = [item for item in prioritized if item.get("sourceUrl", "").startswith("http") and item.get("sourceName")]
+    selected = []
+    selected_ids = set()
+    counts = {}
+    for quota in (1, 2, 3, limit):
+        for item in eligible:
+            name = item["sourceName"]
+            if id(item) in selected_ids or counts.get(name, 0) >= quota:
+                continue
+            selected.append(item)
+            selected_ids.add(id(item))
+            counts[name] = counts.get(name, 0) + 1
+            if len(selected) >= limit:
+                return selected
+    return selected
 
 
 def dedupe(items):

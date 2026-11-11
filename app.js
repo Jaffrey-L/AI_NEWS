@@ -1,5 +1,7 @@
 const DATA_ENDPOINT = "./data/news.json";
 const SOURCES_ENDPOINT = "./sources.json";
+const OPINION_ENDPOINT = "./data/opinion/latest.json";
+const OPINION_STATUS_ENDPOINT = "./data/opinion/status.json";
 
 const TEXT = {
   all: "\u5168\u90e8",
@@ -89,6 +91,8 @@ const companyTrends = document.getElementById("companyTrends");
 const modelTrends = document.getElementById("modelTrends");
 const topicTrends = document.getElementById("topicTrends");
 const resultCount = document.getElementById("resultCount");
+const opinionMeta = document.getElementById("opinionMeta");
+const opinionArticle = document.getElementById("opinionArticle");
 const READING_STATE_KEY = "ai-daily-radar-reading-state-v1";
 let appliedFilters = null;
 let activeNewsItems = [];
@@ -104,6 +108,87 @@ function escapeHtml(value) {
     "\"": "&quot;",
     "'": "&#39;"
   })[char]);
+}
+
+function sourceLink(source, label) {
+  const link = document.createElement("a");
+  const url = new URL(source.url);
+  if (!/^https?:$/.test(url.protocol)) throw new Error("invalid source URL");
+  link.href = url.href;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = label;
+  return link;
+}
+
+function renderOpinionArticle(article, status) {
+  if (!article || !Array.isArray(article.sections) || !Array.isArray(article.sources)) {
+    throw new Error("invalid opinion article");
+  }
+  const sourceMap = new Map(article.sources.map((source) => [source.id, source]));
+  const content = document.createDocumentFragment();
+  const title = document.createElement("h3");
+  title.textContent = article.title;
+  content.appendChild(title);
+  const subtitle = document.createElement("p");
+  subtitle.className = "opinion-subtitle";
+  subtitle.textContent = article.subtitle;
+  content.appendChild(subtitle);
+
+  article.sections.forEach((section) => {
+    const block = document.createElement("section");
+    block.className = "opinion-section";
+    const heading = document.createElement("h4");
+    heading.textContent = section.heading;
+    block.appendChild(heading);
+    (section.paragraphs || []).forEach((paragraph) => {
+      const body = document.createElement("p");
+      body.textContent = paragraph.text;
+      block.appendChild(body);
+      const citations = document.createElement("div");
+      citations.className = "opinion-citations";
+      (paragraph.citations || []).forEach((citation) => {
+        const source = sourceMap.get(citation.sourceId);
+        if (!source) throw new Error("missing opinion source");
+        const detail = document.createElement("details");
+        const summary = document.createElement("summary");
+        summary.appendChild(sourceLink(source, `${source.sourceName} · ${source.publishedAt} · 原文 ↗`));
+        detail.appendChild(summary);
+        if (citation.evidence) {
+          const quote = document.createElement("blockquote");
+          quote.textContent = citation.evidence;
+          detail.appendChild(quote);
+        }
+        citations.appendChild(detail);
+      });
+      block.appendChild(citations);
+    });
+    content.appendChild(block);
+  });
+  opinionArticle.replaceChildren(content);
+  const stale = status?.state === "failed";
+  const authorLabel = article.model === "assistant-seed" ? " · AI 示例首刊" : " · AI 自动撰写";
+  const generated = Date.parse(article.generatedAt);
+  const generatedLabel = Number.isNaN(generated)
+    ? article.editionDate
+    : new Intl.DateTimeFormat("zh-CN", { timeZone: "Asia/Shanghai", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(generated);
+  opinionMeta.textContent = `发布 ${generatedLabel} · 资料窗口 ${article.windowDays} 天 · ${article.sources.length} 个来源${stale ? " · 本轮更新失败，显示上期文章" : authorLabel}`;
+}
+
+async function loadOpinionArticle() {
+  try {
+    const [articleResponse, statusResponse] = await Promise.all([
+      fetch(OPINION_ENDPOINT, { cache: "no-store" }),
+      fetch(OPINION_STATUS_ENDPOINT, { cache: "no-store" })
+    ]);
+    if (!articleResponse.ok) throw new Error("no opinion article");
+    const article = await articleResponse.json();
+    const status = statusResponse.ok ? await statusResponse.json() : null;
+    renderOpinionArticle(article, status);
+  } catch (_) {
+    opinionMeta.textContent = "本轮文章尚未生成；新闻资料仍可继续阅读。";
+    opinionArticle.textContent = "暂无可核引文的 AI 观点文章。";
+  }
 }
 
 function loadReadingState() {
@@ -790,6 +875,7 @@ async function loadNewsData() {
 }
 
 async function init() {
+  void loadOpinionArticle();
   const payload = await loadNewsData();
   const newsItems = payload.items;
   allNewsItems = [...newsItems, ...(payload.archiveItems || [])];

@@ -119,7 +119,7 @@ crontab -e
 Run every 12 hours:
 
 ```cron
-0 */12 * * * cd /opt/ai-daily-radar && git pull --ff-only && python3 scripts/update_ai_news.py && python3 scripts/validate_news_data.py >> /opt/ai-daily-radar/news-sync.log 2>&1
+0 */12 * * * cd /opt/ai-daily-radar && git pull --ff-only && python3 scripts/update_ai_news.py && python3 scripts/validate_news_data.py && python3 scripts/generate_opinion.py >> /opt/ai-daily-radar/news-sync.log 2>&1
 ```
 
 Check logs:
@@ -143,6 +143,8 @@ WorkingDirectory=/opt/ai-daily-radar
 ExecStart=/usr/bin/git pull --ff-only
 ExecStart=/usr/bin/python3 scripts/update_ai_news.py
 ExecStart=/usr/bin/python3 scripts/validate_news_data.py
+ExecStart=/usr/bin/python3 scripts/generate_opinion.py
+EnvironmentFile=/etc/ai-news-sync.env
 EOF
 ```
 
@@ -156,9 +158,15 @@ Group=www-data
 WorkingDirectory=/var/www/ai-daily-radar
 ExecStart=/usr/bin/python3 scripts/update_ai_news.py
 ExecStart=/usr/bin/python3 scripts/validate_news_data.py
+ExecStart=/usr/bin/python3 scripts/generate_opinion.py
+EnvironmentFile=/etc/ai-news-sync.env
 ```
 
 This avoids `PermissionError` when the job updates `data/news.json`.
+
+Set `AI_NEWS_MODEL` and a provider key in `/etc/ai-news-sync.env`, readable only by the service user. The default is OpenAI with `OPENAI_API_KEY`; for DeepSeek, set `AI_NEWS_PROVIDER=deepseek`, `AI_NEWS_MODEL=deepseek-flash`, and `DEEPSEEK_API_KEY`. For cron, provide those variables through a protected job environment before enabling the new command. The article generator runs without a human approval step. A failed generation keeps the previous article visible and writes failure status; check the job log and `data/opinion/status.json` for the last attempt.
+
+Before enabling the systemd timer, create that environment file with permissions limited to the service user, for example `sudo install -m 600 -o www-data -g www-data /dev/null /etc/ai-news-sync.env`, then edit it locally. Do not put the model key in the repository or in browser code.
 
 Create timer:
 

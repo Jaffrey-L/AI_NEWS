@@ -148,6 +148,42 @@ h1 {
   line-height: 1.62;
 }
 
+.opinion {
+  margin-top: 22px;
+  padding: clamp(22px, 3vw, 44px);
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-tight);
+}
+
+.opinion-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: end;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 18px;
+}
+
+.opinion-head h2 { margin: 0; font-family: "Newsreader", "Noto Sans SC", serif; font-size: clamp(1.7rem, 3vw, 2.7rem); }
+.opinion-head p { color: var(--muted); font-size: 0.82rem; margin: 0 0 4px; }
+.opinion-article { max-width: 860px; margin: 0 auto; padding-top: 22px; }
+.opinion-article h3 { font-family: "Newsreader", "Noto Sans SC", serif; font-size: clamp(2rem, 3.5vw, 3.3rem); line-height: 1.16; margin: 0 0 14px; }
+.opinion-subtitle { color: var(--ink-soft); font-size: 1.08rem; line-height: 1.75; }
+.opinion-section { margin-top: 30px; }
+.opinion-section h4 { font-size: 1.2rem; margin: 0 0 12px; }
+.opinion-section > p { font-family: "Newsreader", "Noto Sans SC", serif; font-size: 1.05rem; line-height: 1.95; margin: 16px 0 10px; }
+.opinion-citations { display: flex; flex-wrap: wrap; gap: 8px; }
+.opinion-citations details { max-width: 100%; color: var(--muted); font-size: 0.76rem; }
+.opinion-citations summary { cursor: pointer; }
+.opinion-citations a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.opinion-citations blockquote { max-width: 620px; margin: 10px 0 0; padding: 10px 14px; border-left: 2px solid var(--brass); background: var(--canvas); color: var(--ink-soft); line-height: 1.6; overflow-wrap: anywhere; }
+
+@media (max-width: 700px) {
+  .opinion-head { align-items: start; flex-direction: column; gap: 8px; }
+}
+
 .badges {
   display: grid;
   align-content: end;

@@ -1,0 +1,116 @@
+{
+  "title": "当 AI 把话说得太满，人需要重新学会做减法",
+  "subtitle": "从 PR 描述到课堂作业，本周的三个信号指向同一件事：AI 产出的瓶颈已从\"能不能做\"转向\"人愿不愿意读、敢不敢信\"",
+  "sections": [
+    {
+      "heading": "一、写得越全，越没人看",
+      "paragraphs": [
+        {
+          "text": "Simon Willison 记录了一个很具体的困境：他的 PR 大多由 Claude Code 或 Codex 代写，而这类代理写的描述\"准确而全面\"，恰恰因为太全面，让人产生阅读抗拒。他自己的判断很坦白——问题不在于是不是垃圾内容，而在于\"读起来像垃圾\"。这是一个值得重视的转折：AI 生成能力的过剩，正在制造一种新的注意力税，作者省下的时间被转嫁给了评审者。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "An agent-written PR description is accurate and"
+            }
+          ]
+        },
+        {
+          "text": "他的解法谈不上高深，却很实用：用 GitHub 支持的 details/summary 折叠标签，把代理写的那篇长文塞进折叠区，只留一段人工挑选的开头作为导读，必要时配一张截图。这不是技术方案，而是编辑判断的重新引入——让一个人先想清楚\"这个改动为什么值得看\"，再把机器生成的细节放在后面供查证。我认为这是本周最可迁移的做法，因为它承认了一件事：评审者的时间比生成的文字更稀缺。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "I want human editorial judgement. I want"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "二、作业的边界被重画了",
+      "paragraphs": [
+        {
+          "text": "斯坦福 CS146S 的第二轮开课提供了一个更结构化的回应。当编码代理能用一个提示完成去年的作业，课程设计者 Mihail Eric 把开源维护者请进了课堂，让学生去啃一个陌生仓库、提出改动。这个调整的逻辑与折叠 PR 描述是相通的：既然\"写出代码\"不再是稀缺能力，评测的重心就必须挪到理解陌生系统、在真实约束下提出有价值的改动这些地方去。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "What do you assign when a coding"
+            }
+          ]
+        },
+        {
+          "text": "需要说明的是，这条材料只给出了课程设计的轮廓，没有披露学生表现、评分标准或维护者反馈，因此不宜据此断言\"AI 原生工程教育已经找到答案\"。我倾向于把它看作一次方向明确的试验：把评价对象从产出物转向参与真实项目的过程。这个转向是否可复制到非顶尖院校、非开源场景，目前没有证据支撑。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "Students have to learn an unfamiliar repo,"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "三、能力声明的可信度问题",
+      "paragraphs": [
+        {
+          "text": "本周更值得警惕的是\"权重空间编程\"这类主张的传播方式。原论文声称 GPT-6 Astra 仅凭原始权重就能判断网络用途，甚至能在无梯度的情况下修正 Qwen3.5-0.8B 的推理循环问题，把 MATH-500 从 7.9% 提到 48.1%。Willison 转述时特意指出，spaCy 作者 Matthew Honnibal 批评论文把两件事混为一谈，Sean Goedecke 则把那个修正案例拆解为人类研究者也会走的常规步骤。这些质疑目前都是二手转述，我无法核实原始论证的强度，但方向上的提醒是成立的。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "spaCy author Matthew Honnibal called the paper"
+            }
+          ]
+        },
+        {
+          "text": "Willison 自己的复现提供了一个有用的校准点：他在笔记本上跑的 Qwen 3.8 27B 也能做类似的事。这既削弱了\"只有前沿闭源模型才具备此能力\"的叙事，也说明这类演示的可复制性可能比标题给人的印象更高。但一次博客级别的复现不等于同行评审，把它当作能力边界的证据同样草率。我的判断是：对这类声明，应当要求区分\"模型真的理解了权重\"与\"模型在代码辅助下执行了有效操作\"，这两者的工程含义差别很大。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "I've been playing with one of the"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "结语：把注意力当成设计约束",
+      "paragraphs": [
+        {
+          "text": "三件事表面上无关，指向的却是同一个工程约束：AI 让产出变得廉价，于是人的注意力成了系统里唯一没有扩容的资源。折叠 PR 描述是把这个约束写进协作流程，课堂改题是把它写进评价体系，而对能力声明的审慎是把它写进信息消费习惯。我不认为这些做法已经成熟，它们更像是临时的、局部的应对；但至少在当下，承认\"写得更多不等于沟通更好\"，比继续堆砌生成内容更接近问题的实质。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "It doesn't matter how accurate or useful"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Hide your slop PR descriptions behind <details><summary>",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-11-09",
+      "url": "https://simonwillison.net/2026/Nov/9/details-summary/"
+    },
+    {
+      "id": "S2",
+      "title": "[One Million AI Engineer Special] How Stanford Teaches AI-Native Engineering — Mihail Eric, Monaco",
+      "sourceName": "Latent.Space",
+      "publishedAt": "2026-11-08",
+      "url": "https://latent.space/p/one_million_ai_engineer_special_how_stanford_teaches_ai-native_engineering_mihail_eric_monaco/"
+    },
+    {
+      "id": "S4",
+      "title": "Qwen 3.8 27B on my laptop can interpret model weights, too",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-11-03",
+      "url": "https://simonwillison.net/2026/Nov/3/qwen-can-interpret-model-weights/"
+    }
+  ],
+  "editionDate": "2026-11-09",
+  "generatedAt": "2026-11-10T01:19:30.232657+00:00",
+  "windowDays": 7,
+  "model": "deepseek-flash"
+}
