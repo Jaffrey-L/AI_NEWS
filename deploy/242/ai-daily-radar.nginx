@@ -1,0 +1,16 @@
+server {
+    listen 8088;
+    server_name _;
+
+    root /var/www/ai-news-mirror/current;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /data/ {
+        add_header Cache-Control "no-store";
+        try_files $uri =404;
+    }
+}
