@@ -27,6 +27,7 @@ def main():
     digest_archive = payload.get("digestArchive", {})
     cutoff = datetime.strptime(payload.get("yearStart", YEAR_START), "%Y-%m-%d").replace(tzinfo=timezone.utc)
     expected_sources = set(source_pool.get("companies", [])) | set(source_pool.get("creators", [])) | set(source_pool.get("soloBuilders", []))
+    covered_sources = expected_sources.intersection(coverage)
 
     assert len(items) >= 40, f"expected at least 40 YTD news items, got {len(items)}"
     assert all(item.get("qualityScore", 0) >= 60 for item in items), "default feed contains items below qualityScore 60"
@@ -96,7 +97,7 @@ def main():
     print(
         "PASS news data validation: "
         f"{len(items)} items, "
-        f"{len(coverage)}/{len(expected_sources)} tracked sources covered, "
+        f"{len(covered_sources)}/{len(expected_sources)} tracked sources covered, "
         f"{sum(1 for i in items if i['sourceGrade'] == 'A')} A-grade, "
         f"{sum(1 for i in items if i['category'] == CREATOR_CATEGORY)} creator items, "
         f"{sum(1 for i in items if i['category'] == PRACTICE_CATEGORY)} practice items, "
