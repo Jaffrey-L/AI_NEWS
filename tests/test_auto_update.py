@@ -108,6 +108,26 @@ class SafeRefresh(unittest.TestCase):
         watch = [source["url"] for source in updater.amazon_sources(articles, date(2026, 11, 11))]
         self.assertEqual(watch, ["https://example.com/auth", "https://example.com/logistics", "https://example.com/ioss"])
 
+    def test_amazon_reranks_whole_week_and_includes_seller_case(self):
+        def article(title, day, slug):
+            return {"sourceName": "雨果网", "title": title, "date": day,
+                    "sourceUrl": f"https://example.com/{slug}", "summary": "卖家可核对原文详情"}
+
+        articles = [
+            article("亚马逊服务商授权升级", "2026-11-09", "auth"),
+            article("深圳物流延误影响发货", "2026-11-11", "logistics"),
+            article("欧盟IOSS关税改革", "2026-11-11", "ioss"),
+            article("亚马逊日本站和澳大利亚站带电产品合规要求更新", "2026-11-11", "compliance"),
+            article("只改了一个预计送达时间，亚马逊订单当天就回来了", "2026-11-11", "case"),
+        ]
+        sources = updater.amazon_sources(articles, date(2026, 11, 11))
+        self.assertEqual([source["url"] for source in sources if source["bucket"] == "watch"],
+                         ["https://example.com/compliance", "https://example.com/auth",
+                          "https://example.com/logistics"])
+        self.assertEqual([source["url"] for source in sources if source["bucket"] == "learn"],
+                         ["https://example.com/case"])
+        self.assertNotIn("https://example.com/ioss", [source["url"] for source in sources])
+
 
 if __name__ == "__main__":
     unittest.main()

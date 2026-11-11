@@ -41,7 +41,7 @@ def amazon_bucket(article: dict) -> str | None:
         return None
     if re.search(r"政策|新政|费用|收费|物流|延误|合规|风险|监管|规则|授权|专利|policy|fees?|shipping|logistics|IOSS|关税|海关", title, re.I):
         return "watch"
-    if re.search(r"工具|方法|指南|如何|做法|实践|案例|破局|复盘|经验|MCF|ASIN|QA|build|guide|workflow", title, re.I):
+    if re.search(r"工具|方法|指南|如何|做法|实践|案例|破局|复盘|经验|预计送达时间|订单.{0,8}回来|MCF|ASIN|QA|build|guide|workflow", title, re.I):
         return "learn"
     if re.search(r"发布|宣布|推出|上线|重大|改革|announc|launch|introduc", title, re.I):
         return "news"
@@ -51,7 +51,7 @@ def amazon_bucket(article: dict) -> str | None:
 def amazon_impact(article: dict, bucket: str) -> int:
     title = article.get("title", "")
     if bucket == "watch":
-        if re.search(r"亚马逊.*(?:授权|政策|费用|收费|规则)", title, re.I):
+        if re.search(r"亚马逊.*(?:授权|政策|费用|收费|规则|合规)", title, re.I):
             return 100
         if re.search(r"物流|延误|发货", title, re.I):
             return 90
