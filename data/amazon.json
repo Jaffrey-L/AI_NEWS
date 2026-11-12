@@ -1,7 +1,28 @@
 {
-  "updatedAt": "2026-11-11T15:45:36.222180+00:00",
+  "updatedAt": "2026-11-12T02:19:28.991100+00:00",
   "sourceType": "public_publisher_websites_not_wechat_posts",
   "articles": [
+    {
+      "title": "Sea发布2026年Q3财报，Shopee业绩再创新高-AMZ123跨境导航",
+      "date": "2026-11-12",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/v339dGP0",
+      "summary": "Shopee单季GAAP营收61亿美元，同比增长41.3%，刷新历史纪录。"
+    },
+    {
+      "title": "瞄准跨境小包，秘鲁拟调整小额进口免税规则-AMZ123跨境导航",
+      "date": "2026-11-12",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/tuNCxbXi",
+      "summary": "目前方案还在研讨阶段，正式细则和落地时间都没有对外公布。"
+    },
+    {
+      "title": "TikTok Shop运费大降！东南亚跨境卖家这波真赚到了-AMZ123跨境导航",
+      "date": "2026-11-12",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/XzJWbfgE",
+      "summary": "发越南比发国内还便宜，TikTokShop东南亚物流成本再降"
+    },
     {
       "title": "只改了一个预计送达时间，亚马逊订单当天就回来了",
       "date": "2026-11-11",
@@ -45,18 +66,74 @@
       "summary": ""
     },
     {
-      "title": "Introducing usage-based pricing for Amazon SageMaker AI bidirectional streaming",
+      "title": "亚马逊玩具赛道专利更新！上架前务必做好检索！",
       "date": "2026-11-11",
-      "sourceName": "AWS 机器学习博客",
-      "sourceUrl": "https://aws.amazon.com/blogs/machine-learning/introducing-usage-based-pricing-for-amazon-sagemaker-ai-bidirectional-streaming/",
-      "summary": "AWS Marketplace now supports usage-based metering for Amazon SageMaker bidirectional streaming inference, so model providers can charge for what customers actually consume during a live stream. Deepgram is the launch partner, bringing usage"
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/190038",
+      "summary": ""
     },
     {
-      "title": "Introducing Kimi K3.1 Pro on Amazon Bedrock",
+      "title": "How we built the agents that built AWS Emulator",
       "date": "2026-11-11",
-      "sourceName": "AWS 机器学习博客",
-      "sourceUrl": "https://aws.amazon.com/blogs/machine-learning/introducing-kimi-k3-1-pro-on-amazon-bedrock/",
-      "summary": "Kimi K3.1 Pro from Moonshot AI is now available on Amazon Bedrock. Learn how to get started through the OpenAI-compatible Chat Completions, Responses, and Converse APIs, optimize inference with explicit prompt caching, and use the model as "
+      "sourceName": "About Amazon · AI",
+      "sourceUrl": "https://www.aboutamazon.com/news/aws/how-autonomous-ai-agents-built-aws-emulator",
+      "summary": "Thousands of autonomous AI agents wrote every line of code in AWS Emulator, a new local emulator for AWS now available for download."
+    },
+    {
+      "title": "AWS to launch first cloud infrastructure region in Chile, investing more than $4 billion",
+      "date": "2026-11-11",
+      "sourceName": "About Amazon · AI",
+      "sourceUrl": "https://www.aboutamazon.com/news/aws/aws-south-america-chile-region-launch",
+      "summary": "The Region—now operational for select customers ahead of general availability—will support thousands of jobs in Chile."
+    },
+    {
+      "title": "图案插画版权风波再起，这些品类记得自查-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/tGymx2dp",
+      "summary": "同款插画，可以做成各种小件，同步上架各大跨境平台。对卖家只是不同商品，在版权方眼里就是多渠道商用。近期美术版权诉讼集中爆发，下面这几个务必留心。PART.01案件信息案件号：26-cv-02419立案时间：2026年11月10日原告：LEE ANN SHEPARD代理律所：Ference & AssociatesShepard为美国画家，创作题材涵盖动物、植物与人物，尤以犬类主题绘画为核心创作方向。她的作品生动刻画动物的形貌与神韵，同时也作为图像素材，用于各类装饰及衍生周边产"
+    },
+    {
+      "title": "巴西专线：发巴西为什么总被扣货？巴西清关 7 大高频扣货原因 + 规避方案！-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/dNTY3G2U",
+      "summary": "巴西专线就找物流巴巴！"
+    },
+    {
+      "title": "拆解极目数据MCP选品原理-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/RRqAnn8m",
+      "summary": "选品基本准则选品要把个人主观“感觉不错可以做”变成“四道可用数据验证的闸门”，极目数据 MCP 可以助你完成选品辅助工作"
+    },
+    {
+      "title": "买单出口爆大雷，全链路一锅端！-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/QkMFQGSb",
+      "summary": "“买单出口”，在跨境外贸出口中非常常见，可以说创业初期的卖家99%都会用到这种方法。但实际应用层面，会存在很多风险隐患！买单出口突发暴雷！近期，买单出口再曝雷！国家税务总局深圳市税务局稽查局联合深圳海关缉私、海关风控分局及外汇局等部门，依法查处了一起借壳出口应征税货物偷税案件。经查，张某等作为真实货主，在取得铬铁等“两高一资\"货物的外贸订单后,通过不法货运代理居中串联,以深圳市祥云通盛贸易有限公司等10户空壳企业名义报关出口，未按规定申报、缴纳出口环节增值税等税款。"
+    },
+    {
+      "title": "三倍仓储扣费了，你的卖家账户余额还好吗？-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/OKjuRieL",
+      "summary": "今天亲自和客服掰扯了一个下午，写文就晚了。之前说一个产品的A+有个Bug一直没修复，助理为这事开了好多个Case，都被搪塞回来了。于是今天就特意抽出来一大段时间，打算和不同的客服耗上一个下午加一个晚上，晚上是打算直接开英文Case的。被第一个普通客服说没招儿之后，第二个品牌支持的中文客服就给我把问题转到专家那儿了，说让我邮件等通知。没等到晚上，就让我提前下班了。后面持续跟进，没报多大希望，如能解决问题，我再过来和大家分享。亚马逊运营之路，还真是坑坑洼洼的。"
+    },
+    {
+      "title": "再见双十一！你好，AI购物-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/90qn8whM",
+      "summary": "跨境电商也一样"
+    },
+    {
+      "title": "具身智能凛冬已至，谁能撑到下一个春天？-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/3urGmqPk",
+      "summary": "泡沫破掉的时候，真正做事的人松了一口气。"
     },
     {
       "title": "欧盟小包新政冲击跨境平台：速卖通下滑40%，Temu降幅近五成-AMZ123跨境导航",
@@ -87,6 +164,20 @@
       "summary": "老板非常想尝试这个产品，因为一部分是对现有产业的提升，同时也认为“质量够好，刀片够好，榨汁细腻，产品够好就能卖”，所以就是希望把里面的材料都用好的，尝试市场……"
     },
     {
+      "title": "49号令倒计时20天：香港公司注册“先上车后补票”已经行不通了-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/RgMTPfME",
+      "summary": "49号令12月施行：注册香港公司须先备案，窗口仅剩20天"
+    },
+    {
+      "title": "欧盟EUDR倒计时！五大重点，帮你理清从产品自查到资料准备-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/Q8b8hN7g",
+      "summary": "EUDR，也就是欧盟零毁林法案。它关注的不只是商品在哪里加工，还包括相关原料从哪里来。"
+    },
+    {
       "title": "十年亚马逊生涯,我不再猜明年平台会怎么变。-AMZ123跨境导航",
       "date": "2026-11-11",
       "sourceName": "AMZ123",
@@ -101,6 +192,48 @@
       "summary": "深圳空运挤兑"
     },
     {
+      "title": "被扣除三倍仓储费，一批卖家余额转负！-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/D6CSEoXc",
+      "summary": "跨境卖家们的黑五，似乎正在变成一场“成本前置”的消耗战。旺季仓储费、燃油附加费、入库配置费、活动报名费……黑五的倒计时牌还没翻到最后一页，部分卖家的账户余额已先被层层叠加的费用吃成了负数。AMZ123获悉，近日，亚马逊已开始扣除10月的仓储费，不少卖家在查看账单后直呼肉疼：“这三倍仓储费，真是给我扣麻了。”“广告还没回正呢，一夜之间倒欠姐夫两百。”“又是仓储费，又是配送费，又是低库存费，现在一分没见到，还压了好多货。”据了解，亚马逊月度仓储费因商品尺寸分年段和一年中的时间段而"
+    },
+    {
+      "title": "亚马逊产品缺流量的本质：“漏斗堵塞”。-AMZ123跨境导航",
+      "date": "2026-11-11",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/B30xboKh",
+      "summary": "大多数产品的销售问题最终都要归结为：流量不足。"
+    },
+    {
+      "title": "输入一个ASIN，自动生成亚马逊QA",
+      "date": "2026-11-10",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/190031",
+      "summary": "输入一个ASIN，自动生成亚马逊QA"
+    },
+    {
+      "title": "亚马逊旺季连更两项利好政策",
+      "date": "2026-11-10",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/190025",
+      "summary": "亚马逊旺季连更两项利好政策"
+    },
+    {
+      "title": "2026亚马逊黑五网一攻略：活动时间与Deal提报截止汇总",
+      "date": "2026-11-10",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/190023",
+      "summary": "2026年亚马逊黑五网一大促即将到来，各站点活动时间和促销提报节点陆续明确。对于还没有完成Deal报名的卖家来说，现在正是检查促销资格、调整价格和确认库存的关键阶段。根据目前提供的信息，美国站及加拿大站的Deal提报截止时间延长至11月13日，欧洲、日本及中东站点也有各自的时间要求。除了报名活动，卖家还需要同步做好Listing优化、FBA库存管理和广告预算规划。旺季竞争激烈，任何一个环节准备不足，都可能影响最终的销售表现。"
+    },
+    {
+      "title": "亚马逊2027年费用调整来了，FBA配送费又上涨了！这几项调整直接影响卖家利润！",
+      "date": "2026-11-10",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/190014",
+      "summary": "亚马逊FBA配送费上涨，仓储费、低库存费用全部有变化!"
+    },
+    {
       "title": "Ring announces Ring Robotics, ushering in a new era of security",
       "date": "2026-11-10",
       "sourceName": "About Amazon · AI",
@@ -108,32 +241,32 @@
       "summary": "Ring Robotics is launching with two robots: Ring Drone Cam and Ring Rover Cam, providing mobile, proactive protection whenever and wherever you need it."
     },
     {
-      "title": "The agent evaluation playbook: Built-in, DeepEval, and AutoEval on Amazon Bedrock AgentCore Evaluations",
+      "title": "从低价铺货到品牌竞争！泰国电商市场加速洗牌-AMZ123跨境导航",
       "date": "2026-11-10",
-      "sourceName": "AWS 机器学习博客",
-      "sourceUrl": "https://aws.amazon.com/blogs/machine-learning/the-agent-evaluation-playbook-built-in-deepeval-and-autoeval-on-agentcore/",
-      "summary": "When you deploy an agent, whether it is working is really several questions: did it finish the task, stay on topic, leak data, or skip steps? This post shows how to evaluate agents on Amazon Bedrock AgentCore with built-in, DeepEval, and Au"
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/mBxgteT1",
+      "summary": "《全球电商市场报告——泰国篇》重磅上线！"
     },
     {
-      "title": "How TCS built an agentic test orchestrator with Amazon Bedrock AgentCore",
+      "title": "美国FTC指控亚马逊暗中抬高广告费，涨幅最高达250%-AMZ123跨境导航",
       "date": "2026-11-10",
-      "sourceName": "AWS 机器学习博客",
-      "sourceUrl": "https://aws.amazon.com/blogs/machine-learning/how-tcs-built-an-agentic-test-orchestrator-with-amazon-bedrock-agentcore/",
-      "summary": "Tata Consultancy Services (TCS) built an agentic test orchestrator on Amazon Bedrock AgentCore that turns requirements into executable, governed tests for its Banking, Financial Services, and Insurance (BFSI) clients. Learn how specialized "
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/kvPyOQhM",
+      "summary": "美国联邦贸易委员会指控亚马逊通过隐藏附加费用，暗中抬高站内搜索广告竞价结果，使广告主实际支付的价格在普通购物日最高比拍卖结果高出50%，在Prime Day、黑色星期五等大型促销活动期间最高高出250%。"
     },
     {
-      "title": "Build a daily dependency watcher with LangGraph and Amazon Bedrock AgentCore web search",
-      "date": "2026-11-10",
-      "sourceName": "AWS 机器学习博客",
-      "sourceUrl": "https://aws.amazon.com/blogs/machine-learning/build-a-daily-dependency-watcher-with-langgraph-and-amazon-bedrock-agentcore-web-search/",
-      "summary": "The Web Search API in Amazon Bedrock AgentCore gives agents current, cited web results signed with the AWS credentials they already use. In this post, build a daily dependency watcher as a LangGraph graph that researches package ecosystems "
+      "title": "创始人被罚千万，当晚离职！深圳按摩仪大卖突遭巨变",
+      "date": "2026-11-09",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/189992",
+      "summary": "倒在自家股票上。"
     },
     {
-      "title": "Autonomous treasury agents: How Trovata built an AI-native solution on Amazon Bedrock and AgentCore",
-      "date": "2026-11-10",
-      "sourceName": "AWS 机器学习博客",
-      "sourceUrl": "https://aws.amazon.com/blogs/machine-learning/autonomous-treasury-agents-how-trovata-built-an-ai-native-solution-on-amazon-bedrock-and-agentcore/",
-      "summary": "Learn how Trovata built autonomous treasury agents on Amazon Bedrock and Amazon Bedrock AgentCore, using an RBAC-secured architecture for bank-branded AI deployment and agentic workflows that move corporate treasury from manual operations t"
+      "title": "从50万维修厂到2.4亿车主，这家工厂凭什么干到亚马逊榜一",
+      "date": "2026-11-09",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/189986",
+      "summary": "从B端到C端，鼎匠创新做对了什么。"
     },
     {
       "title": "AWS commits $100 million of AI and cloud technology to help organizations expand health services worldwide",
@@ -143,11 +276,74 @@
       "summary": "The AWS Health Impact Initiative gives health organizations access to AI and cloud technology to build solutions for underserved communities."
     },
     {
+      "title": "赚了200亿美元，亚马逊还在烧钱-AMZ123跨境导航",
+      "date": "2026-11-09",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/vFMSILdB",
+      "summary": "当地时间10月29日，亚马逊公布了2026年第三季度财报。报告期内，亚马逊实现营收2019.44亿美元，同比增长12%，营业利润281亿美元，同比增长61%，营业利润率升至13.9%，创下历史新高。但其财报发布后的股价盘后却一度暴跌超7%。整体而言，该季度亚马逊的业绩表现并不差，为什么市场反应如此强烈？AWS狂飙，零售与广告却“熄了火”亮眼的Q3财报数据背后，亚马逊的核心业务板块呈现出显著的“冰火两重天”。火的一面，是AWS业务高速增长，成为亚马逊本季度增长的重要引擎。"
+    },
+    {
+      "title": "亚马逊重启家庭机器人计划，重组研发团队-AMZ123跨境导航",
+      "date": "2026-11-09",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/tjVcYTjP",
+      "summary": "亚马逊近几个月组建了一支新的家庭机器人团队，正在研发一款“全新类型的机器人产品”。"
+    },
+    {
+      "title": "美对华301关税178项豁免，延期至2027年1月-AMZ123跨境导航",
+      "date": "2026-11-09",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/iPcNwMxA",
+      "summary": "企业需要尽快核对自身产品是否在豁免清单内，提前测算2027年1月之后的关税成本。"
+    },
+    {
+      "title": "亚马逊用户增长至950万人，26年澳洲线上购物格局生变-AMZ123跨境导航",
+      "date": "2026-11-09",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/6yT7QQ03",
+      "summary": "数据显示，截至2026年6月的过去12个月，亚马逊、Temu和SHEIN在澳大利亚的消费者数量继续增长，eBay和Kogan.com的消费者数量均出现下滑。"
+    },
+    {
+      "title": "亚马逊前台公开店铺信息",
+      "date": "2026-11-06",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/189963",
+      "summary": "亚马逊前台公开店铺信息"
+    },
+    {
       "title": "Text, shop, done: Alexa for Shopping is now just a text away",
       "date": "2026-11-06",
       "sourceName": "About Amazon · AI",
       "sourceUrl": "https://www.aboutamazon.com/news/retail/alexa-for-shopping-text-to-shop",
       "summary": "Starting today, a subset of customers can text Amazon’s personal AI shopping agent to get their shopping done quickly and easily, ahead of the texting option rolling out to customers across the U.S. in the coming weeks."
+    },
+    {
+      "title": "亚马逊27年美国站费用大变！FBA、仓储费等全面调整-AMZ123跨境导航",
+      "date": "2026-11-06",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/bu8s3Gz7",
+      "summary": "亚马逊公布了2027年美国站销售佣金及亚马逊物流（FBA）费用调整方案，涉及商品配送、仓储、低库存、跨境远程配送、销售佣金、促销、退货以及亚马逊智能卫星仓（AWD）和多渠道配送（MCF）等多个环节。"
+    },
+    {
+      "title": "月销量过万，亚马逊10款实用户外好物走红-AMZ123跨境导航",
+      "date": "2026-11-06",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/TiisCKic",
+      "summary": "近日，亚马逊各类产品搜索量增长显著，以下10款产品在亚马逊上销量表现突出，深受消费者欢迎。排名第一的打火棒预计月销2万+，月销售额超60万美元。"
+    },
+    {
+      "title": "对话亚马逊大卖：AI工具人人会用，真正分水岭在哪？",
+      "date": "2026-11-05",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/189924",
+      "summary": "100人用AI，99个在自嗨？"
+    },
+    {
+      "title": "亚马逊开店填表太累？现在上传证件自动识别",
+      "date": "2026-11-04",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/189909",
+      "summary": ""
     },
     {
       "title": "Amazon’s new Shop Direct Merchant Workspace makes it even easier for stores across the web to have their products discovered by customers on Alexa for Shopping and Amazon",
@@ -157,18 +353,25 @@
       "summary": "Tens of millions of customers have already discovered hundreds of millions of products from stores across the web through Amazon’s Shop Direct. With the new Shop Direct Merchant Workspace, merchants have a fast, free direct AI connector fro"
     },
     {
-      "title": "Q3 Earnings: Andy Jassy on faster delivery, lowering cost to serve, groceries, pharmacy, and AI shopping",
-      "date": "2026-10-30",
-      "sourceName": "About Amazon · AI",
-      "sourceUrl": "https://www.aboutamazon.com/news/company-news/amazon-stores-growth-q3-2026-earnings",
-      "summary": "Year to date, units have grown nearly 15% year over year, having sold more than 30 billion items last year."
+      "title": "美国对华部分产品301关税豁免即将到期-AMZ123跨境导航",
+      "date": "2026-11-04",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/PeM01P1f",
+      "summary": "建议进口商和跨境卖家尽快核对自身商品的HTS税号是否在清单内。"
     },
     {
-      "title": "Q3 Earnings: Andy Jassy on why demand for Amazon’s custom chips keeps growing",
-      "date": "2026-10-30",
-      "sourceName": "About Amazon · AI",
-      "sourceUrl": "https://www.aboutamazon.com/news/company-news/amazon-custom-chips-demand-q3-2026-earnings",
-      "summary": "Amazon’s chips business continues to grow triple-digit percentages year over year, and revenue commitments for Graviton and Trainium have each increased more than 20x year over year."
+      "title": "海外收入涨87%，极米科技Q3扭亏了-AMZ123跨境导航",
+      "date": "2026-11-03",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/7UZm0eqA",
+      "summary": "营收只涨 5 个点，利润涨了 55%。差别不在卖得多，在卖的地方和卖的价。"
+    },
+    {
+      "title": "亚马逊旺季政策更新：延长退货与FBA入库期限-AMZ123跨境导航",
+      "date": "2026-11-02",
+      "sourceName": "AMZ123",
+      "sourceUrl": "https://www.amz123.com/t/9rC7BjAH",
+      "summary": "亚马逊针对2026年年末旺季推出两项临时政策调整，一方面放宽国际FBA货件的入库时间限制，为海运延误、港口拥堵和海关查验等情况留出更多缓冲时间；另一方面延长假日购物季的退货期限，让消费者有更充足的时间处理节日礼品退换货。"
     },
     {
       "title": "Amazon's most advanced chip helps power the AI behind Prime 360—here's how",
@@ -178,6 +381,13 @@
       "summary": "Amazon's purpose-built Trainium AI chip helps power the diffusion models that deliver NBA on Prime’s breakthrough highlight technology."
     },
     {
+      "title": "2027和亚马逊一起，用AI开启一盘全球生意",
+      "date": "2026-10-27",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/189732",
+      "summary": ""
+    },
+    {
       "title": "Amazon opens its AWS Trainium AI chips to every PyTorch developer, no rewrite needed",
       "date": "2026-10-19",
       "sourceName": "About Amazon · Innovation",
@@ -185,11 +395,32 @@
       "summary": "TorchNeuron lets developers run their existing AI code on AWS Trainium chips with virtually no changes, reducing the friction to adopting new hardware."
     },
     {
+      "title": "从651人到4人！深圳又一老牌大厂破产清算",
+      "date": "2026-10-17",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/189490",
+      "summary": "一周大事盘点。"
+    },
+    {
+      "title": "亚马逊单链接review超1万！ORORO 的品类策略值得借鉴丨1天1个出海案例",
+      "date": "2026-10-16",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/189488",
+      "summary": "review破万，ORORO为什么还要做独立站？"
+    },
+    {
       "title": "亚马逊中国全新上线播客节目“亚麻海海谈”",
       "date": "2026-10-15",
       "sourceName": "亚马逊全球开店",
       "sourceUrl": "https://globalselling.amazon.com/news-center/news-center-261015",
       "summary": "亚马逊中国全新播客节目“亚麻海海谈”正式在小宇宙、喜马拉雅和Apple中文播客同步上线了！"
+    },
+    {
+      "title": "算不清独立站物流成本？亚马逊MCF计算器来了",
+      "date": "2026-10-13",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/189419",
+      "summary": ""
     },
     {
       "title": "Amazon announces new tools and services to help sellers go global from day one",
@@ -241,6 +472,13 @@
       "summary": "发布“亚马逊全球开店华西产业带联合赋能计划”，推动“四川经验”辐射西部十省市"
     },
     {
+      "title": "新卖家出海不用单打独斗！亚马逊全流程AI工具实战攻略",
+      "date": "2026-07-20",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/187679",
+      "summary": ""
+    },
+    {
       "title": "亚马逊全球开店与福布斯中国发布“2026福布斯中国新生代跨境电商30人评选”结果",
       "date": "2026-06-30",
       "sourceName": "亚马逊全球开店",
@@ -290,26 +528,196 @@
       "summary": "亚马逊广告近日推出“动态电视广告创意”功能，可自动为 Prime Video 剧集和电影中的互动式视频广告定制个性化内容。进一步了解。"
     },
     {
+      "title": "LinkedIn 联网电视 (CTV) 广告现可通过亚马逊 DSP 投放",
+      "date": "2026-05-07",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/linkedin-ctv-ads-amazon-dsp",
+      "summary": "亚马逊广告与 LinkedIn 近日联合宣布，广告主现可通过亚马逊 DSP，借助 LinkedIn 的 CTV 广告触达职场专业受众。进一步了解。"
+    },
+    {
+      "title": "有关广告主付款事宜的更新",
+      "date": "2026-04-14",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/update-on-advertiser-payments",
+      "summary": "有关广告主付款事宜的更新。"
+    },
+    {
+      "title": "2026 年多伦多亚马逊广告 unBoxed 全球大会精彩时刻",
+      "date": "2026-03-25",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/unboxed-toronto-2026",
+      "summary": "浏览 2026 年多伦多亚马逊广告 unBoxed 全球大会的亮点，亚马逊广告在会上为加拿大广告主推出了 AI 工具、创意智能体和新的 Prime Video 机会。"
+    },
+    {
+      "title": "Forrester TEI 研究显示采用亚马逊广告广告技术可实现 240% 的 ROI",
+      "date": "2026-03-19",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/forrester-tei-amazon-ads-adtech",
+      "summary": "TEI 研究显示，亚马逊广告技术解决方案的 ROI 高达 240%。立即下载完整的“总体经济影响”报告。"
+    },
+    {
+      "title": "Prime Video 广告业务即将登陆比利时、丹麦、挪威、土耳其",
+      "date": "2026-03-17",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/prime-video-advertising-2026",
+      "summary": "2026 年，Prime Video 将在比利时、丹麦、挪威和土耳其正式推出广告服务。进一步了解此次业务拓展。"
+    },
+    {
       "title": "亚马逊全球开店“十省联动”再度启航，为产业带高质量出海注入新增量",
       "date": "2026-03-12",
       "sourceName": "亚马逊全球开店",
       "sourceUrl": "https://globalselling.amazon.com/news-center/news-center-260312",
       "summary": "深入18个城市50个产业带，聚焦转型路径、AI赋能、全链路解决方案三大议题"
+    },
+    {
+      "title": "好乐门的 Big Game 广告如何打造成卡拉 OK 体验",
+      "date": "2026-02-23",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/hellmanns-big-game-ad-karaoke",
+      "summary": "亚马逊广告 Brand Innovation Lab 推出了名为“Mayo for a Melody”的互动式卡拉 OK 体验，让好乐门的 Big Game 广告的热度在 Fire TV 上得以延续。"
+    },
+    {
+      "title": "2025 年亚马逊中国卖家大会上展示的广告创新成果",
+      "date": "2026-02-17",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/sellercon-china-amazon-ads-2025",
+      "summary": "了解亚马逊广告在 2025 年亚马逊中国卖家大会上推出的 AI 驱动的创新与简化技术，帮助卖家更轻松、更智能地打造品牌。"
+    },
+    {
+      "title": "以透明广告技术，实现绩效增长",
+      "date": "2026-01-16",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/amazon-dsp-performance-research",
+      "summary": "别让广告花费打水漂。下载亚马逊广告白皮书，深入了解亚马逊 DSP 如何通过数据信号精准规划、获取理想竞价，并实现透明化投放效果。"
+    },
+    {
+      "title": "2026 年国际消费电子展 (CES) 六大构想，定义广告未来",
+      "date": "2026-01-09",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/ces-2026-advertising-news",
+      "summary": "在 2026 年国际消费电子展 (CES) 上，亚马逊广告及业内领导者共同规划了未来一年的发展蓝图。以下是本周的六大核心构想。"
+    },
+    {
+      "title": "亚马逊广告公布 2026 年 Upfront 活动演讲内容",
+      "date": "2026-01-05",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/amazon-ads-upfront-2026-date",
+      "summary": "在 CES 展会上，亚马逊广告宣布将于 2026 年 5 月 11 日星期一下午 6:30（美国东部时间）在纽约市 Beacon 剧院举办年度 Upfront 活动演讲。"
+    },
+    {
+      "title": "在 Prime Video 上发布基于位置的互动式视频广告",
+      "date": "2025-11-10",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/unboxed-2025-location-based-interactive-video-ads",
+      "summary": "进一步了解基于位置的互动式视频广告，及其在 Prime Video 上的发布如何为广告带来全新的本地相关性。"
+    },
+    {
+      "title": "亚马逊广告和 iHeartMedia 宣布推出全新程序化音频广告服务",
+      "date": "2025-11-06",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/amazon-ads-iheartmedia-dsp-partnership",
+      "summary": "亚马逊广告和 iHeartMedia 宣布推出一项全新的程序化音频广告服务，通过这项服务，使用亚马逊 DSP 的广告主可以访问 iHeart 的庞大流媒体音频广告组合。"
+    },
+    {
+      "title": "微软 (Microsoft) 与亚马逊广告宣布建立库存来源交换合作关系",
+      "date": "2025-10-07",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/microsoft-amazon-dsp-partnership",
+      "summary": "微软 (Microsoft) 宣布将亚马逊 DSP 指定为 Microsoft Invest 客户的首选数据迁移业务伙伴。进一步了解。"
+    },
+    {
+      "title": "Spotify 和亚马逊广告宣布建立程序化合作伙伴关系",
+      "date": "2025-10-01",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/spotify-amazon-dsp-programmatic-integration",
+      "summary": "亚马逊广告和 Spotify 宣布实现达成全球集成，广告商可通过使用亚马逊 DSP 程序化方式对接 Spotify 的广告资源。进一步了解，"
+    },
+    {
+      "title": "亚马逊广告推出全新智能体式 AI 创意工具",
+      "date": "2025-09-17",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/amazon-ads-agentic-ai-creative-tool",
+      "summary": "亚马逊广告宣布推出一款全新智能体式 AI 工具，使广告主能够轻松地为广告活动创建专业级广告。进一步了解此次推出的工具。"
+    },
+    {
+      "title": "亚马逊广告和 Sirius XM 宣布进行新的战略整合",
+      "date": "2025-09-16",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/amazon-ads-sirius-xm-integration",
+      "summary": "亚马逊广告和 SiriusXM Media 宣布为营销人员进行程序化音频广告功能的战略整合。了解如何触达听众群体。"
+    },
+    {
+      "title": "亚马逊广告宣布与 Netflix 集成",
+      "date": "2025-09-10",
+      "sourceName": "亚马逊广告",
+      "sourceUrl": "https://advertising.amazon.com/zh-cn/library/news/amazon-ads-netflix-programmatic-buying",
+      "summary": "亚马逊广告和 Netflix 宣布建立合作伙伴关系，为使用亚马逊 DSP 的广告主提供直接访问 Netflix 优质广告库存的权限。进一步了解。"
+    },
+    {
+      "title": "亚马逊术语全攻略：让你从新手到行家的必备指南",
+      "date": "2024-11-06",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/166700",
+      "summary": "我收到很多读者的反馈说有些文章看不懂，所以，今天特意开一篇文章给新来的小伙伴扫个盲。"
+    },
+    {
+      "title": "手握￥30W，0基础跨境新手如何仅凭1人1个月拿下Amazon's Choice？",
+      "date": "2023-09-06",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/149195",
+      "summary": "刚入行亚马逊，根本不知道怎么选品，求大佬带带我！从外贸工厂转型跨境电商，可是拿不准现有的商品哪个好卖？我也知道要数据化选品，但各种数据让人眼花缭乱，不知道从哪里下手，如果有老师能手把手带带我就好了……万事开头难，如何选对品？"
+    },
+    {
+      "title": "跨境创业？新手下场前必看的赚钱指南！",
+      "date": "2023-08-18",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/148518",
+      "summary": "跨境创业？新手下场前必看的赚钱指南！"
+    },
+    {
+      "title": "2022如何申请亚马逊全球开店店铺，亚马逊全球开店官网注册流程",
+      "date": "2022-08-03",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/128848",
+      "summary": "注册亚马逊店铺是免费的，不需要缴纳任何的租金，但每个月会收取39.99美元的月租。要注册亚马逊店铺，你得准备好这些材料。"
+    },
+    {
+      "title": "跨境电商入门基础教程，适合新手做亚马逊打造小爆款",
+      "date": "2022-07-05",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/126670",
+      "summary": ""
+    },
+    {
+      "title": "亚马逊广告6个关键行为的基本操作--新手必看",
+      "date": "2022-07-03",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/126562",
+      "summary": ""
+    },
+    {
+      "title": "新手入局亚马逊，需要了解的那些问题！",
+      "date": "2022-06-21",
+      "sourceName": "雨果网／雨果跨境",
+      "sourceUrl": "https://www.cifnews.com/article/125598",
+      "summary": "很多新手想要在亚马逊开店掘金，却不了解亚马逊，今天带你了解亚马逊"
     }
   ],
   "errors": [],
   "ai": {
     "week": "2026-W46",
-    "date": "2026-11-11",
+    "date": "2026-11-12",
     "sources": [
       {
         "id": "A1",
-        "title": "谷歌假日100榜单发布，今年海外流行送什么礼？",
+        "title": "亚马逊2027年费用调整来了，FBA配送费又上涨了！这几项调整直接影响卖家利润！",
         "sourceName": "雨果网／雨果跨境",
-        "publishedAt": "2026-11-11",
-        "url": "https://www.cifnews.com/article/190050",
-        "excerpt": "谷歌假日100榜单发布，今年海外流行送什么礼？。多个品牌榜上有名",
-        "bucket": "news"
+        "publishedAt": "2026-11-10",
+        "url": "https://www.cifnews.com/article/190014",
+        "summary": "亚马逊FBA配送费上涨，仓储费、低库存费用全部有变化!",
+        "evidenceScope": "body",
+        "bucket": "news",
+        "alsoBuckets": []
       },
       {
         "id": "A2",
@@ -317,103 +725,536 @@
         "sourceName": "雨果网／雨果跨境",
         "publishedAt": "2026-11-11",
         "url": "https://www.cifnews.com/article/190041",
-        "excerpt": "亚马逊服务商授权升级，年底前必须重新授权。",
-        "bucket": "watch"
+        "summary": "",
+        "evidenceScope": "body",
+        "bucket": "news",
+        "alsoBuckets": [
+          "watch"
+        ]
       },
       {
         "id": "A3",
+        "title": "美对华301关税178项豁免，延期至2027年1月-AMZ123跨境导航",
+        "sourceName": "AMZ123",
+        "publishedAt": "2026-11-09",
+        "url": "https://www.amz123.com/t/iPcNwMxA",
+        "summary": "企业需要尽快核对自身产品是否在豁免清单内，提前测算2027年1月之后的关税成本。",
+        "evidenceScope": "body",
+        "bucket": "watch",
+        "alsoBuckets": []
+      },
+      {
+        "id": "A4",
+        "title": "瞄准跨境小包，秘鲁拟调整小额进口免税规则-AMZ123跨境导航",
+        "sourceName": "AMZ123",
+        "publishedAt": "2026-11-12",
+        "url": "https://www.amz123.com/t/tuNCxbXi",
+        "summary": "目前方案还在研讨阶段，正式细则和落地时间都没有对外公布。",
+        "evidenceScope": "body",
+        "bucket": "watch",
+        "alsoBuckets": []
+      },
+      {
+        "id": "A5",
         "title": "亚马逊日本站和澳大利亚站带电产品合规要求更新",
         "sourceName": "雨果网／雨果跨境",
         "publishedAt": "2026-11-11",
         "url": "https://www.cifnews.com/article/190063",
-        "excerpt": "亚马逊日本站和澳大利亚站带电产品合规要求更新。",
-        "bucket": "watch"
+        "summary": "",
+        "evidenceScope": "body",
+        "bucket": "watch",
+        "alsoBuckets": []
       },
       {
-        "id": "A4",
+        "id": "A6",
+        "title": "亚马逊旺季连更两项利好政策",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-10",
+        "url": "https://www.cifnews.com/article/190025",
+        "summary": "亚马逊旺季连更两项利好政策",
+        "evidenceScope": "body",
+        "bucket": "watch",
+        "alsoBuckets": []
+      },
+      {
+        "id": "A7",
+        "title": "2026亚马逊黑五网一攻略：活动时间与Deal提报截止汇总",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-10",
+        "url": "https://www.cifnews.com/article/190023",
+        "summary": "2026年亚马逊黑五网一大促即将到来，各站点活动时间和促销提报节点陆续明确。对于还没有完成Deal报名的卖家来说，现在正是检查促销资格、调整价格和确认库存的关键阶段。根据目前提供的信息，美国站及加拿大站的Deal提报截止时间延长至11月13日，欧洲、日本及中东站点也有各自的时间要求。除了报名活动，卖家还需要同步做好Listing优化、FBA库存管理和广告预算规划。旺季竞争激烈，任何一个环节准备不足，都可能影响最终的销售表现。",
+        "evidenceScope": "body",
+        "bucket": "watch",
+        "alsoBuckets": []
+      },
+      {
+        "id": "A8",
         "title": "紧急提醒！深圳APEC管控，跨境发货全线延误-AMZ123跨境导航",
         "sourceName": "AMZ123",
         "publishedAt": "2026-11-11",
         "url": "https://www.amz123.com/t/KAEmOGMG",
-        "excerpt": "紧急提醒！深圳APEC管控，跨境发货全线延误-AMZ123跨境导航。深圳空运挤兑",
-        "bucket": "watch"
+        "summary": "深圳空运挤兑",
+        "evidenceScope": "body",
+        "bucket": "watch",
+        "alsoBuckets": []
       },
       {
-        "id": "A5",
+        "id": "A9",
+        "title": "欧盟敲定IOSS改革，取消150欧元货值门槛-AMZ123跨境导航",
+        "sourceName": "AMZ123",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.amz123.com/t/lqyO2aLR",
+        "summary": "欧盟委员会强调，本次改革没有新增税种，也没有调整税率，只是变更税款征收环节与责任主体。",
+        "evidenceScope": "body",
+        "bucket": "watch",
+        "alsoBuckets": []
+      },
+      {
+        "id": "A10",
+        "title": "亚马逊玩具赛道专利更新！上架前务必做好检索！",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.cifnews.com/article/190038",
+        "summary": "",
+        "evidenceScope": "body",
+        "bucket": "watch",
+        "alsoBuckets": []
+      },
+      {
+        "id": "A11",
+        "title": "欧盟小包新政冲击跨境平台：速卖通下滑40%，Temu降幅近五成-AMZ123跨境导航",
+        "sourceName": "AMZ123",
+        "publishedAt": "2026-11-11",
+        "url": "https://www.amz123.com/t/zj8rsHRV",
+        "summary": "亚马逊不受小包税费政策直接影响，销售额涨幅接近10%。",
+        "evidenceScope": "title",
+        "bucket": "watch",
+        "alsoBuckets": []
+      },
+      {
+        "id": "A12",
         "title": "只改了一个预计送达时间，亚马逊订单当天就回来了",
         "sourceName": "雨果网／雨果跨境",
         "publishedAt": "2026-11-11",
         "url": "https://www.cifnews.com/article/190064",
-        "excerpt": "只改了一个预计送达时间，亚马逊订单当天就回来了。",
-        "bucket": "learn"
+        "summary": "",
+        "evidenceScope": "body",
+        "bucket": "learn",
+        "alsoBuckets": []
       },
       {
-        "id": "A6",
+        "id": "A13",
         "title": "亚马逊重型大件难做？Humhold用三招破局",
         "sourceName": "雨果网／雨果跨境",
         "publishedAt": "2026-11-11",
         "url": "https://www.cifnews.com/article/190042",
-        "excerpt": "亚马逊重型大件难做？Humhold用三招破局。",
-        "bucket": "learn"
+        "summary": "",
+        "evidenceScope": "body",
+        "bucket": "learn",
+        "alsoBuckets": []
       },
       {
-        "id": "A7",
+        "id": "A14",
         "title": "一个仓库搞定TikTok、Temu、独立站全渠道发货——亚马逊MCF了解一下",
         "sourceName": "雨果网／雨果跨境",
         "publishedAt": "2026-11-11",
         "url": "https://www.cifnews.com/article/190043",
-        "excerpt": "一个仓库搞定TikTok、Temu、独立站全渠道发货——亚马逊MCF了解一下。",
-        "bucket": "learn"
+        "summary": "",
+        "evidenceScope": "body",
+        "bucket": "learn",
+        "alsoBuckets": []
+      },
+      {
+        "id": "A15",
+        "title": "输入一个ASIN，自动生成亚马逊QA",
+        "sourceName": "雨果网／雨果跨境",
+        "publishedAt": "2026-11-10",
+        "url": "https://www.cifnews.com/article/190031",
+        "summary": "输入一个ASIN，自动生成亚马逊QA",
+        "evidenceScope": "body",
+        "bucket": "learn",
+        "alsoBuckets": []
       }
     ],
     "cards": {
-      "news": [],
-      "watch": [
+      "news": [
         {
-          "text": "亚马逊服务商授权升级，来源称年底前必须重新授权。",
+          "text": "亚马逊公布2027年美国站FBA费用调整，配送费平均每件售出商品上涨0.19美元，自2027年1月15日起执行。",
+          "src": [
+            "A1"
+          ],
+          "ai": true
+        },
+        {
+          "text": "服务商授权体系升级，此前通过二级用户权限（SUP）授予服务商的权限需卖家重新授权，逾期未操作服务商将失去卖家平台账户访问权限。",
           "src": [
             "A2"
           ],
           "ai": true
-        },
-        {
-          "text": "亚马逊日本站和澳大利亚站带电产品合规要求更新。",
-          "src": [
-            "A3"
-          ],
-          "ai": true
-        },
-        {
-          "text": "深圳APEC管控，来源称跨境发货全线延误、深圳空运挤兑。",
-          "src": [
-            "A4"
-          ],
-          "ai": true
         }
       ],
-      "learn": [
+      "watch": [
         {
-          "text": "案例称只改了一个预计送达时间，亚马逊订单当天就回来了。",
+          "text": "亚马逊更新日本站和澳大利亚站5类带电产品合规要求，均为审核通过后可售；日本站不合规商品自2026年12月30日起按品类陆续下架，澳大利亚站便携式电源要求已于2026年11月9日起实施。",
           "src": [
             "A5"
           ],
           "ai": true
         },
         {
-          "text": "Humhold用三招应对亚马逊重型大件难做的问题。",
-          "src": [
-            "A6"
-          ],
-          "ai": true
-        },
-        {
-          "text": "介绍亚马逊MCF：一个仓库承接TikTok、Temu、独立站全渠道发货。",
+          "text": "2026年黑五网一，美国站及加拿大站Deal提报截止时间延长至11月13日，尚未完成报名的卖家需检查符合条件的ASIN。",
           "src": [
             "A7"
           ],
           "ai": true
+        },
+        {
+          "text": "深圳APEC管控周期覆盖11月14日—21日共计8天，快件安检升级、货车限行和空运航班调整可能打乱黑五发货节奏，自发货卖家需留意时效延误风险。",
+          "src": [
+            "A8"
+          ],
+          "ai": true
+        }
+      ],
+      "learn": [
+        {
+          "text": "万得福案例显示，页面显示的预计送达时间会影响转化，团队因误设卖家发布日期导致一周无订单，修正后订单恢复。",
+          "src": [
+            "A12"
+          ],
+          "ai": true
+        },
+        {
+          "text": "Humhold做欧洲站重型大件，通过只指定一家服务商负责头程到送仓、按最长65天周期安排预计55天到达的货、售罄前提前备货等方式应对物流不确定性。",
+          "src": [
+            "A13"
+          ],
+          "ai": true
+        },
+        {
+          "text": "亚马逊多渠道配送（MCF）可将FBA库存用于TikTok Shop、Temu、独立站等站外渠道发货，目前已支持80多个销售渠道，覆盖11个国家。",
+          "src": [
+            "A14"
+          ],
+          "ai": true
         }
       ]
+    },
+    "article": {
+      "title": "亚马逊本周：费用、合规与旺季物流三线并进",
+      "subtitle": "2027年FBA配送费上涨与仓储规则变化需提前算账，日本站带电产品12月30日起分批下架，授权迁移和深圳APEC物流管控影响旺季执行",
+      "sections": [
+        {
+          "heading": "政策与合规",
+          "paragraphs": [
+            {
+              "text": "亚马逊公布2027年美国站费用调整：2027年1月15日起FBA配送费平均每件售出商品上涨0.19美元，实际按尺寸、重量和售价不同而变；2027年2月1日起取消仓储利用率附加费，月度仓储费与超龄库存附加费合并，周转期超过6个月的库存仓储费用提高。判断：卖家应立即用具体ASIN重算大件和重件利润，并排查超过6个月的库存。",
+              "citations": [
+                {
+                  "sourceId": "A1",
+                  "evidence": "2027年1月15日起，亚马逊FBA配送费平均每件售出商品上涨0.19美元"
+                },
+                {
+                  "sourceId": "A1",
+                  "evidence": "周转期超过6个月的库存，仓储费用将提高"
+                }
+              ]
+            },
+            {
+              "text": "带电产品合规方面，日本站和澳大利亚站5类品类要求审核通过后可售。日本站不合规商品自2026年12月30日起按品类陆续下架，日期包括2027年1月6日、2027年1月8日；澳大利亚站便携式电源政策已于2026年11月9日实施，不合规产品将于2027年1月8日下架。判断：涉及上述品类的卖家应按品类准备检测报告并提交审核，以免临近下架日期才补件。",
+              "citations": [
+                {
+                  "sourceId": "A5",
+                  "evidence": "日本站不合规商品将于2026年12月30日起按品类陆续下架"
+                },
+                {
+                  "sourceId": "A5",
+                  "evidence": "澳大利亚站便携式电源的要求已于2026年 11月9日起实施"
+                }
+              ]
+            },
+            {
+              "text": "美国贸易代表办公室将178项对华301关税豁免统一延后至美东时间2027年1月9日23点59分，新安排从2026年11月10日0点01分起生效；判定以在美国海关完成进入消费申报或从保税仓提取投入消费的时间为准，不以装船或提单日期为准。164项对应HTSUS 9903.88.69，14项使用9903.88.70。判断：依赖豁免的出口企业应核对清单归属并提前测算2027年1月后的关税成本。",
+              "citations": [
+                {
+                  "sourceId": "A3",
+                  "evidence": "178项豁免统一延后至美东时间2027年1月9日23点59分"
+                },
+                {
+                  "sourceId": "A3",
+                  "evidence": "164项产品对应HTSUS 9903.88.69，剩下14项使用9903.88.70"
+                }
+              ]
+            },
+            {
+              "text": "亚马逊服务商授权体系从二级用户权限（SUP）迁移至解决方案提供商门户（SPP）授权，此前通过SUP授予服务商的权限都需卖家重新完成授权；亚马逊正分批发送通知，截止日期以收到的通知为准，逾期服务商将无法继续操作卖家平台。新授权默认有效期365天。判断：卖家可先到卖家平台「管理权限→管理服务」核对已授权服务商、授权状态和到期日期，再按通知操作。",
+              "citations": [
+                {
+                  "sourceId": "A2",
+                  "evidence": "所有此前通过「二级用户权限（SUP）」授予服务商的这项权限的，都需要卖家重新完成授权"
+                },
+                {
+                  "sourceId": "A2",
+                  "evidence": "所有新授权默认有效期为365 天"
+                }
+              ]
+            },
+            {
+              "text": "欧盟理事会2026年11月9日达成政治协议，取消IOSS现行150欧元货值门槛，措施自2028年7月1日起实施，仍需征询欧洲议会意见。欧盟委员会强调本次改革没有新增税种，也没有调整税率，只是变更税款征收环节与责任主体。判断：该变化距实际执行尚有时间，但平台代收代缴和结算页税费标价改造值得提前关注。",
+              "citations": [
+                {
+                  "sourceId": "A9",
+                  "evidence": "措施自2028年7月1日起实施，仍需征询欧洲议会意见"
+                },
+                {
+                  "sourceId": "A9",
+                  "evidence": "本次改革没有新增税种，也没有调整税率，只是变更税款征收环节与责任主体"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "物流与费用",
+          "paragraphs": [
+            {
+              "text": "亚马逊在旺季前临时放宽国际FBA货件入库窗口：适用于2026年8月1日至11月30日创建的国际货件计划，首批货件签收后剩余关联货件到仓窗口从30天延长至45天，自动关闭期从75天延长至90天；此前因30至45天区间入仓被扣的入库缺陷费将自动退款。11月30日之后创建的新货件仍恢复30天规则。判断：卖家应按45天排当前头程，12月起及时收紧节奏。",
+              "citations": [
+                {
+                  "sourceId": "A6",
+                  "evidence": "2026年8月1日至11月30日创建的国际货件计划"
+                },
+                {
+                  "sourceId": "A6",
+                  "evidence": "剩余关联货件的到仓窗口从30天延长至45天，货件自动关闭期从75天延长至90天"
+                }
+              ]
+            },
+            {
+              "text": "深圳APEC管控周期覆盖11月14日至21日，共8天；11月16日至20日深圳全市货车分车型、分区域、分时段限行，危险品运输车全域禁行5天，快件安检升级持续至11月22日。深圳揽收货物分流至广州、香港口岸起飞，叠加黑五备货窗口，排仓和延误风险上升。判断：带电、敏感货及自发货卖家应倒排发货时间线，预留口岸挤兑造成的额外时效。",
+              "citations": [
+                {
+                  "sourceId": "A8",
+                  "evidence": "管控周期覆盖11月14日—21日，共计8天"
+                },
+                {
+                  "sourceId": "A8",
+                  "evidence": "11月16日-20日，深圳全市货车分车型、分区域、分时段限行"
+                }
+              ]
+            },
+            {
+              "text": "多渠道配送（MCF）可将FBA库存用于TikTok Shop、Temu、独立站等渠道发货，目前支持80多个销售渠道，覆盖美国、加拿大、墨西哥、英国、德国、法国、西班牙、意大利、日本、印度、澳大利亚共11个国家。判断：已用FBA的卖家可先以一个渠道小步验证时效和账单，再决定是否扩展。",
+              "citations": [
+                {
+                  "sourceId": "A14",
+                  "evidence": "MCF目前已支持80多个销售渠道"
+                },
+                {
+                  "sourceId": "A14",
+                  "evidence": "覆盖美国、加拿大、墨西哥、英国、德国、法国、西班牙、意大利、日本、印度、澳大利亚共11个国家"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "平台与行业",
+          "paragraphs": [
+            {
+              "text": "黑五网一Deal提报方面，美国站和加拿大站的提报窗口已延长至11月13日，尚未完成报名的卖家应尽快检查符合条件的ASIN。判断：该日期属于本周内待执行节点，卖家需在截止前完成提报并核对促销价格审核要求。",
+              "citations": [
+                {
+                  "sourceId": "A7",
+                  "evidence": "美国站和加拿大站的提报窗口已经延长至11月13日"
+                }
+              ]
+            },
+            {
+              "text": "秘鲁正研讨调整小额进口免税规则，现行200美元以内小包可走Importa Fácil通道免关税和增值税IGV；备选方案为降至50美元或维持门槛但修改增值税征收规则，目前方案还在研讨阶段，正式细则和落地时间都没有对外公布。判断：布局秘鲁的卖家暂不宜按某一方案定价，应持续跟踪正式细则。",
+              "citations": [
+                {
+                  "sourceId": "A4",
+                  "evidence": "申报价值200美元以内的进口小包，可走Importa Fácil便捷进口通道"
+                },
+                {
+                  "sourceId": "A4",
+                  "evidence": "目前方案还在研讨阶段，正式细则和落地时间都没有对外公布"
+                }
+              ]
+            },
+            {
+              "text": "玩具赛道新增5款美国外观专利，分别为US D1155683 S、US D1155690 S、US D1155692 S、US D1155693 S、US D1155698 S。判断：相关品类上架前需逐项做专利检索，避免链接下架或资金冻结风险。",
+              "citations": [
+                {
+                  "sourceId": "A10",
+                  "evidence": "US D1155683 S"
+                },
+                {
+                  "sourceId": "A10",
+                  "evidence": "US D1155698 S"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "卖家实践",
+          "paragraphs": [
+            {
+              "text": "万得福案例显示，一款有FBA库存的餐具新品因运营人员误将“卖家发布日期”设在了一个月以后，导致一周无订单，修正后当天恢复转化。判断：页面显示的预计送达时间应纳入日常检查项。",
+              "citations": [
+                {
+                  "sourceId": "A12",
+                  "evidence": "运营人员误将商品的“卖家发布日期”设在了一个月以后。当天修正后，订单很快恢复"
+                }
+              ]
+            },
+            {
+              "text": "Humhold做欧洲重型大件的物流备货三招：一是头程到送仓只指定一家服务商负责，剩余交给FBA；二是预计55天到达的货按最长65天周期安排；三是压缩机、控制面板等关键物料提前预订并提前备货。判断：这三招针对长链路和季节性断货风险，适用于同类重型大件卖家参考。",
+              "citations": [
+                {
+                  "sourceId": "A13",
+                  "evidence": "只指定一家服务商把头程到送仓一把全搞定，剩下的交给FBA"
+                },
+                {
+                  "sourceId": "A13",
+                  "evidence": "预计55天到达的货，他们会按最长65天的周期安排"
+                },
+                {
+                  "sourceId": "A13",
+                  "evidence": "压缩机、控制面板等关键物料需要提前预订"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "本周判断",
+          "paragraphs": [
+            {
+              "text": "本周卖家需同时盯住三条线：费用上，2027年1月15日FBA配送费平均每件涨0.19美元、2月1日仓储合并规则生效，应尽快按ASIN重算利润；合规上，日本站带电产品2026年12月30日起分批下架，澳大利亚站便携式电源2027年1月8日下架；物流上，国际FBA货件45天窗口仅适用于2026年8月1日至11月30日创建的货件，深圳APEC管控覆盖11月14日至21日，黑五Deal提报美国站和加拿大站截至11月13日。判断：上述日期均来自公开报道，具体执行仍以卖家平台通知为准。",
+              "citations": [
+                {
+                  "sourceId": "A1",
+                  "evidence": "从2027年1月15日起，亚马逊FBA配送费平均每件售出商品上涨0.19美元"
+                },
+                {
+                  "sourceId": "A5",
+                  "evidence": "日本站不合规商品将于2026年12月30日起按品类陆续下架"
+                },
+                {
+                  "sourceId": "A6",
+                  "evidence": "11月30日之后创建的新货件仍恢复30天规则"
+                },
+                {
+                  "sourceId": "A8",
+                  "evidence": "管控周期覆盖11月14日—21日，共计8天"
+                },
+                {
+                  "sourceId": "A7",
+                  "evidence": "美国站和加拿大站的提报窗口已经延长至11月13日"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "A1",
+          "title": "亚马逊2027年费用调整来了，FBA配送费又上涨了！这几项调整直接影响卖家利润！",
+          "sourceName": "雨果网／雨果跨境",
+          "publishedAt": "2026-11-10",
+          "url": "https://www.cifnews.com/article/190014"
+        },
+        {
+          "id": "A2",
+          "title": "亚马逊服务商授权升级，年底前必须重新授权",
+          "sourceName": "雨果网／雨果跨境",
+          "publishedAt": "2026-11-11",
+          "url": "https://www.cifnews.com/article/190041"
+        },
+        {
+          "id": "A3",
+          "title": "美对华301关税178项豁免，延期至2027年1月-AMZ123跨境导航",
+          "sourceName": "AMZ123",
+          "publishedAt": "2026-11-09",
+          "url": "https://www.amz123.com/t/iPcNwMxA"
+        },
+        {
+          "id": "A4",
+          "title": "瞄准跨境小包，秘鲁拟调整小额进口免税规则-AMZ123跨境导航",
+          "sourceName": "AMZ123",
+          "publishedAt": "2026-11-12",
+          "url": "https://www.amz123.com/t/tuNCxbXi"
+        },
+        {
+          "id": "A5",
+          "title": "亚马逊日本站和澳大利亚站带电产品合规要求更新",
+          "sourceName": "雨果网／雨果跨境",
+          "publishedAt": "2026-11-11",
+          "url": "https://www.cifnews.com/article/190063"
+        },
+        {
+          "id": "A6",
+          "title": "亚马逊旺季连更两项利好政策",
+          "sourceName": "雨果网／雨果跨境",
+          "publishedAt": "2026-11-10",
+          "url": "https://www.cifnews.com/article/190025"
+        },
+        {
+          "id": "A7",
+          "title": "2026亚马逊黑五网一攻略：活动时间与Deal提报截止汇总",
+          "sourceName": "雨果网／雨果跨境",
+          "publishedAt": "2026-11-10",
+          "url": "https://www.cifnews.com/article/190023"
+        },
+        {
+          "id": "A8",
+          "title": "紧急提醒！深圳APEC管控，跨境发货全线延误-AMZ123跨境导航",
+          "sourceName": "AMZ123",
+          "publishedAt": "2026-11-11",
+          "url": "https://www.amz123.com/t/KAEmOGMG"
+        },
+        {
+          "id": "A9",
+          "title": "欧盟敲定IOSS改革，取消150欧元货值门槛-AMZ123跨境导航",
+          "sourceName": "AMZ123",
+          "publishedAt": "2026-11-11",
+          "url": "https://www.amz123.com/t/lqyO2aLR"
+        },
+        {
+          "id": "A10",
+          "title": "亚马逊玩具赛道专利更新！上架前务必做好检索！",
+          "sourceName": "雨果网／雨果跨境",
+          "publishedAt": "2026-11-11",
+          "url": "https://www.cifnews.com/article/190038"
+        },
+        {
+          "id": "A12",
+          "title": "只改了一个预计送达时间，亚马逊订单当天就回来了",
+          "sourceName": "雨果网／雨果跨境",
+          "publishedAt": "2026-11-11",
+          "url": "https://www.cifnews.com/article/190064"
+        },
+        {
+          "id": "A13",
+          "title": "亚马逊重型大件难做？Humhold用三招破局",
+          "sourceName": "雨果网／雨果跨境",
+          "publishedAt": "2026-11-11",
+          "url": "https://www.cifnews.com/article/190042"
+        },
+        {
+          "id": "A14",
+          "title": "一个仓库搞定TikTok、Temu、独立站全渠道发货——亚马逊MCF了解一下",
+          "sourceName": "雨果网／雨果跨境",
+          "publishedAt": "2026-11-11",
+          "url": "https://www.cifnews.com/article/190043"
+        }
+      ],
+      "generatedAt": "2026-11-12T03:48:35.750200+00:00",
+      "model": "deepseek-flash"
     },
     "model": "deepseek-flash"
   }

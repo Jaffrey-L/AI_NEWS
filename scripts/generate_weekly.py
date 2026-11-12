@@ -37,6 +37,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "data" / "weekly"
 CORE_CATEGORIES = {"核心AI公司新闻", "核心AI博主"}
 FEEDS = {
+    "AWS 机器学习博客": "https://aws.amazon.com/blogs/machine-learning/feed/",
     "OpenAI": "https://openai.com/news/rss.xml",
     "Google DeepMind": "https://deepmind.google/blog/rss.xml",
     "Google AI": "https://blog.google/innovation-and-ai/technology/ai/rss/",

@@ -18,6 +18,10 @@ def main():
     cards = read(DATA / "editorial-cards.json")
     sources = read(ROOT / "sources.json")
     amazon = read(DATA / "amazon.json")
+    amazon["articles"] = [item for item in amazon.get("articles", [])
+                          if item.get("sourceName") != "AWS 机器学习博客"]
+    from generate_amazon_weekly import read_archive
+    amazon["weeks"] = read_archive(DATA / "amazon-weekly")
     weeks = []
     for entry in index["weeks"]:
         doc = read(ROOT / entry["path"])
@@ -45,10 +49,13 @@ def main():
         "Hugging Face Blog RSS": "Hugging Face",
         "Andrej Karpathy Blog RSS": "Andrej Karpathy",
         "One Useful Thing RSS": "Ethan Mollick",
+        "AWS Machine Learning Blog RSS": "AWS 机器学习博客",
     }
     for source in sources["gradedSources"]:
         name = name_map.get(source["name"], source["name"].replace(" RSS", "").replace(" Atom", ""))
-        entry = {"feed": source["name"], "sourceName": name, "url": source["url"], "cited": counts.get(name, 0)}
+        entry = {"feed": source["name"], "sourceName": name, "url": source["url"],
+                 "cited": counts.get(name, 0),
+                 "firstEligibleWeek": source.get("firstEligibleWeek")}
         (direct if source["grade"] == "A" else query).append(entry)
     payload = {
         "builtAt": datetime.now(timezone.utc).isoformat(),
