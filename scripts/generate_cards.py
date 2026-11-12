@@ -97,6 +97,10 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
             "大事只选重大事件，运营案例放学习；若存在 bucket=news 的平台规则变更，"
             "必须在大事列入该来源，操作提醒可以在注意重复引用该来源；其他情况大事不足可留空。"
         )
+    instructions += (
+        "每条卡片里的数字、日期、百分比和金额，都要以完全相同的字符形式出现在所引用来源的 excerpt 中；"
+        "不要换算、补全年份或推断截止时间。若找不到逐字证据，就不写该数字。"
+    )
     body = {
         "model": model, "instructions": instructions,
         "input": json.dumps({"sources": sources}, ensure_ascii=False),
@@ -106,10 +110,13 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
     }
     if provider == "deepseek":
         body["reasoning"] = {"effort": "none"}
-    for attempt in range(2):
+    rejection = ""
+    for attempt in range(3):
         if attempt:
             body["instructions"] = instructions + (
-                "上次的原文证据或卡片校验未通过。请重新生成，并逐字复制对应来源的完整 title 到 evidence。"
+                "上次卡片未通过原文校验：" + rejection + "。请重新生成。"
+                "evidence 必须逐字复制对应来源的完整 title；卡片正文里的每个数字、日期、百分比、金额"
+                "都必须以完全相同的字符形式出现在该来源的 excerpt 中；原文没有的数字就删掉，不能换算或推断。"
             )
         request = urllib.request.Request(
             PROVIDERS[provider][0], data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
@@ -126,8 +133,9 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
                 if content.get("type") == "output_text" and content.get("text"):
                     try:
                         return validate_cards(json.loads(content["text"]), sources)
-                    except ValueError:
-                        if attempt:
+                    except ValueError as exc:
+                        rejection = str(exc)
+                        if attempt == 2:
                             raise
                     break
             else:

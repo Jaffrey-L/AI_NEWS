@@ -66,10 +66,25 @@ class CardChecks(unittest.TestCase):
 
         with patch("generate_cards.urllib.request.urlopen", side_effect=[
             response("not present in the source"), response("still not present"),
+            response("still not present"),
         ]) as model_request:
             with self.assertRaises(ValueError):
                 request_cards([self.source], "deepseek-flash", "test-key", amazon=True)
-        self.assertEqual(model_request.call_count, 2)
+        self.assertEqual(model_request.call_count, 3)
+
+    def test_unsupported_number_gets_specific_retry_feedback(self):
+        def response(text):
+            return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
+                {"type": "output_text", "text": json.dumps({"news": [], "watch": [
+                    {**self.card, "text": text}], "learn": []})}]}]}).encode("utf-8"))
+
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[
+            response("报道说卖家费用提高 20%，具体以原文为准"),
+            response("报道说卖家费用规则发生变化，具体以原文为准"),
+        ]) as model_request:
+            request_cards([self.source], "deepseek-flash", "test-key", amazon=True)
+        retry_body = json.loads(model_request.call_args_list[1].args[0].data)
+        self.assertIn("card introduces a number absent from source", retry_body["instructions"])
 
 
 class SafeRefresh(unittest.TestCase):
