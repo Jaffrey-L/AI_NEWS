@@ -28,6 +28,9 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,16 +52,13 @@ jobs:
           if [ "$EVENT_NAME" = workflow_dispatch ]; then mode="$INPUT_MODE"
           elif [ "$SCHEDULE" = '30 0 * * 1' ]; then mode=weekly
           else mode=amazon; fi
-          if [ "$GITHUB_REF_NAME" = 'review/amazon-w46-auto' ]; then
-            python -c "import json,pathlib; p=pathlib.Path('data/amazon.json'); d=json.loads(p.read_text(encoding='utf-8')); d.pop('ai',None); p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')"
-          fi
           set +e
           python scripts/run_auto_update.py --mode "$mode"
           result=$?
           set -e
           echo "result=$result" >> "$GITHUB_OUTPUT"
       - name: Publish validated data or failure notice
-        if: github.event_name != 'push' && github.ref_name != 'review/amazon-w46-auto'
+        if: github.event_name != 'push'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -67,32 +67,16 @@ jobs:
             git commit -m 'Refresh published AI news data'
             git push
           fi
-      - name: Export isolated AI review
-        if: github.ref_name == 'review/amazon-w46-auto' && steps.refresh.outputs.result == '0'
-        run: python scripts/export_review.py
-      - name: Downloadable isolated AI review
-        if: github.ref_name == 'review/amazon-w46-auto' && steps.refresh.outputs.result == '0'
-        uses: actions/upload-artifact@v4
-        with:
-          name: amazon-w46-auto-review
-          path: |
-            data/amazon.json
-            review/amazon-first-edition-preview.html
-            review/amazon-first-edition-cards.json
       - uses: actions/configure-pages@v5
-        if: github.ref_name != 'review/amazon-w46-auto'
       - name: Prepare public site only
-        if: github.ref_name != 'review/amazon-w46-auto'
         run: |
           mkdir -p public/data
           cp index.html app.js workspace.css public/
           cp data/site-payload.js public/data/
       - uses: actions/upload-pages-artifact@v3
-        if: github.ref_name != 'review/amazon-w46-auto'
         with:
           path: public
       - name: Deploy static site
-        if: github.ref_name != 'review/amazon-w46-auto'
         id: deployment
         uses: actions/deploy-pages@v4
       - name: Flag failed refresh

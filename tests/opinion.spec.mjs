@@ -27,6 +27,11 @@ test("Amazon has a sourced full reading and three short groups", async ({ page }
   const paragraphs = page.locator("#v-amazon .body p");
   expect(await paragraphs.count()).toBeGreaterThan(0);
   expect(await paragraphs.count()).toBe(await page.locator("#v-amazon .body p:has(a.cite[href^='https://'])").count());
+  const duplicateCitations = await paragraphs.evaluateAll((items) => items.filter((p) => {
+    const ids = [...p.querySelectorAll("a.cite")].map((a) => a.textContent);
+    return ids.length !== new Set(ids).size;
+  }).length);
+  expect(duplicateCitations).toBe(0);
   await expect(page.locator("#v-amazon .srclist li")).not.toHaveCount(0);
   await expect(page.locator("#v-amazon .answers")).not.toContainText("Amazon Bedrock");
   await expect(page.locator("#v-amazon .answers")).not.toContainText("SAMPLE HOUSE");

@@ -10,7 +10,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 import run_auto_update as updater
-from generate_cards import request_cards, validate_cards
+from generate_cards import request_cards, select_amazon_card_sources, validate_cards
 
 
 class CardChecks(unittest.TestCase):
@@ -85,6 +85,50 @@ class CardChecks(unittest.TestCase):
             request_cards([self.source], "deepseek-flash", "test-key", amazon=True)
         retry_body = json.loads(model_request.call_args_list[1].args[0].data)
         self.assertIn("card introduces a number absent from source", retry_body["instructions"])
+
+    def test_amazon_watch_cards_prioritize_deadlines_and_logistics(self):
+        titles = ["秘鲁拟调整进口门槛", "黑五 Deal 提报截止时间", "深圳 APEC 发货管控",
+                  "亚马逊旺季连更两项利好政策", "IOSS 长期改革"]
+        sources = [{"id": f"A{i}", "title": title, "bucket": "watch",
+                    "evidenceScope": "body", "excerpt": title}
+                   for i, title in enumerate(titles, 1)]
+        selected = select_amazon_card_sources(sources)
+        self.assertEqual([source["id"] for source in selected], ["A2", "A3", "A4"])
+
+    def test_amazon_compliance_precedes_other_watch_items(self):
+        titles = ["亚马逊旺季连更两项利好政策", "黑五Deal提报截止",
+                  "深圳APEC发货延误", "亚马逊日本站和澳大利亚站带电产品合规要求更新"]
+        sources = [{"id": f"A{i}", "title": title, "bucket": "watch",
+                    "evidenceScope": "body", "excerpt": title}
+                   for i, title in enumerate(titles, 1)]
+        selected = select_amazon_card_sources(sources)
+        self.assertEqual([source["id"] for source in selected], ["A2", "A3", "A4"])
+
+    def test_amazon_cards_keep_distinct_valid_sources_across_attempts(self):
+        sources = [{"id": name, "title": f"{name} original source title", "bucket": bucket,
+                    "evidenceScope": "body", "url": f"https://example.com/{name}",
+                    "excerpt": f"{name} original source title and detailed reporting."}
+                   for name, bucket in [("A1", "news"), ("A2", "watch"),
+                                        ("A3", "watch"), ("A4", "learn")]]
+
+        def card(name):
+            return {"sourceId": name, "text": f"{name}原站报道了相关变化，详情应以原文为准。",
+                    "evidence": f"{name} original source title"}
+
+        def response(groups):
+            return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
+                {"type": "output_text", "text": json.dumps(groups)}]}]}).encode("utf-8"))
+
+        first = {"news": [card("A1"), card("A1")],
+                 "watch": [card("A2"), card("A2")], "learn": [card("A4")]}
+        second = {"news": [card("A1")], "watch": [card("A3")], "learn": []}
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[
+            response(first), response(second),
+        ]) as model_request:
+            cards = request_cards(sources, "deepseek-flash", "test-key", amazon=True)
+        self.assertEqual([item["src"] for item in cards["watch"]], [["A2"], ["A3"]])
+        self.assertEqual([item["src"] for item in cards["news"]], [["A1"]])
+        self.assertEqual(model_request.call_count, 2)
 
 
 class SafeRefresh(unittest.TestCase):

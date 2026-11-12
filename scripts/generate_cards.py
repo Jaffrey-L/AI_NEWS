@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 import re
 import urllib.error
 import urllib.request
@@ -27,6 +28,68 @@ CARD_SCHEMA = {
 }
 
 
+def select_amazon_card_sources(sources: list[dict]) -> list[dict]:
+    """Keep body-backed news, then favor near-term seller deadlines in watch."""
+    readable = [source for source in sources if source.get("evidenceScope") != "title"]
+
+    def watch_priority(source: dict) -> int:
+        title = source.get("title", "")
+        excerpt = source.get("excerpt", "")
+        if re.search(r"亚马逊.*(?:带电|电池).*(?:合规|要求)|(?:带电|电池).*亚马逊.*合规", title, re.I):
+            return 130
+        if re.search(r"Deal|提报截止|报名截止|黑五|网一", title, re.I):
+            return 120
+        if re.search(r"APEC|物流.*(?:延误|管控)|发货.*延误", title, re.I):
+            return 110
+        if re.search(r"FBA.*入库|货件.*入库|旺季连更", title, re.I) or (
+                "FBA" in excerpt and "退货" in excerpt):
+            return 100
+        return 50
+
+    watches = sorted((s for s in readable if s.get("bucket") == "watch"),
+                     key=watch_priority, reverse=True)[:3]
+    selected = {bucket: [s for s in readable if s.get("bucket") == bucket][:3]
+                for bucket in BUCKETS}
+    selected["watch"] = watches
+    return [s for s in readable if any(s in selected[bucket] for bucket in BUCKETS)]
+
+
+def collect_amazon_cards(raw: dict, sources: list[dict], collected: dict) -> str:
+    """Keep only independently valid, distinct cards across model attempts."""
+    if not isinstance(raw, dict) or set(raw) != set(BUCKETS):
+        return "invalid card groups"
+    known = {source["id"]: source for source in sources}
+    rejection = ""
+    for bucket in BUCKETS:
+        if not isinstance(raw[bucket], list):
+            return "invalid card count"
+        for item in raw[bucket]:
+            if not isinstance(item, dict):
+                continue
+            source_id = item.get("sourceId")
+            source = known.get(source_id)
+            if not source or source.get("bucket") != bucket or source_id in collected[bucket]:
+                continue
+            try:
+                validate_cards({group: [item] if group == bucket else []
+                                for group in BUCKETS}, [source])
+            except ValueError as exc:
+                rejection = str(exc)
+                continue
+            collected[bucket][source_id] = item
+    missing = [source["id"] for source in sources
+               if source["id"] not in collected[source["bucket"]]]
+    if missing:
+        return f"{rejection}; missing distinct source IDs: {', '.join(missing)}".strip("; ")
+    return ""
+
+
+def merged_amazon_cards(sources: list[dict], collected: dict) -> dict:
+    raw = {bucket: [collected[bucket][source["id"]] for source in sources
+                    if source.get("bucket") == bucket] for bucket in BUCKETS}
+    return validate_cards(raw, sources)
+
+
 def validate_cards(raw: dict, sources: list[dict]) -> dict:
     """Reject invented or misplaced citations before any edition is published."""
     if not isinstance(raw, dict) or set(raw) != set(BUCKETS):
@@ -48,8 +111,12 @@ def validate_cards(raw: dict, sources: list[dict]) -> dict:
             evidence = item["evidence"].strip() if isinstance(item["evidence"], str) else ""
             repeated = source_id in seen and not (
                 seen[source_id] == source.get("bucket") and bucket in source.get("alsoBuckets", []))
-            if not source or repeated or not 12 <= len(text) <= 240:
-                raise ValueError("unknown, duplicate, or empty card")
+            if not source:
+                raise ValueError("card cites an unknown source")
+            if repeated:
+                raise ValueError("card repeats a source in an unsupported group")
+            if not 12 <= len(text) <= 240:
+                raise ValueError("card text is too short or long")
             if not urlparse(source.get("url", "")).scheme == "https" or not urlparse(source["url"]).hostname:
                 raise ValueError("card has no original HTTPS link")
             if len(evidence) < 12 or evidence not in source.get("excerpt", ""):
@@ -75,6 +142,10 @@ def validate_cards(raw: dict, sources: list[dict]) -> dict:
 
 
 def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool = False) -> dict:
+    if amazon:
+        # Detailed seller guidance needs the original body; keep title-only
+        # links in the source list but do not turn them into AI claims.
+        sources = select_amazon_card_sources(sources)
     if not sources:
         return {key: [] for key in BUCKETS}
     provider = os.environ.get("AI_NEWS_PROVIDER", "deepseek").strip().lower()
@@ -96,6 +167,7 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
             "其他平台或泛行业新闻；纯 AWS 技术文章不入三块。"
             "大事只选重大事件，运营案例放学习；若存在 bucket=news 的平台规则变更，"
             "必须在大事列入该来源，操作提醒可以在注意重复引用该来源；其他情况大事不足可留空。"
+            "对卖家直接适用的费用变化和带电产品合规也要优先进入大事或注意。"
         )
     instructions += (
         "每条卡片里的数字、日期、百分比和金额，都要以完全相同的字符形式出现在所引用来源的 excerpt 中；"
@@ -111,6 +183,7 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
     if provider == "deepseek":
         body["reasoning"] = {"effort": "none"}
     rejection = ""
+    collected = {bucket: {} for bucket in BUCKETS} if amazon else None
     for attempt in range(3):
         if attempt:
             body["instructions"] = instructions + (
@@ -132,7 +205,20 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
             for content in item.get("content", []):
                 if content.get("type") == "output_text" and content.get("text"):
                     try:
-                        return validate_cards(json.loads(content["text"]), sources)
+                        raw = json.loads(content["text"])
+                        if os.environ.get("AI_NEWS_REVIEW_DIAGNOSTICS") == "1":
+                            review = Path(__file__).resolve().parents[1] / "review"
+                            review.mkdir(exist_ok=True)
+                            (review / f"amazon-card-attempt-{attempt + 1}.json").write_text(
+                                json.dumps(raw, ensure_ascii=False, indent=2), encoding="utf-8")
+                        if amazon:
+                            rejection = collect_amazon_cards(raw, sources, collected)
+                            if not rejection:
+                                return merged_amazon_cards(sources, collected)
+                            if attempt == 2:
+                                raise ValueError(rejection)
+                        else:
+                            return validate_cards(raw, sources)
                     except ValueError as exc:
                         rejection = str(exc)
                         if attempt == 2:

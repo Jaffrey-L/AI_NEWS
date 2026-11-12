@@ -429,9 +429,6 @@ function renderAmazon(){
       var link = el('a','ai-original','原文：' + amazonTitle(original));
       link.href = original.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
       li.appendChild(link);
-      if (original.summary && original.summary.replace(/\s+/g,'') !== original.title.replace(/\s+/g,'')) {
-        li.appendChild(el('div','srcrow','原站摘要：' + original.summary));
-      }
       li.appendChild(el('div','srcrow',original.sourceName + ' · ' + fmtDate(original.publishedAt)));
       ol.appendChild(li);
     });
@@ -453,9 +450,12 @@ function renderAmazon(){
       heading.appendChild(document.createTextNode(section.heading)); sec.appendChild(heading);
       section.paragraphs.forEach(function(paragraph){
         var p = el('p'); p.appendChild(document.createTextNode(paragraph.text));
+        var citedHere = new Set();
         paragraph.citations.forEach(function(citation){
+          if (citedHere.has(citation.sourceId)) return;
           var original = byId[citation.sourceId];
           if (!original) return;
+          citedHere.add(citation.sourceId);
           var link = el('a','cite',citation.sourceId);
           link.href = original.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
           link.title = '打开原文：' + original.title;

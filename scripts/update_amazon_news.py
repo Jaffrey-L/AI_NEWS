@@ -5,6 +5,7 @@ not read or claim to archive their WeChat posts.
 """
 
 import json
+import gzip
 import re
 import urllib.parse
 import urllib.request
@@ -107,6 +108,10 @@ def get_page(url):
     )
     with urllib.request.urlopen(request, timeout=16) as response:
         content = response.read(1_500_000)
+        # Some publisher pages return gzip bytes even without an explicit
+        # Accept-Encoding request. Decode before parsing metadata/body text.
+        if content.startswith(b"\x1f\x8b"):
+            content = gzip.decompress(content)
         charset = response.headers.get_content_charset() or "utf-8"
         return content.decode(charset, "replace")
 

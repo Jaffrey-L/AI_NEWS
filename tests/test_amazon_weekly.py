@@ -1,4 +1,6 @@
 import json
+import gzip
+import io
 import os
 import sys
 import tempfile
@@ -52,6 +54,36 @@ class AmazonWeeklyChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "evidence"):
             weekly.validate_amazon_article(self.article, self.sources)
 
+    def test_rejects_nonconsecutive_patents_as_a_range(self):
+        sources = deepcopy(self.sources)
+        sources[0]["excerpt"] += " 共5款，US D1155683 S、US D1155698 S。"
+        article = deepcopy(self.article)
+        article["sections"][0]["paragraphs"][0]["text"] = (
+            "报道列出5款专利，专利号从US D1155683 S至US D1155698 S。"
+            "判断：相关产品仍需逐项核对。")
+        with self.assertRaisesRegex(ValueError, "distinct patent numbers"):
+            weekly.validate_amazon_article(article, sources)
+
+    def test_priority_sources_cannot_silently_drop_from_article(self):
+        sources = deepcopy(self.sources) + [{
+            "id": "A3", "title": "亚马逊FBA费用调整", "sourceName": "雨果网",
+            "publishedAt": "2026-11-12", "url": "https://example.com/three",
+            "evidenceScope": "body", "excerpt": "亚马逊FBA费用调整，具体金额按商品不同。"}]
+        with self.assertRaisesRegex(ValueError, "omits priority sources"):
+            weekly.validate_amazon_article(self.article, sources)
+
+    def test_collector_decodes_implicit_gzip(self):
+        class Response(io.BytesIO):
+            def __init__(self, content):
+                super().__init__(gzip.compress(content))
+                self.headers = {"Content-Type": "text/html; charset=utf-8"}
+
+        from email.message import Message
+        response = Response("<html><title>文章</title></html>".encode("utf-8"))
+        response.headers = Message()
+        with patch.object(update_amazon_news.urllib.request, "urlopen", return_value=response):
+            self.assertIn("文章", update_amazon_news.get_page("https://example.com/test"))
+
     def test_closes_prior_issue_once(self):
         prior = {"week": "2026-W46", "date": "2026-11-15", "article": self.article,
                  "cards": {"news": [], "watch": [], "learn": []}, "sources": self.sources}
@@ -64,6 +96,19 @@ class AmazonWeeklyChecks(unittest.TestCase):
             weekly.close_prior_issue(prior, "2026-W47", archive)
             self.assertEqual(json.loads(path.read_text(encoding="utf-8"))["article"]["title"],
                              self.article["title"])
+
+    def test_full_article_excludes_title_only_sources(self):
+        sources = [{**self.sources[0], "evidenceScope": "title"},
+                   {**self.sources[1], "evidenceScope": "body"}]
+        seen = []
+
+        def article_client(selected, *_args):
+            seen.extend(selected)
+            return {"title": "A generated article"}
+
+        with patch.object(weekly, "validate_amazon_article", side_effect=lambda raw, _: raw):
+            weekly.generate(sources, date(2026, 11, 12), "test", "test", client=article_client)
+        self.assertEqual([source["id"] for source in seen], ["A2"])
 
     def test_monday_finalizes_prior_week_before_opening_new_one(self):
         def item(title, day, url):
