@@ -30,6 +30,7 @@ DEFAULT_QUALITY_SCORE = 60
 TOP_QUALITY_SCORE = 80
 
 RSS_SOURCES = [
+    {"name": "AWS 机器学习博客", "url": "https://aws.amazon.com/blogs/machine-learning/feed/", "category": CORE_CATEGORY, "tags": ["AWS", "official", "machine-learning"], "importance": 4},
     {"name": "OpenAI", "url": "https://openai.com/news/rss.xml", "category": CORE_CATEGORY, "tags": ["OpenAI", "official"], "importance": 5},
     {"name": "Google DeepMind", "url": "https://deepmind.google/blog/rss.xml", "userAgent": "AI-NEWS/1.0", "category": CORE_CATEGORY, "tags": ["Google DeepMind", "official", "research"], "importance": 5},
     {"name": "Google AI", "url": "https://blog.google/innovation-and-ai/technology/ai/rss/", "userAgent": "AI-NEWS/1.0", "category": CORE_CATEGORY, "tags": ["Google AI", "official", "Gemini"], "importance": 5},

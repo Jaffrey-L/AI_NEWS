@@ -14,41 +14,43 @@ test("weekly reading keeps its three answers and original links", async ({ page 
   expect(errors).toEqual([]);
 });
 
-test("Amazon shows only this week's dated originals in three distinct groups", async ({ page }) => {
+test("Amazon has a sourced full reading and three short groups", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.locator('.tab[data-v="amazon"]').click();
   await expect(page.locator("#v-amazon .answers .ans")).toHaveCount(3);
-  await expect(page.locator("#v-amazon .hero")).toContainText("W46 · 11.09–11.15（进行中）");
+  await expect(page.locator("#v-amazon .hero")).toContainText("本周进行中");
   await expect(page.locator("#wkpick")).toBeHidden();
   const cards = page.locator("#v-amazon .answers .ans");
-  await expect(cards.nth(0)).toContainText("本周没有已核实的对应文章");
   await expect(cards.nth(1)).toContainText("AI 解读");
-  await expect(cards.nth(1).locator('ol li').first()).toContainText("服务商授权升级");
-  await expect(cards.nth(1)).toContainText("深圳APEC管控");
-  await expect(cards.nth(1)).toContainText("IOSS改革");
+  await expect(page.locator("#v-amazon .body .sec")).not.toHaveCount(0);
+  await expect(page.locator("#v-amazon .body .sec").last()).toContainText("本周判断");
+  const paragraphs = page.locator("#v-amazon .body p");
+  expect(await paragraphs.count()).toBeGreaterThan(0);
+  expect(await paragraphs.count()).toBe(await page.locator("#v-amazon .body p:has(a.cite[href^='https://'])").count());
+  await expect(page.locator("#v-amazon .srclist li")).not.toHaveCount(0);
   await expect(page.locator("#v-amazon .answers")).not.toContainText("Amazon Bedrock");
   await expect(page.locator("#v-amazon .answers")).not.toContainText("SAMPLE HOUSE");
   await expect(page.locator("#v-amazon")).not.toContainText("-AMZ123跨境导航");
   const groups = await page.locator("#v-amazon .answers .ans").evaluateAll((cards) =>
-    cards.map((card) => [...card.querySelectorAll("li a")].map((a) => a.href))
+    cards.map((card) => [...card.querySelectorAll("li .ai-original")].map((a) => a.href))
   );
   expect(groups.every((group) => group.length <= 3)).toBe(true);
   const all = groups.flat();
   expect(all.length).toBeGreaterThan(0);
   expect(new Set(all).size).toBe(all.length);
   for (const url of all) expect(url).toMatch(/^https:\/\//);
-  await expect(page.locator("#v-amazon .amazon-article")).not.toHaveCount(0);
   await expect(page.locator("#v-amazon")).not.toContainText("公众号");
 });
 
-test("older Amazon articles remain in the source archive", async ({ page }) => {
+test("AWS is an AI source and uncited feeds have accurate status", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.locator('.tab[data-v="sources"]').click();
-  await expect(page.locator(".amazon-archive-link")).toHaveCount(42);
-  await expect(page.locator("#v-sources")).toContainText("最近 2026.10.15");
-  await expect(page.locator("#v-sources")).toContainText("最近 2026.06.23");
+  await expect(page.locator(".amazon-archive-link")).toHaveCount(0);
   await expect(page.locator("#v-sources")).toContainText("雨果网");
   await expect(page.locator("#v-sources")).toContainText("AWS 机器学习博客");
+  await expect(page.locator("#v-sources")).toContainText("新接入，下期起参与");
+  await expect(page.locator("#v-sources")).not.toContainText("近 9 期未引用");
+  await expect(page.locator("#v-sources")).toContainText("已引用 2 篇");
   await expect(page.locator("#v-sources")).not.toContainText("公众号");
 });
 

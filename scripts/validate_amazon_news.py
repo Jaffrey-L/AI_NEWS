@@ -17,7 +17,6 @@ allowed = {
     "亚马逊广告": "advertising.amazon.com",
     "About Amazon · AI": "www.aboutamazon.com",
     "About Amazon · Innovation": "www.aboutamazon.com",
-    "AWS 机器学习博客": "aws.amazon.com",
 }
 today = datetime.now(timezone.utc).date()
 seen = set()

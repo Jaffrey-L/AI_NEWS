@@ -96,6 +96,7 @@ class SafeRefresh(unittest.TestCase):
     def test_amazon_policies_exclude_technical_and_watch_fees(self):
         self.assertIsNone(updater.amazon_bucket({"sourceName": "AWS 机器学习博客", "title": "New model"}))
         self.assertEqual(updater.amazon_bucket({"sourceName": "AMZ123", "title": "亚马逊物流费用新政"}), "watch")
+        self.assertEqual(updater.amazon_bucket({"sourceName": "雨果网", "title": "亚马逊黑五网一攻略：Deal提报截止汇总"}), "watch")
         self.assertEqual(updater.amazon_bucket({"sourceName": "雨果网", "title": "亚马逊重型大件难做？三招破局"}), "learn")
 
     def test_amazon_direct_seller_action_outweighs_other_platform_news(self):
@@ -105,8 +106,10 @@ class SafeRefresh(unittest.TestCase):
             {"sourceName": "AMZ123", "title": "欧盟IOSS关税改革", "date": "2026-11-11", "sourceUrl": "https://example.com/ioss", "summary": "门槛变化"},
             {"sourceName": "AMZ123", "title": "深圳物流延误影响发货", "date": "2026-11-11", "sourceUrl": "https://example.com/logistics", "summary": "运输变化"},
         ]
-        watch = [source["url"] for source in updater.amazon_sources(articles, date(2026, 11, 11))]
-        self.assertEqual(watch, ["https://example.com/auth", "https://example.com/logistics", "https://example.com/ioss"])
+        with patch.object(updater.update_amazon_news, "fetch_article", return_value=None):
+            watch = [source["url"] for source in updater.amazon_sources(articles, date(2026, 11, 11))]
+        self.assertEqual(watch[:3], ["https://example.com/auth", "https://example.com/logistics", "https://example.com/ioss"])
+        self.assertIn("https://example.com/other", watch)
 
     def test_amazon_reranks_whole_week_and_includes_seller_case(self):
         def article(title, day, slug):
@@ -120,13 +123,27 @@ class SafeRefresh(unittest.TestCase):
             article("亚马逊日本站和澳大利亚站带电产品合规要求更新", "2026-11-11", "compliance"),
             article("只改了一个预计送达时间，亚马逊订单当天就回来了", "2026-11-11", "case"),
         ]
-        sources = updater.amazon_sources(articles, date(2026, 11, 11))
+        with patch.object(updater.update_amazon_news, "fetch_article", return_value=None):
+            sources = updater.amazon_sources(articles, date(2026, 11, 11))
+        self.assertEqual([source["url"] for source in sources if source["bucket"] == "news"],
+                         ["https://example.com/auth"])
         self.assertEqual([source["url"] for source in sources if source["bucket"] == "watch"],
-                         ["https://example.com/compliance", "https://example.com/auth",
-                          "https://example.com/logistics"])
+                         ["https://example.com/compliance", "https://example.com/logistics",
+                          "https://example.com/ioss"])
         self.assertEqual([source["url"] for source in sources if source["bucket"] == "learn"],
                          ["https://example.com/case"])
-        self.assertNotIn("https://example.com/ioss", [source["url"] for source in sources])
+        self.assertIn("https://example.com/ioss", [source["url"] for source in sources])
+
+    def test_amazon_keeps_earlier_day_even_with_many_newer_watch_items(self):
+        articles = [{"sourceName": "AMZ123", "title": f"亚马逊物流延误提醒{i}",
+                     "date": "2026-11-11", "sourceUrl": f"https://example.com/new{i}",
+                     "summary": "发货安排"} for i in range(12)]
+        articles.append({"sourceName": "AMZ123", "title": "亚马逊物流延误旧日提醒",
+                         "date": "2026-11-09", "sourceUrl": "https://example.com/monday",
+                         "summary": "发货安排"})
+        with patch.object(updater.update_amazon_news, "fetch_article", return_value=None):
+            sources = updater.amazon_sources(articles, date(2026, 11, 12))
+        self.assertIn("https://example.com/monday", [source["url"] for source in sources])
 
 
 if __name__ == "__main__":

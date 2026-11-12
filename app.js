@@ -220,7 +220,8 @@ var ST = DATA.srcStatus;
 function feedState(f){
   return f.cited > 0
     ? { cls:'dot-live', txt:'已引用 ' + f.cited + ' 篇' }
-    : { cls:'dot-scan', txt:'近 9 期未引用' };
+    : { cls:'dot-scan', txt:f.firstEligibleWeek && WEEKS[0].week < f.firstEligibleWeek
+        ? '新接入，下期起参与' : '本期未引用' };
 }
 
 function renderSources(){
@@ -335,22 +336,6 @@ function renderSources(){
   b3.appendChild(sl);
   v.appendChild(b3);
 
-  var archiveBlock = el('div','card-blk');
-  archiveBlock.appendChild(el('h3',null,'亚马逊原文归档 · ' + DATA.amazon.articles.length + ' 篇'));
-  archiveBlock.appendChild(el('p','note','旧文章在这里保留出处与日期，不混进本周的三块摘要。'));
-  var archiveList = el('div','feedtable');
-  DATA.amazon.articles.forEach(function(a){
-    var link = el('a','frow amazon-archive-link');
-    link.href = a.sourceUrl;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    link.appendChild(el('span','amazon-archive-title',amazonTitle(a)));
-    link.appendChild(el('span','fst',a.sourceName + ' · ' + fmtDate(a.date)));
-    archiveList.appendChild(link);
-  });
-  archiveBlock.appendChild(archiveList);
-  v.appendChild(archiveBlock);
-
   /* 完整名单 */
   var b4 = el('div','card-blk');
   var h4 = el('h3'); h4.appendChild(document.createTextNode('完整关注名单'));
@@ -381,27 +366,13 @@ function amazonTitle(article){
   return article.title.replace(/\s*-\s*AMZ123跨境导航\s*$/i, '').trim();
 }
 
-function amazonBucket(article){
-  var title = amazonTitle(article);
-  if (/^AWS 机器学习博客|^About Amazon/.test(article.sourceName)) return null;
-  if (/SAMPLE HOUSE|十年亚马逊生涯/.test(title)) return null;
-  if (/IOSS改革|取消150欧元/.test(title)) return 'latest';
-  if (/紧急提醒|APEC|授权|专利|延误|新政|监管|费用|规则|合规|风险|policy|fees?/i.test(title)) return 'watch';
-  if (/MCF|ASIN|三招|工具|方法|指南|如何|做法|QA|实践|build|guide|workflow/i.test(title)) return 'learn';
-  return 'latest';
-}
-
-function amazonImpact(article){
-  var title = amazonTitle(article);
-  if (/IOSS改革|取消150欧元/.test(title)) return 100;
-  if (/紧急提醒|APEC/.test(title)) return 100;
-  if (/授权/.test(title)) return 95;
-  if (/欧盟小包|新政/.test(title)) return 90;
-  if (/MCF/.test(title)) return 100;
-  if (/ASIN|QA/.test(title)) return 90;
-  if (/三招/.test(title)) return 80;
-  if (/专利/.test(title)) return 70;
-  return 30;
+var amazonSelectedWeek = null;
+function selectAmazonWeek(week){
+  amazonSelectedWeek = week;
+  var view = document.getElementById('v-amazon');
+  delete view.dataset.done;
+  renderAmazon();
+  try { history.replaceState(null,'','?amazon=' + week); } catch(e){}
 }
 
 function renderAmazon(){
@@ -410,114 +381,129 @@ function renderAmazon(){
   v.innerHTML = '';
   var failed = updateFailure('amazon');
   if (failed) v.appendChild(failed);
-  var articles = (DATA.amazon && DATA.amazon.articles) || [];
-  var scanDay = (DATA.amazon.updatedAt || '').slice(0,10) || new Date().toISOString().slice(0,10);
-  var monday = new Date(scanDay + 'T00:00:00Z');
+  var current = DATA.amazon.ai || {};
+  var archive = DATA.amazon.weeks || [];
+  var issues = [current].concat(archive);
+  var issue = issues.find(function(row){ return row.week === amazonSelectedWeek; }) || current;
+  var day = issue.date || (DATA.amazon.updatedAt || '').slice(0,10);
+  var monday = new Date(day + 'T00:00:00Z');
   monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
   var weekStart = monday.toISOString().slice(0,10);
-  var sunday = new Date(monday);
-  sunday.setUTCDate(sunday.getUTCDate() + 6);
+  var sunday = new Date(monday); sunday.setUTCDate(sunday.getUTCDate() + 6);
   var weekEnd = sunday.toISOString().slice(0,10);
-  var thursday = new Date(scanDay + 'T00:00:00Z');
-  thursday.setUTCDate(thursday.getUTCDate() + 4 - (thursday.getUTCDay() || 7));
-  var yearStart = new Date(Date.UTC(thursday.getUTCFullYear(), 0, 1));
-  var weekNumber = Math.ceil((((thursday - yearStart) / 86400000) + 1) / 7);
+  var article = issue.article || null;
+  var sources = issue.sources || [];
+  var byId = {};
+  sources.forEach(function(source){ byId[source.id] = source; });
   var hero = el('section','hero amz');
-  var kick = el('div','kicker');
-  kick.appendChild(el('i'));
+  var kick = el('div','kicker'); kick.appendChild(el('i'));
   kick.appendChild(document.createTextNode('亚马逊 / 跨境 · 公开来源'));
   hero.appendChild(kick);
-  hero.appendChild(el('h1',null,'亚马逊周读'));
-  hero.appendChild(el('p','sub','发生了什么、卖家要注意什么、哪些做法值得学习。只把本周有日期、有原文链接的文章放进三块摘要。'));
+  hero.appendChild(el('h1',null,article ? article.title : '亚马逊周读'));
+  hero.appendChild(el('p','sub',article ? article.subtitle : '本周暂无可发布的完整解读。'));
   var hm = el('div','herometa');
-  hm.appendChild(el('span','chip','W' + weekNumber + ' · ' + fmtDate(weekStart).slice(5) + '–' + fmtDate(weekEnd).slice(5) + '（进行中）'));
-  hm.appendChild(el('span','chip','指定来源 5 个（4 个出处）'));
-  hm.appendChild(el('span','chip','官方订阅 3 个'));
-  hm.appendChild(el('span','chip',articles.length + ' 篇可读原文'));
+  hm.appendChild(el('span','chip',issue.week + ' · ' + fmtDate(weekStart).slice(5) + '–' + fmtDate(weekEnd).slice(5) +
+    (issue === current ? '（截至 ' + fmtDate(day).slice(5) + '，本周进行中）' : '（已归档）')));
+  hm.appendChild(el('span','chip','原文 ' + sources.length + ' 篇'));
+  hm.appendChild(el('span','chip','官方订阅 ' + DATA.srcStatus.amazonOfficialSources.length + ' 个'));
   hero.appendChild(hm);
   v.appendChild(hero);
-  var current = articles.filter(function(a){ return a.date >= weekStart && a.date <= scanDay; });
-  var buckets = { latest: [], watch: [], learn: [] };
-  current.forEach(function(a){
-    var bucket = amazonBucket(a);
-    if (bucket) buckets[bucket].push(a);
-  });
-  Object.keys(buckets).forEach(function(bucket){
-    buckets[bucket].sort(function(a,b){ return amazonImpact(b) - amazonImpact(a) || b.date.localeCompare(a.date); });
-  });
-  var ai = DATA.amazon.ai;
-  var aiSources = {};
-  if (ai && ai.cards) (ai.sources || []).forEach(function(s){ aiSources[s.id] = s; });
-  var latest = ai && ai.cards ? ai.cards.news : buckets.latest.slice(0,3);
-  var watch = ai && ai.cards ? ai.cards.watch : buckets.watch.slice(0,3);
-  var learn = ai && ai.cards ? ai.cards.learn : buckets.learn.slice(0,3);
-  var groups = [
-    ['a1','01 发生了什么大事','WHAT','平台和行业这周发生了什么',latest],
-    ['a2','02 我需要注意的','WATCH','政策、规则、费用上要当心什么',watch],
-    ['a3','03 我需要学习的','LEARN','哪些工具和做法可以直接用',learn]
-  ];
-  var answerGrid = el('div','answers');
+
+  var groups = [['a1','01 发生了什么大事','WHAT','平台和行业这周发生了什么','news'],
+                ['a2','02 我需要注意的','WATCH','政策、规则、费用与物流','watch'],
+                ['a3','03 我需要学习的','LEARN','哪些卖家实践值得研究','learn']];
+  var grid = el('div','answers');
   groups.forEach(function(group){
-    var card = el('div','ans ' + group[0]);
-    var head = el('h2');
-    head.appendChild(document.createTextNode(group[1]));
-    head.appendChild(el('em',null,group[2]));
-    card.appendChild(head);
-    card.appendChild(el('div','q',group[3]));
-    if (!group[4].length) card.appendChild(el('div','empty','本周没有已核实的对应文章。'));
+    var box = el('div','ans ' + group[0]);
+    var h = el('h2'); h.appendChild(document.createTextNode(group[1])); h.appendChild(el('em',null,group[2]));
+    box.appendChild(h); box.appendChild(el('div','q',group[3]));
+    var rows = ((issue.cards || {})[group[4]] || []).slice(0,3);
+    if (!rows.length) box.appendChild(el('div','empty','本周没有可核的对应原文。'));
     var ol = el('ol');
-    group[4].forEach(function(a){
+    rows.forEach(function(row){
+      var original = byId[(row.src || [])[0]];
+      if (!original || !original.url) return;
       var li = el('li');
-      if (a.ai) li.appendChild(el('strong','ai-label','AI 解读 · '));
-      if (a.ai) li.appendChild(document.createTextNode(a.text));
-      var original = a.ai ? aiSources[a.src[0]] : a;
-      var link = el('a',a.ai ? 'ai-original' : null,a.ai ? ('原文：' + amazonTitle(original)) : amazonTitle(a));
-      link.href = a.ai ? original.url : a.sourceUrl;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
+      li.appendChild(el('strong','ai-label','AI 解读 · '));
+      li.appendChild(document.createTextNode(row.text));
+      var link = el('a','ai-original','原文：' + amazonTitle(original));
+      link.href = original.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
       li.appendChild(link);
-      li.appendChild(el('div','srcrow',(a.ai ? original.sourceName : a.sourceName) + ' · ' + fmtDate(a.ai ? original.publishedAt : a.date)));
+      if (original.summary && original.summary.replace(/\s+/g,'') !== original.title.replace(/\s+/g,'')) {
+        li.appendChild(el('div','srcrow','原站摘要：' + original.summary));
+      }
+      li.appendChild(el('div','srcrow',original.sourceName + ' · ' + fmtDate(original.publishedAt)));
       ol.appendChild(li);
     });
-    card.appendChild(ol);
-    answerGrid.appendChild(card);
+    box.appendChild(ol); grid.appendChild(box);
   });
-  v.appendChild(answerGrid);
-  var hd = el('div','view-head');
-  hd.appendChild(el('h2',null,'本周原文'));
-  hd.appendChild(el('p',null,'五个指定名称对应四家公开网站，另加三条亚马逊官方订阅。历史文章见 AI 承接中的原文归档。'));
-  v.appendChild(hd);
-  var summary = el('div','amazon-summary');
-  summary.appendChild(el('strong',null,current.length + ' 篇本周原文'));
-  summary.appendChild(el('span',null,'更新于 ' + (DATA.amazon.updatedAt || '').slice(0,10)));
-  v.appendChild(summary);
-  if (!articles.length) {
-    v.appendChild(el('p','empty','当前没有核实发布日期的亚马逊文章。'));
-    v.dataset.done = '1';
-    return;
-  }
-  var list = el('div','amazon-list');
-  current.forEach(function(article){
-    var card = el('article','amazon-article');
-    var meta = el('div','amazon-meta');
-    meta.appendChild(el('span',null,article.sourceName));
-    meta.appendChild(el('time',null,fmtDate(article.date)));
-    card.appendChild(meta);
-    var heading = el('h3');
-    var displayTitle = amazonTitle(article);
-    var link = el('a',null,displayTitle);
-    link.href = article.sourceUrl;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    heading.appendChild(link);
-    card.appendChild(heading);
-    var originalSummary = (article.summary || '').trim();
-    if (originalSummary && originalSummary.replace(/\s+/g,'') !== displayTitle.replace(/\s+/g,'')) {
-      card.appendChild(el('p',null,'原站摘要：' + originalSummary));
+  v.appendChild(grid);
+
+  if (article && article.sections && article.sections.length) {
+    var cols = el('div','cols');
+    var left = el('div');
+    var sh = el('div','sec-head');
+    sh.appendChild(el('h3',null,'本周解读全文'));
+    sh.appendChild(el('span',null,'AI 解读 · 每段可打开原文'));
+    left.appendChild(sh);
+    var body = el('article','body');
+    article.sections.forEach(function(section, index){
+      var sec = el('div','sec');
+      var heading = el('h4'); heading.appendChild(el('span','n',String(index+1).padStart(2,'0')));
+      heading.appendChild(document.createTextNode(section.heading)); sec.appendChild(heading);
+      section.paragraphs.forEach(function(paragraph){
+        var p = el('p'); p.appendChild(document.createTextNode(paragraph.text));
+        paragraph.citations.forEach(function(citation){
+          var original = byId[citation.sourceId];
+          if (!original) return;
+          var link = el('a','cite',citation.sourceId);
+          link.href = original.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
+          link.title = '打开原文：' + original.title;
+          p.appendChild(link);
+        });
+        sec.appendChild(p);
+      });
+      body.appendChild(sec);
+    });
+    left.appendChild(body); cols.appendChild(left);
+    var aside = el('aside');
+    var panel = el('div','panel');
+    panel.appendChild(el('h5',null,'本周原文 · ' + sources.length + ' 篇'));
+    var list = el('ul','srclist');
+    sources.forEach(function(source){
+      var li = el('li'); li.appendChild(el('span','sid',source.id));
+      li.appendChild(el('span','t',amazonTitle(source)));
+      li.appendChild(el('span','m',source.sourceName + ' · ' + fmtDate(source.publishedAt)));
+      li.addEventListener('click',function(){ window.open(source.url,'_blank','noopener'); });
+      list.appendChild(li);
+    });
+    panel.appendChild(list); aside.appendChild(panel);
+    var past = el('div','panel'); past.appendChild(el('h5',null,'往期'));
+    var buttons = el('div','archive');
+    issues.forEach(function(row){
+      if (row === current || !row.week || !row.article) return;
+      var button = el('button',row.week === issue.week ? 'on' : null,row.week);
+      button.addEventListener('click',function(){ selectAmazonWeek(row.week); });
+      buttons.appendChild(button);
+    });
+    past.appendChild(buttons);
+    if (!buttons.children.length) past.appendChild(el('p','empty','首期收尾后出现'));
+    aside.appendChild(past);
+    cols.appendChild(aside); v.appendChild(cols);
+  } else {
+    v.appendChild(el('p','empty','本周解读尚未生成；已发布的上一期会保留。'));
+    if (archive.length) {
+      var pastIssues = el('div','panel'); pastIssues.appendChild(el('h5',null,'往期'));
+      var archivedButtons = el('div','archive');
+      archive.forEach(function(row){
+        if (!row.week || !row.article) return;
+        var button = el('button',null,row.week);
+        button.addEventListener('click',function(){ selectAmazonWeek(row.week); });
+        archivedButtons.appendChild(button);
+      });
+      pastIssues.appendChild(archivedButtons); v.appendChild(pastIssues);
     }
-    list.appendChild(card);
-  });
-  v.appendChild(list);
+  }
   v.dataset.done = '1';
 }
 
