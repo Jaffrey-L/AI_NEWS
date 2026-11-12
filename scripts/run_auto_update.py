@@ -130,7 +130,9 @@ def amazon_sources(articles: list[dict], day: date) -> list[dict]:
             refreshed = refreshed_by_url.get(article["sourceUrl"])
             body = refreshed.get("bodyText", "") if refreshed else ""
         scope = "body" if len(body.strip()) >= 80 else "title"
-        excerpt = body[:7000] if scope == "body" else article["title"]
+        # Cards cite the exact title, while article paragraphs cite body text.
+        # Both must be present in the evidence passed to the model/validator.
+        excerpt = f'{article["title"]}\n{body[:7000]}' if scope == "body" else article["title"]
         sources.append({"id": f"A{len(sources) + 1}", "title": article["title"],
                         "sourceName": article["sourceName"], "publishedAt": article["date"],
                         "url": article["sourceUrl"], "summary": article.get("summary", ""),

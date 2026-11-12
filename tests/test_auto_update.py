@@ -145,6 +145,15 @@ class SafeRefresh(unittest.TestCase):
             sources = updater.amazon_sources(articles, date(2026, 11, 12))
         self.assertIn("https://example.com/monday", [source["url"] for source in sources])
 
+    def test_amazon_body_evidence_includes_title_for_cards(self):
+        article = {"sourceName": "AMZ123", "title": "亚马逊授权规则更新",
+                   "date": "2026-11-12", "sourceUrl": "https://example.com/auth",
+                   "bodyText": "The seller must complete a new authorization. " * 3}
+        sources = updater.amazon_sources([article], date(2026, 11, 12))
+        self.assertEqual(len(sources), 1)
+        self.assertTrue(sources[0]["excerpt"].startswith(article["title"] + "\n"))
+        self.assertIn("The seller must complete", sources[0]["excerpt"])
+
 
 if __name__ == "__main__":
     unittest.main()
