@@ -418,7 +418,8 @@ function renderAmazon(){
     var h = el('h2'); h.appendChild(document.createTextNode(group[1])); h.appendChild(el('em',null,group[2]));
     box.appendChild(h); box.appendChild(el('div','q',group[3]));
     var rows = ((issue.cards || {})[group[4]] || []).slice(0,3);
-    if (!rows.length) box.appendChild(el('div','empty','本周没有可核的对应原文。'));
+    if (!rows.length) box.appendChild(el('div','empty',group[4] === 'learn'
+      ? '本周暂无合适的实操案例' : '本周没有可核的对应原文。'));
     var ol = el('ol');
     rows.forEach(function(row){
       var original = byId[(row.src || [])[0]];

@@ -233,6 +233,24 @@ class SafeRefresh(unittest.TestCase):
         self.assertTrue(sources[0]["excerpt"].startswith(article["title"] + "\n"))
         self.assertIn("The seller must complete", sources[0]["excerpt"])
 
+    def test_amazon_preserves_a_practical_case_when_alerts_fill_the_limit(self):
+        articles = [
+            {"sourceName": "AMZ123", "title": f"亚马逊物流费用调整提醒{i}",
+             "date": "2026-11-11" if i == 0 else "2026-11-13",
+             "sourceUrl": f"https://example.com/watch{i}",
+             "summary": "卖家费用提醒", "bodyText": "The source article describes seller fees. " * 4}
+            for i in range(20)
+        ]
+        articles.append({"sourceName": "雨果网／雨果跨境",
+                         "title": "亚马逊重型大件难做？Humhold用三招破局",
+                         "date": "2026-11-11", "sourceUrl": "https://example.com/case",
+                         "summary": "卖家案例", "bodyText": "The source article describes a practical seller method. " * 4})
+
+        sources = updater.amazon_sources(articles, date(2026, 11, 13))
+        self.assertLessEqual(len(sources), 15)
+        self.assertIn("https://example.com/case", [item["url"] for item in sources])
+        self.assertEqual(next(item["bucket"] for item in sources if item["url"] == "https://example.com/case"), "learn")
+
 
 if __name__ == "__main__":
     unittest.main()
