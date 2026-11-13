@@ -84,6 +84,28 @@ class AmazonWeeklyChecks(unittest.TestCase):
         with patch.object(update_amazon_news.urllib.request, "urlopen", return_value=response):
             self.assertIn("文章", update_amazon_news.get_page("https://example.com/test"))
 
+    def test_collector_retries_transient_listing_timeout(self):
+        from email.message import Message
+
+        response = io.BytesIO(b"<html><title>Recovered</title></html>")
+        response.headers = Message()
+        with patch.object(update_amazon_news.urllib.request, "urlopen",
+                          side_effect=[TimeoutError("timed out"), response]) as request:
+            self.assertIn("Recovered", update_amazon_news.get_page("https://example.com/test"))
+        self.assertEqual(request.call_count, 2)
+
+    def test_collector_failure_is_reportable_without_replacing_previous_data(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "amazon.json"
+            output.write_text('{"articles":[]}', encoding="utf-8")
+            with patch.object(update_amazon_news, "OUT", output), \
+                 patch.object(update_amazon_news, "SITES", [("AMZ123", "https://example.com/t", r"https://example.com/t/.*")]), \
+                 patch.object(update_amazon_news, "RSS_SITES", []), \
+                 patch.object(update_amazon_news, "get_page", side_effect=TimeoutError("timed out")):
+                with self.assertRaisesRegex(RuntimeError, "collection incomplete"):
+                    update_amazon_news.main()
+            self.assertEqual(json.loads(output.read_text(encoding="utf-8")), {"articles": []})
+
     def test_closes_prior_issue_once(self):
         prior = {"week": "2026-W46", "date": "2026-11-15", "article": self.article,
                  "cards": {"news": [], "watch": [], "learn": []}, "sources": self.sources}

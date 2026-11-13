@@ -152,6 +152,26 @@ class SafeRefresh(unittest.TestCase):
             self.assertEqual(status["weekly"]["shownWeek"], "2026-W45")
             self.assertEqual(status["weekly"]["attemptedWeek"], "2026-W46")
 
+    def test_amazon_collection_failure_keeps_issue_and_marks_update_failed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            data = Path(temporary) / "data"
+            data.mkdir()
+            amazon = data / "amazon.json"
+            original = {"updatedAt": "2026-11-12T04:02:22Z",
+                        "ai": {"week": "2026-W46"}, "articles": [{"title": "old"}]}
+            amazon.write_text(json.dumps(original), encoding="utf-8")
+
+            def fail(_day):
+                amazon.write_text('{"articles":[]}', encoding="utf-8")
+                raise RuntimeError("Amazon source collection incomplete")
+
+            with patch.object(updater, "DATA", data), patch.object(updater.build_site_payload, "main"):
+                self.assertFalse(updater.run("amazon", date(2026, 11, 13), amazon_refresh=fail))
+            self.assertEqual(json.loads(amazon.read_text(encoding="utf-8")), original)
+            status = json.loads((data / "update-status.json").read_text(encoding="utf-8"))
+            self.assertEqual(status["amazon"]["state"], "failed")
+            self.assertEqual(status["amazon"]["shownWeek"], "2026-W46")
+
     def test_amazon_policies_exclude_technical_and_watch_fees(self):
         self.assertIsNone(updater.amazon_bucket({"sourceName": "AWS 机器学习博客", "title": "New model"}))
         self.assertEqual(updater.amazon_bucket({"sourceName": "AMZ123", "title": "亚马逊物流费用新政"}), "watch")
