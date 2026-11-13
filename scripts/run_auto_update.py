@@ -34,6 +34,12 @@ def monday(day: date) -> date:
     return day - timedelta(days=day.weekday())
 
 
+PRACTICAL_CASE_RE = re.compile(
+    r"工具|方法|指南|如何|做法|实践|案例|破局|复盘|经验|三招|攻略|预计送达时间|订单.{0,8}回来|MCF|ASIN|QA|build|guide|workflow",
+    re.I,
+)
+
+
 def amazon_bucket(article: dict) -> str | None:
     name = article.get("sourceName", "")
     title = article.get("title", "")
@@ -55,7 +61,7 @@ def amazon_bucket(article: dict) -> str | None:
         return "watch"
     if re.search(r"政策|新政|费用|收费|物流|延误|合规|风险|监管|规则|授权|专利|policy|fees?|shipping|logistics|IOSS|关税|海关", title, re.I):
         return "watch"
-    if re.search(r"工具|方法|指南|如何|做法|实践|案例|破局|复盘|经验|预计送达时间|订单.{0,8}回来|MCF|ASIN|QA|build|guide|workflow", title, re.I):
+    if PRACTICAL_CASE_RE.search(title):
         return "learn"
     if re.search(r"发布|宣布|推出|上线|重大|改革|announc|launch|introduc", title, re.I) and re.search(r"亚马逊|Amazon|卖家|跨境", title, re.I):
         return "news"
@@ -109,6 +115,15 @@ def amazon_sources(articles: list[dict], day: date) -> list[dict]:
             bucket, row = max(choices, key=lambda pair: amazon_impact(pair[1], pair[0]))
             picked.append((bucket, row))
             seen.add(row["sourceUrl"])
+    if not any(bucket == "learn" for bucket, _ in picked):
+        practical = [row for row in groups["learn"] if PRACTICAL_CASE_RE.search(row["title"])]
+        if practical:
+            case = max(practical, key=lambda row: (
+                bool(re.search(r"三招|方法|做法|案例|破局|实践|指南|攻略", row["title"])),
+                row["date"], row["title"],
+            ))
+            picked.append(("learn", case))
+            seen.add(case["sourceUrl"])
     for bucket, row in sorted(ranked, key=lambda pair: (amazon_impact(pair[1], pair[0]), pair[1]["date"]), reverse=True):
         if len(picked) >= 15:
             break
