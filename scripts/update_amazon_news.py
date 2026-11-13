@@ -7,6 +7,7 @@ not read or claim to archive their WeChat posts.
 import json
 import gzip
 import re
+import time
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -106,14 +107,20 @@ def get_page(url):
         url,
         headers={"User-Agent": "Mozilla/5.0 (compatible; AI-News/1.0)", "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.7"},
     )
-    with urllib.request.urlopen(request, timeout=16) as response:
-        content = response.read(1_500_000)
-        # Some publisher pages return gzip bytes even without an explicit
-        # Accept-Encoding request. Decode before parsing metadata/body text.
-        if content.startswith(b"\x1f\x8b"):
-            content = gzip.decompress(content)
-        charset = response.headers.get_content_charset() or "utf-8"
-        return content.decode(charset, "replace")
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(request, timeout=16) as response:
+                content = response.read(1_500_000)
+                # Some publisher pages return gzip bytes even without an explicit
+                # Accept-Encoding request. Decode before parsing metadata/body text.
+                if content.startswith(b"\x1f\x8b"):
+                    content = gzip.decompress(content)
+                charset = response.headers.get_content_charset() or "utf-8"
+                return content.decode(charset, "replace")
+        except TimeoutError:
+            if attempt == 2:
+                raise
+            time.sleep(attempt + 1)
 
 
 def cleaned(value):
@@ -259,7 +266,7 @@ def main():
         "errors": errors,
     }
     if errors or not output["articles"]:
-        raise SystemExit(f"Amazon source collection incomplete; retained previous dataset: {errors}")
+        raise RuntimeError(f"Amazon source collection incomplete; retained previous dataset: {errors}")
     # Full page text is only used during this run. Do not republish it in the
     # repository or static site; the linked publisher remains the source.
     public_output = {**output, "articles": [
