@@ -1,0 +1,13 @@
+[Unit]
+Description=Start completed AI weekly issue from 242 on Monday at 08:30 Beijing time, with retries
+
+[Timer]
+OnCalendar=Mon *-*-* 08:30:00
+OnCalendar=Mon *-*-* 10:00:00
+OnCalendar=Mon *-*-* 12:00:00
+AccuracySec=1min
+Persistent=true
+Unit=ai-news-refresh@weekly.service
+
+[Install]
+WantedBy=timers.target

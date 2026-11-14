@@ -1,0 +1,19 @@
+[Unit]
+Description=Start and verify AI_NEWS %i refresh from 242
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ai-news-trigger
+Group=ai-news-trigger
+WorkingDirectory=/var/lib/ai-news-trigger
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /usr/local/libexec/ai-news-refresh-trigger.py --mode %i
+TimeoutStartSec=100min
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ai-news-trigger

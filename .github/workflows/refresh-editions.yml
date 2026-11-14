@@ -1,12 +1,10 @@
 name: Refresh AI and Amazon editions
+run-name: >-
+  ${{ github.event_name == 'workflow_dispatch' && format('Refresh {0} {1}', inputs.mode, inputs.request_id) || github.event.head_commit.message || 'Publish AI_NEWS' }}
 
 on:
   push:
-    branches: [main]
-  schedule:
-    # Beijing 07:30 daily and Monday 08:30; GitHub cron uses UTC.
-    - cron: '30 23 * * *'
-    - cron: '30 0 * * 1'
+    branches: [main, server-refresh]
   workflow_dispatch:
     inputs:
       mode:
@@ -14,8 +12,13 @@ on:
         required: true
         type: choice
         options: [amazon, weekly]
+      request_id:
+        description: Server trigger commit for matching the completed run
+        required: false
+        type: string
 
 permissions:
+  actions: write
   contents: write
   pages: write
   id-token: write
@@ -25,7 +28,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  dispatch_from_server:
+    if: >-
+      github.event_name == 'push' && github.ref_name == 'server-refresh' && startsWith(github.event.head_commit.message, 'server-refresh: ')
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Start the refresh on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MARKER: ${{ github.event.head_commit.message }}
+          MARKER_SHA: ${{ github.sha }}
+        run: |
+          case "$MARKER" in
+            'server-refresh: amazon '*) mode=amazon ;;
+            'server-refresh: weekly '*) mode=weekly ;;
+            *) echo 'Invalid server refresh marker' >&2; exit 1 ;;
+          esac
+          gh workflow run refresh-editions.yml --ref main --field mode="$mode" --field request_id="$MARKER_SHA"
+
   refresh:
+    if: github.ref_name != 'server-refresh'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment:
@@ -40,25 +65,20 @@ jobs:
           python-version: '3.12'
       - name: Refresh and validate issue
         id: refresh
-        if: github.event_name != 'push'
+        if: github.event_name == 'workflow_dispatch'
         env:
           AI_NEWS_PROVIDER: deepseek
           AI_NEWS_MODEL: deepseek-flash
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          EVENT_NAME: ${{ github.event_name }}
-          SCHEDULE: ${{ github.event.schedule }}
           INPUT_MODE: ${{ inputs.mode }}
         run: |
-          if [ "$EVENT_NAME" = workflow_dispatch ]; then mode="$INPUT_MODE"
-          elif [ "$SCHEDULE" = '30 0 * * 1' ]; then mode=weekly
-          else mode=amazon; fi
           set +e
-          python scripts/run_auto_update.py --mode "$mode"
+          python scripts/run_auto_update.py --mode "$INPUT_MODE"
           result=$?
           set -e
           echo "result=$result" >> "$GITHUB_OUTPUT"
       - name: Publish validated data or failure notice
-        if: github.event_name != 'push'
+        if: github.event_name == 'workflow_dispatch'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -80,5 +100,5 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
       - name: Flag failed refresh
-        if: github.event_name != 'push' && steps.refresh.outputs.result != '0'
+        if: github.event_name == 'workflow_dispatch' && steps.refresh.outputs.result != '0'
         run: exit 1
