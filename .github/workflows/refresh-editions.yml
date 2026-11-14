@@ -47,7 +47,7 @@ jobs:
             'server-refresh: weekly '*) mode=weekly ;;
             *) echo 'Invalid server refresh marker' >&2; exit 1 ;;
           esac
-          gh workflow run refresh-editions.yml --ref main --field mode="$mode" --field request_id="$MARKER_SHA"
+          gh workflow run refresh-editions.yml --repo "$GITHUB_REPOSITORY" --ref main --field mode="$mode" --field request_id="$MARKER_SHA"
 
   refresh:
     if: github.ref_name != 'server-refresh'
