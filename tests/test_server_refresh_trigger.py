@@ -35,6 +35,14 @@ class ServerRefreshChecks(unittest.TestCase):
             self.assertIs(trigger.matching_run("workflow_dispatch", sha, "amazon"), rows[1])
             self.assertIsNone(trigger.matching_run("workflow_dispatch", sha, "weekly"))
 
+    def test_fresh_requires_this_trigger_when_minimum_given(self):
+        day = date(2026, 11, 14)
+        payload = {"updateStatus": {"amazon": {"state": "ok", "checkedAt": "2026-11-14T03:28:39Z"}}}
+        with patch.object(trigger, "get_payload", return_value=payload):
+            self.assertTrue(trigger.fresh("example", "amazon", day))
+            self.assertFalse(trigger.fresh("example", "amazon", day, datetime(2026, 11, 14, 14, 50, tzinfo=timezone.utc)))
+            self.assertTrue(trigger.fresh("example", "amazon", day, datetime(2026, 11, 14, 3, 0, tzinfo=timezone.utc)))
+
     def test_public_and_mirror_must_both_be_fresh(self):
         day = date(2026, 11, 15)
         with patch.object(trigger, "fresh", side_effect=[True, False, True, True]) as fresh, patch.object(trigger.time, "sleep"):

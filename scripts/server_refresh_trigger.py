@@ -68,9 +68,15 @@ def get_payload(url: str) -> dict:
     return json.loads(raw[len(prefix):].rstrip(b";\r\n "))
 
 
-def fresh(url: str, mode: str, day: date) -> bool:
+def fresh(url: str, mode: str, day: date, minimum: datetime | None = None) -> bool:
     try:
-        return checked_today(get_payload(url), mode, day)
+        payload = get_payload(url)
+        if not checked_today(payload, mode, day):
+            return False
+        if minimum is None:
+            return True
+        checked_at = payload["updateStatus"][mode]["checkedAt"]
+        return datetime.fromisoformat(checked_at.replace("Z", "+00:00")) >= minimum
     except Exception as exc:
         print(f"status check unavailable for {url}: {type(exc).__name__}: {exc}", flush=True)
         return False
@@ -161,11 +167,11 @@ def previous_marker(mode: str, day: date) -> str | None:
     return None
 
 
-def wait_public_and_mirror(mode: str, day: date, minutes: int = 20) -> None:
+def wait_public_and_mirror(mode: str, day: date, minutes: int = 20, minimum: datetime | None = None) -> None:
     deadline = time.monotonic() + minutes * 60
     while time.monotonic() < deadline:
-        public_ok = fresh(PUBLIC_PAYLOAD, mode, day)
-        mirror_ok = fresh(MIRROR_PAYLOAD, mode, day)
+        public_ok = fresh(PUBLIC_PAYLOAD, mode, day, minimum)
+        mirror_ok = fresh(MIRROR_PAYLOAD, mode, day, minimum)
         if public_ok and mirror_ok:
             print(f"published and 242 mirror both fresh for {mode} {day}", flush=True)
             return
@@ -195,19 +201,20 @@ def main() -> int:
             if prior and prior.get("status") != "completed":
                 print(f"resuming in-progress refresh {prior_sha}", flush=True)
                 wait_run("workflow_dispatch", prior_sha, args.mode)
-                wait_public_and_mirror(args.mode, day)
+                wait_public_and_mirror(args.mode, day, minimum=datetime.fromisoformat(prior["created_at"].replace("Z", "+00:00")))
                 return 0
             if prior and prior.get("conclusion") == "success":
                 print(f"checking previously successful refresh {prior_sha}", flush=True)
                 try:
-                    wait_public_and_mirror(args.mode, day, minutes=5)
+                    wait_public_and_mirror(args.mode, day, minutes=5, minimum=datetime.fromisoformat(prior["created_at"].replace("Z", "+00:00")))
                     return 0
                 except TimeoutError:
                     print("previous success did not publish current data; retrying", flush=True)
+        started_at = datetime.now(timezone.utc)
         sha = push_marker(args.mode, day)
         wait_run("push", sha, args.mode, minutes=15)
         wait_run("workflow_dispatch", sha, args.mode)
-        wait_public_and_mirror(args.mode, day)
+        wait_public_and_mirror(args.mode, day, minimum=started_at)
     return 0
 
 
