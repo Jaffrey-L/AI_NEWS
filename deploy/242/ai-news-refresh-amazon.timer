@@ -1,0 +1,13 @@
+[Unit]
+Description=Start Amazon AI_NEWS issue from 242 at 07:30 Beijing time, with retries
+
+[Timer]
+OnCalendar=*-*-* 07:30:00
+OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 11:00:00
+AccuracySec=1min
+Persistent=true
+Unit=ai-news-refresh@amazon.service
+
+[Install]
+WantedBy=timers.target
