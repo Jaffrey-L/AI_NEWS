@@ -21,6 +21,7 @@ class WeeklyEditionTests(unittest.TestCase):
                  "sourceUrl": f"https://example.com/{i}", "title": f"Original {i}",
                  "bodyText": "Original source text. " * 8, "sourceGrade": "A",
                  "category": "core", "qualityScore": 80} for i in range(6)]
+        rows.append({**rows[0], "sourceUrl": "https://example.com/paid", "title": "Paid original"})
         calls = []
 
         def article_client(sources, _days, _model, _key, instructions):
@@ -43,6 +44,7 @@ class WeeklyEditionTests(unittest.TestCase):
                 published = publish_complete_week(
                     date(2026, 11, 9), news_file=news, out_dir=root / "weekly",
                     model_client=article_client,
+                    access_checker=lambda url: url.endswith("/paid"),
                     card_client=lambda *_: {group: [{"src": ["S1"]}]
                                              for group in ("news", "watch", "learn")})
             self.assertTrue(published)
@@ -52,6 +54,7 @@ class WeeklyEditionTests(unittest.TestCase):
             edition = json.loads((root / "weekly" / "2026-W46.json").read_text(encoding="utf-8"))
             self.assertEqual(edition["sections"][0]["paragraphs"][0]["citations"][0]["evidence"],
                              "Original source text.")
+            self.assertNotIn("https://example.com/paid", [source["url"] for source in edition["sources"]])
 
     def test_weekly_publication_requires_six_usable_originals_and_three_sources(self):
         rows = [{"date": "2026-11-10", "sourceName": f"Source {i % 3}",
@@ -66,7 +69,7 @@ class WeeklyEditionTests(unittest.TestCase):
             with patch("generate_weekly.verify_dates", return_value=rows):
                 with self.assertRaisesRegex(ValueError, "fewer than six usable originals"):
                     publish_complete_week(date(2026, 11, 9), news_file=news,
-                                          out_dir=root / "weekly")
+                                          out_dir=root / "weekly", access_checker=lambda _: False)
             self.assertFalse((root / "weekly" / "2026-W46.json").exists())
 
     def test_weekly_publication_retries_missing_reader_group(self):
@@ -86,6 +89,7 @@ class WeeklyEditionTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "all three reader questions"):
                     publish_complete_week(date(2026, 11, 9), news_file=news,
                                           out_dir=root / "weekly", model_client=lambda *_: {},
+                                          access_checker=lambda _: False,
                                           card_client=card_client)
             self.assertEqual(card_client.call_count, 3)
             self.assertFalse((root / "weekly" / "2026-W46.json").exists())
