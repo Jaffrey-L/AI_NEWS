@@ -73,8 +73,10 @@ class CardChecks(unittest.TestCase):
         self.assertEqual(model_request.call_count, 3)
 
     def test_weekly_cards_retry_invalid_evidence_without_weakening_validation(self):
-        weekly_source = {**self.source, "id": "S1"}
-        weekly_card = {**self.card, "sourceId": "S1"}
+        weekly_source = {**self.source, "id": "S1",
+                         "excerpt": "The original body explains how the fee changed for merchants."}
+        weekly_card = {**self.card, "sourceId": "S1",
+                       "bodyEvidence": "The original body explains how the fee changed"}
 
         def response(evidence):
             groups = {"news": [], "watch": [{**weekly_card, "evidence": evidence}], "learn": []}
@@ -91,6 +93,18 @@ class CardChecks(unittest.TestCase):
         with patch("generate_cards.urllib.request.urlopen", side_effect=[response("invented") for _ in range(3)]):
             with self.assertRaisesRegex(ValueError, "card evidence is absent from source"):
                 request_cards([weekly_source], "deepseek-flash", "test-key")
+
+    def test_weekly_title_alone_cannot_support_an_unfound_claim(self):
+        source = {**self.source, "id": "S1",
+                  "excerpt": "The source body describes a fee schedule for merchants."}
+        card = {**self.card, "sourceId": "S1", "evidence": source["title"],
+                "bodyEvidence": "An invented explanation absent from the body"}
+        with self.assertRaisesRegex(ValueError, "card body evidence is absent"):
+            validate_cards({"news": [], "watch": [card], "learn": []},
+                           [source], require_body_evidence=True)
+        card["bodyEvidence"] = "The source body describes a fee schedule"
+        self.assertEqual(validate_cards({"news": [], "watch": [card], "learn": []},
+                                        [source], require_body_evidence=True)["watch"][0]["src"], ["S1"])
 
     def test_unsupported_number_gets_specific_retry_feedback(self):
         def response(text):
