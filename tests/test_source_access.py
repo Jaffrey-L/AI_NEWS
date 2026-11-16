@@ -36,6 +36,27 @@ class SourceAccessTests(unittest.TestCase):
         self.assertFalse(page_requires_payment("老板会员为邀请制，填写入会信息即可免费加入老板会员。查看完整内容请下载"))
         self.assertFalse(page_requires_payment("文章介绍平台付费阅读和会员专享服务的商业模式。"))
 
+    def test_split_markup_and_common_chinese_paid_prompts(self):
+        paid = (
+            "<span>付费</span><button>阅读全文</button>",
+            "VIP 专享，解锁全文",
+            "成为会员即可阅读全文",
+            "订阅后阅读全文",
+            "剩余 80% 内容，付费后可查看",
+            "本文为会员专享内容",
+        )
+        free = (
+            "免费订阅后阅读全文",
+            "成为免费会员即可阅读全文",
+            '<span class="付费">本文介绍会员制商业模式</span>',
+        )
+        for html in paid:
+            with self.subTest(paid=html):
+                self.assertTrue(page_requires_payment(html))
+        for html in free:
+            with self.subTest(free=html):
+                self.assertFalse(page_requires_payment(html))
+
     def test_http_403_is_unknown_not_proof_of_paid_access(self):
         url = "https://example.com/browser-readable"
         with patch("source_access.urllib.request.urlopen", side_effect=urllib.error.HTTPError(url, 403, "", {}, None)):
