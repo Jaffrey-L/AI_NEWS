@@ -20,6 +20,8 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
 
+from source_access import exclude_paid_sources, log_unknown_selected, source_requires_payment
+
 
 ROOT = Path(__file__).resolve().parents[1]
 NEWS_FILE = ROOT / "data" / "news.json"
@@ -325,7 +327,8 @@ def _write_json_atomic(path: Path, value: dict) -> None:
             temporary.unlink()
 
 
-def generate(news_file: Path = NEWS_FILE, article_dir: Path = ARTICLE_DIR, model_client=request_article) -> dict:
+def generate(news_file: Path = NEWS_FILE, article_dir: Path = ARTICLE_DIR,
+             model_client=request_article, access_checker=source_requires_payment) -> dict:
     payload = json.loads(news_file.read_text(encoding="utf-8"))
     as_of = _day(payload["updatedAt"])
     provider = os.environ.get("AI_NEWS_PROVIDER", "openai").strip().lower()
@@ -339,14 +342,16 @@ def generate(news_file: Path = NEWS_FILE, article_dir: Path = ARTICLE_DIR, model
     items = payload.get("items", []) + payload.get("archiveItems", [])
     # Check only a diverse shortlist to bound page requests; a feed's updated
     # timestamp is never used as the publication date of the final article.
-    shortlist, _ = select_sources(items, as_of, limit=10, force_seven_day=True)
+    shortlist, _ = select_sources(items, as_of, limit=16, force_seven_day=True)
     candidates = [{"title": source["title"], "date": source["publishedAt"],
                    "sourceName": source["sourceName"], "sourceUrl": source["url"],
                    "bodyText": source["excerpt"]} for source in shortlist]
+    candidates = exclude_paid_sources(candidates, checker=access_checker)
     sources, window_days = select_sources(candidates, as_of, date_resolver=resolve_publication_date)
     if len({source["sourceName"] for source in sources}) < 2:
         raise ValueError("not enough independent recent sources")
     article = validate_article(model_client(sources, window_days, model, api_key), sources)
+    log_unknown_selected(article["sources"])
     now = datetime.now(timezone.utc).isoformat()
     edition = {
         **article,

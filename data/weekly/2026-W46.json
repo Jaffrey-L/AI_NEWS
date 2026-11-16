@@ -1,0 +1,258 @@
+{
+  "title": "从“会用模型”到“会接流程”：本周 AI 落地的主线",
+  "subtitle": "2026-11-09 至 2026-11-15｜GS Caltex 的 MLOps 交接、Gemini Decision 1 的单遍决策，以及 Claude 一次性写出插件",
+  "sections": [
+    {
+      "heading": "一、企业侧的关键变化：把“业务专家的模型”接进生产",
+      "paragraphs": [
+        {
+          "text": "本周最值得细读的不是某个模型发布，而是一篇讲 MLOps 落地的博客。GS Caltex 的做法是把模型开发与运维在两类人之间分工：工艺工程师用 SageMaker Canvas 无代码建模并验证，ML 工程师负责部署与定时推理。原文明确写道，“Process engineers build and validate models in SageMaker Canvas without writing code”，这说明低代码工具真正解决的是“谁有能力把业务知识变成模型”，而不是“谁能写训练脚本”。我的判断是，这比再上一个更强的通用模型更能改变一线生产效率，因为它把懂业务的人变成了模型生产者。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "Process engineers build and validate models in"
+            }
+          ]
+        },
+        {
+          "text": "但分工不等于无缝。资料指出，从 Canvas 资产迁移到 SageMaker Pipelines 仍然需要集成工作，“Moving assets from SageMaker Canvas into SageMaker Pipelines still required integration work”，包括设置生产数据路径、提供模型配置、连接预处理与推理作业。GS Caltex 把这套交接自动化后，ML 工程师部署模型从大约一周缩短到几小时，“deploy models within a few hours, compared with about a week before”。这是本周我看到的、关于“AI 工具真实收益”最扎实的证据：收益不在建模本身，而在建模之后的胶水层被工程化。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "Moving assets from SageMaker Canvas into SageMaker"
+            },
+            {
+              "sourceId": "S1",
+              "evidence": "deploy models within a few hours, compared"
+            }
+          ]
+        },
+        {
+          "text": "成本侧的变化同样具体：该厂每 30 分钟跑一次批量推理，从而减少常驻端点的需要，“runs batch inference every 30 minutes, reducing the need for continuously running endpoints”，并称推理成本明显下降。对实际使用者的启示是，不要默认“实时端点”是默认答案，多数工业与业务场景是周期性的，批量调度往往更划算。这一点在资料中属于企业自述，应视为案例证据而非普适结论。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "runs batch inference every"
+            }
+          ]
+        },
+        {
+          "text": "同期 OpenAI 的客户案例提供了另一个侧面：Amplitude 的主动式产品代理 Wave 基于 OpenAI 模型，负责识别该做什么、协助团队用编码代理交付改动并衡量影响，“identifies what to build, helps teams ship changes with coding agents, and measures the impact”。我只把这看成方向性信号——从“生成内容”转向“驱动流程闭环”——因为该摘要未给出可核验的量化收益，不宜夸大。",
+          "citations": [
+            {
+              "sourceId": "S5",
+              "evidence": "identifies what to build, helps teams ship"
+            }
+          ]
+        }
+      ],
+      "heading_note": ""
+    },
+    {
+      "heading": "二、大公司押注“决策”，而不是更长的话",
+      "paragraphs": [
+        {
+          "text": "Google 本周的动作是少见的品类级变化：Gemini Decision 1 面向闭集决策，一次性给选项打分而不是逐 token 生成文本，“scores choices in a single pass instead of generating text token by token”。资料给出的规格包括单请求最多 1000 个问题、256K 上下文、端到端 150–250 毫秒、每个答案附置信度，输入价 0.10 美元/百万 token、输出不计费。我的判断是，这代表一类务实的产品化路径：把“分类、判断、评分”从通用对话中拆出来，换取延迟与成本的可预测性。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "scores choices in a single pass instead"
+            }
+          ]
+        },
+        {
+          "text": "值得注意的是速度背后的小团队叙事：资料称该项目最初是 DeepMind 内部原型，一个小团队约六周就交付了模型与 API。同一篇简报还把 Cloudflare 的分类器工作与“决策模型”并置。我倾向认为，本周真正的信号是厂商开始承认：很多业务请求本质上不是创作，而是带约束的选择题。对开发者而言，这意味着评估方式也要换——关注校准与置信度，而非文采。以上属于我的推断，资料只支持到规格与时间线。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "The project started as an internal Google"
+            }
+          ]
+        },
+        {
+          "text": "在更“硬”的方向上，DeepMind 的 AlphaProof Code 值得注意：资料称其代理用 Lean 写了三百万行证明，用于验证 Signal 的核心加密，“wrote three million lines of proofs in Lean to verify Signal’s core encryption”。这是形式化验证的产能问题，而非生成质量问题；但是否已进入常规生产流程，资料不足以判断，我不做延伸结论。",
+          "citations": [
+            {
+              "sourceId": "S7",
+              "evidence": "wrote three million lines of proofs in"
+            }
+          ]
+        }
+      ],
+      "heading_note": ""
+    },
+    {
+      "heading": "三、个人开发者侧的样本：一句话生成插件，重点在“可复用”",
+      "paragraphs": [
+        {
+          "text": "Simon Willison 发布了 datasette-maplibre 0.1a0，并坦言大部分是“一个提示”完成：让 Claude 读两个既有插件，再结合 OpenFreeMap 演示页，做出一个新插件，还加入了“Be creative and think outside the box”。他最喜欢的结果是按需加载：先显示 GeoJSON 形状的 SVG 预览，滚动进入视野才加载 WebGL。这提示我，提示词里真正起作用的是“给它可参照的代码库与运行环境”，而不是形容词本身。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "I built most of this with a"
+            },
+            {
+              "sourceId": "S2",
+              "evidence": "displays SVG previews of GeoJSON shapes, then"
+            }
+          ]
+        },
+        {
+          "text": "同一天他还发布了 datasette-apps 0.4a0，这类在 Datasette 内运行的沙箱化 HTML/JS 应用可以执行 SQL 查询，新版本加入用 URL 片段链接应用的能力，并把支持的 URL 方案回报给 Datasette Agent，以便代理写出互相链接的应用。把这两条合起来看，个人开发者的工作重心正从“写代码”转向“设计可被代理组合的组件与约定”。这是我的判断，资料仅支持具体特性描述。",
+          "citations": [
+            {
+              "sourceId": "S8",
+              "evidence": "Datasette Apps are sandboxed HTML and JavaScript"
+            },
+            {
+              "sourceId": "S8",
+              "evidence": "supported URL schemes are reported back to"
+            }
+          ]
+        },
+        {
+          "text": "另一类变化发生在模型侧而非应用侧：Hugging Face 的 3D 微调指南强调“冻结什么和微调什么同样重要”，并只对与任务相关的组件挂 LoRA 适配器。这与前面 GS Caltex 的“分工+交接”其实是同一逻辑的两种表现：把有限的可变部分收敛到最小，其余保持稳定。我据此推断，本周的共同主题不是更强的模型，而是更清晰的责任边界与接口设计。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "Choosing what to freeze matters as much"
+            },
+            {
+              "sourceId": "S3",
+              "evidence": "we will fine-tune only the components that"
+            }
+          ]
+        }
+      ],
+      "heading_note": ""
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Production MLOps at GS Caltex with Amazon SageMaker Canvas, part 1",
+      "sourceName": "AWS 机器学习博客",
+      "publishedAt": "2026-11-13",
+      "url": "https://aws.amazon.com/blogs/machine-learning/production-mlops-at-gs-caltex-with-amazon-sagemaker-canvas-part-1/"
+    },
+    {
+      "id": "S2",
+      "title": "datasette-maplibre 0.1a0",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-11-15",
+      "url": "https://simonwillison.net/2026/Nov/15/datasette-maplibre/"
+    },
+    {
+      "id": "S3",
+      "title": "The Definitive Fine-Tuning Guide for 3D Generation Models",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-11-12",
+      "url": "https://huggingface.co/blog/3d-lora-finetuning"
+    },
+    {
+      "id": "S4",
+      "title": "[AINews] D-Day (Decision Models Day)",
+      "sourceName": "Latent.Space",
+      "publishedAt": "2026-11-12",
+      "url": "https://latent.space/p/ainews-d-day-decision-models-day/"
+    },
+    {
+      "id": "S5",
+      "title": "How Amplitude ships product improvements in 1–2 days with OpenAI",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-11-12",
+      "url": "https://openai.com/business/customer-stories/amplitude"
+    },
+    {
+      "id": "S7",
+      "title": "Introducing AlphaProof Code: a breakthrough in verifying complex software at depth",
+      "sourceName": "Google DeepMind",
+      "publishedAt": "2026-11-10",
+      "url": "https://deepmind.google/blog/introducing-alphaproof-code/"
+    },
+    {
+      "id": "S8",
+      "title": "datasette-apps 0.4a0",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-11-15",
+      "url": "https://simonwillison.net/2026/Nov/15/datasette-apps/"
+    }
+  ],
+  "news": [
+    {
+      "text": "GS Caltex 使用 SageMaker Canvas 与 SageMaker Pipelines 将流程工程师的模型接入生产工作流。",
+      "src": [
+        "S1"
+      ],
+      "ai": true
+    },
+    {
+      "text": "Google 发布 Gemini Decision 1，支持闭集决策，单次打分而不逐 token 生成文本。",
+      "src": [
+        "S4"
+      ],
+      "ai": true
+    },
+    {
+      "text": "AlphaProof Code 智能体用 Lean 编写三百万行证明，以验证 Signal 的核心加密。",
+      "src": [
+        "S7"
+      ],
+      "ai": true
+    }
+  ],
+  "watch": [
+    {
+      "text": "GS Caltex 的 ML 工程师现在可在数小时内完成模型部署，而此前约需一周。",
+      "src": [
+        "S1"
+      ],
+      "ai": true
+    },
+    {
+      "text": "Gemini Decision 1 支持每次请求最多 1000 个问题、256K 上下文，端到端返回耗时 150–250 ms。",
+      "src": [
+        "S4"
+      ],
+      "ai": true
+    },
+    {
+      "text": "datasette-maplibre 0.1a0 将 MapLibre GL 库与 OpenFreeMap 免费矢量地图服务器结合。",
+      "src": [
+        "S2"
+      ],
+      "ai": true
+    }
+  ],
+  "learn": [
+    {
+      "text": "GS Caltex 每 30 分钟运行一次批量推理，减少对持续运行端点的需求。",
+      "src": [
+        "S1"
+      ],
+      "ai": true
+    },
+    {
+      "text": "Gemini Decision 1 每百万输入 token 定价 $0.10，输出不计费。",
+      "src": [
+        "S4"
+      ],
+      "ai": true
+    },
+    {
+      "text": "datasette-apps 0.4a0 新增链接支持，应用可通过 URL 中的 #fragments 接收并使用片段。",
+      "src": [
+        "S8"
+      ],
+      "ai": true
+    }
+  ],
+  "week": "2026-W46",
+  "weekStart": "2026-11-09",
+  "weekEnd": "2026-11-15",
+  "generatedAt": "2026-11-16T04:45:58.076471+00:00",
+  "model": "deepseek-flash",
+  "unavailableSources": [
+    "The Batch"
+  ]
+}

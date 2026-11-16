@@ -20,6 +20,7 @@ import update_ai_news
 import update_amazon_news
 from generate_cards import request_cards
 from generate_opinion import _write_json_atomic
+from source_access import exclude_paid_sources, log_unknown_selected, source_requires_payment
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -161,13 +162,17 @@ def public_amazon_sources(sources: list[dict]) -> list[dict]:
 
 
 def refresh_amazon(day: date, card_client=request_cards,
-                   article_client=generate_amazon_weekly.request_article) -> bool:
+                   article_client=generate_amazon_weekly.request_article,
+                   access_checker=source_requires_payment) -> bool:
     before = json.loads((DATA / "amazon.json").read_text(encoding="utf-8"))
     collected = update_amazon_news.main()
     path = DATA / "amazon.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
     live_articles = collected.get("articles", payload["articles"]) if isinstance(collected, dict) else payload["articles"]
-    sources = amazon_sources(live_articles, day)
+    free_articles = exclude_paid_sources(live_articles, checker=access_checker)
+    allowed_urls = {item["sourceUrl"] for item in free_articles}
+    payload["articles"] = [item for item in payload["articles"] if item["sourceUrl"] in allowed_urls]
+    sources = amazon_sources(free_articles, day)
     public_sources = public_amazon_sources(sources)
     week = generate_weekly.week_key(monday(day))
     old_ai = before.get("ai", {})
@@ -181,11 +186,12 @@ def refresh_amazon(day: date, card_client=request_cards,
         # not silently remove a Monday-to-Sunday original from the final issue.
         merged = {item["sourceUrl"]: item for item in before.get("articles", []) + live_articles}
         prior_day = day - timedelta(days=1)
-        prior_sources = amazon_sources(list(merged.values()), prior_day)
+        prior_sources = amazon_sources(exclude_paid_sources(list(merged.values()), checker=access_checker), prior_day)
         prior_cards = (old_ai.get("cards", {}) if old_ai.get("sources") == public_amazon_sources(prior_sources)
                        else card_client(prior_sources, model, key, amazon=True))
         prior_article = generate_amazon_weekly.generate(prior_sources, prior_day, model, key,
                                                        client=article_client)
+        log_unknown_selected(prior_sources)
         final_prior = {**old_ai, "date": prior_day.isoformat(), "sources": public_amazon_sources(prior_sources),
                        "cards": prior_cards, "article": prior_article, "model": model}
         generate_amazon_weekly.close_prior_issue(final_prior, week, DATA / "amazon-weekly")
@@ -198,6 +204,7 @@ def refresh_amazon(day: date, card_client=request_cards,
         article = old_ai.get("article")
     else:
         article = generate_amazon_weekly.generate(sources, day, model, key, client=article_client)
+    log_unknown_selected(sources)
     payload["ai"] = {"week": week, "date": day.isoformat(), "sources": public_sources, "cards": cards,
                      "article": article, "model": model}
     _write_json_atomic(path, payload)

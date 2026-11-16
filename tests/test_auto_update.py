@@ -89,6 +89,9 @@ class CardChecks(unittest.TestCase):
             cards = request_cards([weekly_source], "deepseek-flash", "test-key")
         self.assertEqual(cards["watch"][0]["src"], ["S1"])
         self.assertEqual(model_request.call_count, 2)
+        prompt = json.loads(model_request.call_args_list[0].args[0].data)["instructions"]
+        self.assertIn("watch（我需要注意的）", prompt)
+        self.assertIn("learn（我需要学习的）", prompt)
 
         with patch("generate_cards.urllib.request.urlopen", side_effect=[response("invented") for _ in range(3)]):
             with self.assertRaisesRegex(ValueError, "card evidence is absent from source"):

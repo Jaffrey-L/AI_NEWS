@@ -5,9 +5,8 @@
     "checkedAt": "2026-11-15T23:31:19.865769+00:00"
   },
   "weekly": {
-    "state": "failed",
+    "state": "ok",
     "attemptedWeek": "2026-W46",
-    "shownWeek": "2026-W45",
-    "checkedAt": "2026-11-16T04:39:18.425725+00:00"
+    "checkedAt": "2026-11-16T04:45:58.078930+00:00"
   }
 }

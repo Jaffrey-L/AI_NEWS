@@ -129,26 +129,29 @@ class OpinionTests(unittest.TestCase):
                 news = Path(directory) / "news.json"
                 news.write_text(json.dumps({"updatedAt": "2026-11-09T08:00:00Z", "items": self.items}), encoding="utf-8")
                 with self.assertRaisesRegex(RuntimeError, "DEEPSEEK_API_KEY"):
-                    opinion.generate(news, Path(directory) / "opinion")
+                    opinion.generate(news, Path(directory) / "opinion", access_checker=lambda _: False)
 
     def test_publish_and_failed_retry_preserves_last_edition(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             news = root / "news.json"
             out = root / "opinion"
-            news.write_text(json.dumps({"updatedAt": "2026-11-09T08:00:00Z", "items": self.items}), encoding="utf-8")
+            paid = item("Paid", "2026-11-09", "premium")
+            news.write_text(json.dumps({"updatedAt": "2026-11-09T08:00:00Z", "items": self.items + [paid]}), encoding="utf-8")
 
             def fake_client(sources, _days, _model, _key):
+                self.assertNotIn(paid["sourceUrl"], {source["url"] for source in sources})
                 return article_for(sources)
 
             with patch.dict("os.environ", {"AI_NEWS_MODEL": "test-model", "OPENAI_API_KEY": "test-key"}), \
                  patch.object(opinion, "resolve_publication_date", return_value=date(2026, 11, 9)):
-                edition = opinion.generate(news, out, fake_client)
+                edition = opinion.generate(news, out, fake_client,
+                                           access_checker=lambda url: url == paid["sourceUrl"])
                 before = (out / "latest.json").read_bytes()
                 self.assertEqual(edition["editionDate"], "2026-11-09")
                 self.assertEqual(json.loads((out / "status.json").read_text(encoding="utf-8"))["state"], "published")
                 with self.assertRaises(ValueError):
-                    opinion.generate(news, out, lambda *_: {"title": "bad"})
+                    opinion.generate(news, out, lambda *_: {"title": "bad"}, access_checker=lambda _: False)
                 self.assertEqual((out / "latest.json").read_bytes(), before)
 
 
