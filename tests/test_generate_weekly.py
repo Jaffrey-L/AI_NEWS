@@ -16,7 +16,7 @@ from update_ai_news import RSS_SOURCES, fetch_text
 
 
 class WeeklyEditionTests(unittest.TestCase):
-    def test_weekly_article_retries_bad_citation_without_publishing_it(self):
+    def test_weekly_article_retries_invalid_json_and_bad_citation_without_publishing_them(self):
         rows = [{"date": "2026-11-10", "sourceName": f"Source {i % 3}",
                  "sourceUrl": f"https://example.com/{i}", "title": f"Original {i}",
                  "bodyText": "Original source text. " * 8, "sourceGrade": "A",
@@ -25,7 +25,9 @@ class WeeklyEditionTests(unittest.TestCase):
 
         def article_client(sources, _days, _model, _key, instructions):
             calls.append(instructions)
-            evidence = "Invented source evidence" if len(calls) == 1 else "Original source text."
+            if len(calls) == 1:
+                raise ValueError("model output was not valid JSON")
+            evidence = "Invented source evidence" if len(calls) == 2 else "Original source text."
             return {"title": "A weekly research interpretation", "subtitle": "What changed and why it matters",
                     "sections": [{"heading": f"Section {i}", "paragraphs": [{
                         "text": "A cautious interpretation of the original research. " * 4,
@@ -44,8 +46,9 @@ class WeeklyEditionTests(unittest.TestCase):
                     card_client=lambda *_: {group: [{"src": ["S1"]}]
                                              for group in ("news", "watch", "learn")})
             self.assertTrue(published)
-            self.assertEqual(len(calls), 2)
-            self.assertIn("逐字复制", calls[1])
+            self.assertEqual(len(calls), 3)
+            self.assertIn("JSON schema", calls[1])
+            self.assertIn("逐字复制", calls[2])
             edition = json.loads((root / "weekly" / "2026-W46.json").read_text(encoding="utf-8"))
             self.assertEqual(edition["sections"][0]["paragraphs"][0]["citations"][0]["evidence"],
                              "Original source text.")

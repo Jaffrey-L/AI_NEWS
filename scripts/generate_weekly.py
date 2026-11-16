@@ -301,12 +301,15 @@ def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Pat
     for attempt in range(3):
         instructions = weekly_instructions(start)
         if attempt:
-            instructions += (
-                "上一稿未通过原文证据校验。请重新生成整篇文章；每条 evidence 必须从对应来源的 "
-                "excerpt 中逐字复制连续的 12 至 80 个字符，保留原标点与空格。"
-            )
-        draft = model_client(sources, 7, model, api_key, instructions)
+            if "JSON" in str(validation_error) or "model response" in str(validation_error):
+                instructions += "上一稿格式错误；请重新生成完整且符合 JSON schema 的对象。"
+            else:
+                instructions += (
+                    "上一稿未通过原文证据校验。请重新生成整篇文章；每条 evidence 必须从对应来源的 "
+                    "excerpt 中逐字复制连续的 12 至 80 个字符，保留原标点与空格。"
+                )
         try:
+            draft = model_client(sources, 7, model, api_key, instructions)
             article = validate_article(draft, sources)
             break
         except ValueError as error:
