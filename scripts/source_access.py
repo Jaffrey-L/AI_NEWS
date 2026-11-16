@@ -19,6 +19,12 @@ _PAID_TEXT = re.compile(
     r"continue reading with a paid subscription|upgrade to paid to read the rest)\b",
     re.IGNORECASE,
 )
+_PAID_ZH_TEXT = re.compile(
+    r"(?:此(?:篇|文章|内容)?(?:内容)?为付费阅读[，,。\s]*请付费后查看|"
+    r"(?:开通|购买|升级)(?:付费)?(?:VIP|会员|订阅)[^。！？\n]{0,16}(?:阅读|查看|解锁)(?:全文|完整内容|剩余内容)|"
+    r"(?:付费|VIP专享|VIP专属|会员专享|会员专属)[^。！？\n]{0,10}(?:阅读|查看|解锁)(?:全文|完整内容|剩余内容)|"
+    r"(?:阅读全文|查看全文|阅读完整内容)[^。！？\n]{0,12}(?:需|须|请)(?:先)?(?:付费|开通付费会员|购买会员))"
+)
 _PAID_SCHEMA = re.compile(r'"isAccessibleForFree"\s*:\s*false\b', re.IGNORECASE)
 _MEDIUM_PAYWALL = re.compile(
     r"the author made this story available to medium members only", re.IGNORECASE,
@@ -33,6 +39,7 @@ def page_requires_payment(html: str, url: str = "") -> bool:
     host = urlparse(url).hostname or ""
     medium_article = host == "medium.com" or host.endswith(".medium.com")
     return bool(_PAID_SCHEMA.search(html) or _PAID_TEXT.search(plain)
+                or _PAID_ZH_TEXT.search(plain)
                 or (medium_article and _MEDIUM_PAYWALL.search(plain)))
 
 

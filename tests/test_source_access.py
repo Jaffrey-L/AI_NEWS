@@ -29,6 +29,12 @@ class SourceAccessTests(unittest.TestCase):
         self.assertFalse(page_requires_payment(
             "Create a free account to keep reading this article.",
             "https://medium.com/example/free-story"))
+        self.assertTrue(page_requires_payment("此内容为付费阅读，请付费后查看"))
+        self.assertTrue(page_requires_payment("开通会员阅读全文"))
+        self.assertTrue(page_requires_payment("付费阅读完整内容"))
+        self.assertTrue(page_requires_payment("VIP专享：解锁全文"))
+        self.assertFalse(page_requires_payment("老板会员为邀请制，填写入会信息即可免费加入老板会员。查看完整内容请下载"))
+        self.assertFalse(page_requires_payment("文章介绍平台付费阅读和会员专享服务的商业模式。"))
 
     def test_http_403_is_unknown_not_proof_of_paid_access(self):
         url = "https://example.com/browser-readable"
