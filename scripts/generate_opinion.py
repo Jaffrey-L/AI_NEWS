@@ -20,7 +20,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
 
-from source_access import exclude_paid_sources, source_requires_payment
+from source_access import exclude_paid_sources, log_unknown_selected, source_requires_payment
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -351,6 +351,7 @@ def generate(news_file: Path = NEWS_FILE, article_dir: Path = ARTICLE_DIR,
     if len({source["sourceName"] for source in sources}) < 2:
         raise ValueError("not enough independent recent sources")
     article = validate_article(model_client(sources, window_days, model, api_key), sources)
+    log_unknown_selected(article["sources"])
     now = datetime.now(timezone.utc).isoformat()
     edition = {
         **article,

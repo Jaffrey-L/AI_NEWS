@@ -32,7 +32,7 @@ from generate_opinion import (
 )
 from update_ai_news import strip_html
 from generate_cards import request_cards
-from source_access import exclude_paid_sources, source_requires_payment
+from source_access import exclude_paid_sources, log_unknown_selected, source_requires_payment
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "data" / "weekly"
@@ -329,6 +329,7 @@ def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Pat
     source_ids.update(source_id for rows in cards.values() for card in rows for source_id in card["src"])
     article["sources"] = [{field: source[field] for field in ("id", "title", "sourceName", "publishedAt", "url")}
                           for source in sources if source["id"] in source_ids]
+    log_unknown_selected(article["sources"])
     edition = {**article, **cards, "week": key, "weekStart": start.isoformat(),
                "weekEnd": (start + timedelta(days=6)).isoformat(),
                "generatedAt": datetime.now(timezone.utc).isoformat(), "model": model,
@@ -382,6 +383,7 @@ def generate(news_file: Path = NEWS_FILE, out_dir: Path = OUT_DIR, max_weeks: in
         edition = {**article, "week": key, "weekStart": start.isoformat(),
                    "weekEnd": (start + timedelta(days=6)).isoformat(),
                    "generatedAt": datetime.now(timezone.utc).isoformat(), "model": model}
+        log_unknown_selected(article["sources"])
         _write_json_atomic(path, edition)
         produced += 1
         print(f"Published {key} from {len(article['sources'])} cited originals.", flush=True)

@@ -72,6 +72,21 @@ class WeeklyEditionTests(unittest.TestCase):
                                           out_dir=root / "weekly", access_checker=lambda _: False)
             self.assertFalse((root / "weekly" / "2026-W46.json").exists())
 
+    def test_paid_original_cannot_fill_six_article_minimum(self):
+        rows = [{"date": "2026-11-10", "sourceName": f"Source {i % 3}",
+                 "sourceUrl": f"https://example.com/{i}", "title": f"Original {i}",
+                 "bodyText": "Original source text. " * 8} for i in range(6)]
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            news = root / "news.json"
+            news.write_text(json.dumps({"items": rows}), encoding="utf-8")
+            with patch("generate_weekly.verify_dates", return_value=rows):
+                with self.assertRaisesRegex(ValueError, "fewer than six usable originals"):
+                    publish_complete_week(date(2026, 11, 9), news_file=news,
+                                          out_dir=root / "weekly",
+                                          access_checker=lambda url: url.endswith("/0"))
+            self.assertFalse((root / "weekly" / "2026-W46.json").exists())
+
     def test_weekly_publication_retries_missing_reader_group(self):
         rows = [{"date": "2026-11-10", "sourceName": f"Source {i % 3}",
                  "sourceUrl": f"https://example.com/{i}", "title": f"Original {i}",
