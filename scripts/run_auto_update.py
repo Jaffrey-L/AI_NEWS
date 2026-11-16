@@ -229,11 +229,9 @@ def run(mode: str, day: date | None = None, *, amazon_refresh=refresh_amazon,
         try:
             if mode == "weekly":
                 ai_refresh()
-                news = json.loads((DATA / "news.json").read_text(encoding="utf-8"))
-                if any(str(row.get("status", "")).startswith("failed")
-                       for row in news.get("sourceCoverage", {}).values()):
-                    raise RuntimeError("one or more sources failed")
-                weekly_publish(monday(day) - timedelta(days=7))
+                published = weekly_publish(monday(day) - timedelta(days=7))
+                if not published and not (DATA / "weekly" / f"{target}.json").exists():
+                    raise RuntimeError("weekly edition was not published")
             else:
                 amazon_refresh(day)
             status[mode] = {"state": "ok", "attemptedWeek": target,

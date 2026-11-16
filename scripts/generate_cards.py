@@ -201,32 +201,26 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
             raise RuntimeError("card model request failed") from exc
         if payload.get("status") != "completed":
             raise ValueError("card model response incomplete")
-        for item in payload.get("output", []):
-            for content in item.get("content", []):
-                if content.get("type") == "output_text" and content.get("text"):
-                    try:
-                        raw = json.loads(content["text"])
-                        if os.environ.get("AI_NEWS_REVIEW_DIAGNOSTICS") == "1":
-                            review = Path(__file__).resolve().parents[1] / "review"
-                            review.mkdir(exist_ok=True)
-                            (review / f"amazon-card-attempt-{attempt + 1}.json").write_text(
-                                json.dumps(raw, ensure_ascii=False, indent=2), encoding="utf-8")
-                        if amazon:
-                            rejection = collect_amazon_cards(raw, sources, collected)
-                            if not rejection:
-                                return merged_amazon_cards(sources, collected)
-                            if attempt == 2:
-                                raise ValueError(rejection)
-                        else:
-                            return validate_cards(raw, sources)
-                    except ValueError as exc:
-                        rejection = str(exc)
-                        if attempt == 2:
-                            raise
-                    break
-            else:
-                continue
-            break
-        else:
+        output_text = next((content["text"] for item in payload.get("output", [])
+                            for content in item.get("content", [])
+                            if content.get("type") == "output_text" and content.get("text")), None)
+        if output_text is None:
             raise ValueError("card model returned no text")
+        try:
+            raw = json.loads(output_text)
+            if os.environ.get("AI_NEWS_REVIEW_DIAGNOSTICS") == "1":
+                review = Path(__file__).resolve().parents[1] / "review"
+                review.mkdir(exist_ok=True)
+                (review / f"{'amazon' if amazon else 'weekly'}-card-attempt-{attempt + 1}.json").write_text(
+                    json.dumps(raw, ensure_ascii=False, indent=2), encoding="utf-8")
+            if amazon:
+                rejection = collect_amazon_cards(raw, sources, collected)
+                if not rejection:
+                    return merged_amazon_cards(sources, collected)
+            else:
+                return validate_cards(raw, sources)
+        except ValueError as exc:
+            rejection = str(exc)
+        if attempt == 2:
+            raise ValueError(rejection)
     raise ValueError("card model failed validation")
