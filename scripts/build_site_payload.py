@@ -37,6 +37,7 @@ def main():
             week[key] = selection.get(key, [])
         weeks.append(week)
     counts = Counter(item.get("sourceName") for week in weeks for item in week.get("sources", []))
+    current_unavailable = set(weeks[0].get("unavailableSources", [])) if weeks else set()
     direct = []
     query = []
     name_map = {
@@ -55,7 +56,8 @@ def main():
         name = name_map.get(source["name"], source["name"].replace(" RSS", "").replace(" Atom", ""))
         entry = {"feed": source["name"], "sourceName": name, "url": source["url"],
                  "cited": counts.get(name, 0),
-                 "firstEligibleWeek": source.get("firstEligibleWeek")}
+                 "firstEligibleWeek": source.get("firstEligibleWeek"),
+                 "currentIssueUnavailable": source["name"] in current_unavailable}
         (direct if source["grade"] == "A" else query).append(entry)
     payload = {
         "builtAt": datetime.now(timezone.utc).isoformat(),

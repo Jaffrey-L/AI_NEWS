@@ -72,6 +72,26 @@ class CardChecks(unittest.TestCase):
                 request_cards([self.source], "deepseek-flash", "test-key", amazon=True)
         self.assertEqual(model_request.call_count, 3)
 
+    def test_weekly_cards_retry_invalid_evidence_without_weakening_validation(self):
+        weekly_source = {**self.source, "id": "S1"}
+        weekly_card = {**self.card, "sourceId": "S1"}
+
+        def response(evidence):
+            groups = {"news": [], "watch": [{**weekly_card, "evidence": evidence}], "learn": []}
+            return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
+                {"type": "output_text", "text": json.dumps(groups)}]}]}).encode("utf-8"))
+
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[
+            response("not in the original"), response(self.source["title"]),
+        ]) as model_request:
+            cards = request_cards([weekly_source], "deepseek-flash", "test-key")
+        self.assertEqual(cards["watch"][0]["src"], ["S1"])
+        self.assertEqual(model_request.call_count, 2)
+
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[response("invented") for _ in range(3)]):
+            with self.assertRaisesRegex(ValueError, "card evidence is absent from source"):
+                request_cards([weekly_source], "deepseek-flash", "test-key")
+
     def test_unsupported_number_gets_specific_retry_feedback(self):
         def response(text):
             return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
@@ -132,6 +152,25 @@ class CardChecks(unittest.TestCase):
 
 
 class SafeRefresh(unittest.TestCase):
+    def test_one_failed_source_does_not_block_weekly_publication(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            data = Path(temporary) / "data"
+            (data / "weekly").mkdir(parents=True)
+            (data / "weekly" / "index.json").write_text('{"weeks":[]}', encoding="utf-8")
+
+            def collect():
+                (data / "news.json").write_text(json.dumps({"sourceCoverage": {
+                    "The Batch RSS": {"status": "failed: HTTP 403"}}}), encoding="utf-8")
+
+            with patch.object(updater, "DATA", data), patch.object(updater.build_site_payload, "main"):
+                with patch.object(updater, "shown_week", return_value="2026-W45"):
+                    published = unittest.mock.Mock(return_value=True)
+                    self.assertTrue(updater.run("weekly", date(2026, 11, 16),
+                                                ai_refresh=collect, weekly_publish=published))
+            published.assert_called_once()
+            status = json.loads((data / "update-status.json").read_text(encoding="utf-8"))
+            self.assertEqual(status["weekly"]["state"], "ok")
+
     def test_failure_restores_content_and_records_shown_week(self):
         with tempfile.TemporaryDirectory() as temporary:
             data = Path(temporary) / "data"

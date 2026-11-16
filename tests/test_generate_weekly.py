@@ -11,11 +11,48 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from generate_weekly import FEEDS, OUT_DIR, _feed_dates, openai_feed_supplement, rebuild_index, select_week_sources, week_key, week_start
+from generate_weekly import FEEDS, OUT_DIR, _feed_dates, openai_feed_supplement, publish_complete_week, rebuild_index, select_week_sources, week_key, week_start
 from update_ai_news import RSS_SOURCES, fetch_text
 
 
 class WeeklyEditionTests(unittest.TestCase):
+    def test_weekly_publication_requires_six_usable_originals_and_three_sources(self):
+        rows = [{"date": "2026-11-10", "sourceName": f"Source {i % 3}",
+                 "sourceUrl": f"https://example.com/{i}", "title": f"Original {i}",
+                 "bodyText": "Original source text. " * 8, "sourceGrade": "A",
+                 "category": "core", "qualityScore": 80} for i in range(5)]
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            news = root / "news.json"
+            news.write_text(json.dumps({"items": rows, "sourceCoverage": {
+                "The Batch": {"status": "failed: HTTP 403"}}}), encoding="utf-8")
+            with patch("generate_weekly.verify_dates", return_value=rows):
+                with self.assertRaisesRegex(ValueError, "fewer than six usable originals"):
+                    publish_complete_week(date(2026, 11, 9), news_file=news,
+                                          out_dir=root / "weekly")
+            self.assertFalse((root / "weekly" / "2026-W46.json").exists())
+
+    def test_weekly_publication_retries_missing_reader_group(self):
+        rows = [{"date": "2026-11-10", "sourceName": f"Source {i % 3}",
+                 "sourceUrl": f"https://example.com/{i}", "title": f"Original {i}",
+                 "bodyText": "Original source text. " * 8, "sourceGrade": "A",
+                 "category": "core", "qualityScore": 80} for i in range(6)]
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            news = root / "news.json"
+            news.write_text(json.dumps({"items": rows}), encoding="utf-8")
+            with patch("generate_weekly.verify_dates", return_value=rows), \
+                 patch("generate_weekly.validate_article", return_value={"sources": []}), \
+                 patch.dict("os.environ", {"DEEPSEEK_API_KEY": "test-key", "AI_NEWS_MODEL": "deepseek-flash"}):
+                card_client = unittest.mock.Mock(return_value={"news": [{"src": ["S1"]}],
+                                                              "watch": [{"src": ["S2"]}], "learn": []})
+                with self.assertRaisesRegex(ValueError, "all three reader questions"):
+                    publish_complete_week(date(2026, 11, 9), news_file=news,
+                                          out_dir=root / "weekly", model_client=lambda *_: {},
+                                          card_client=card_client)
+            self.assertEqual(card_client.call_count, 3)
+            self.assertFalse((root / "weekly" / "2026-W46.json").exists())
+
     def test_gzip_feed_is_read_for_collection_and_date_verification(self):
         xml = b"""<rss><channel><item><title>Model research</title>
         <link>https://deepmind.google/blog/model-research/</link>
