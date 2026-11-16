@@ -296,8 +296,23 @@ def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Pat
     api_key = os.environ.get(PROVIDERS[provider][1], "").strip()
     if not model or not api_key:
         raise RuntimeError("model and provider key must be configured")
-    draft = model_client(sources, 7, model, api_key, weekly_instructions(start))
-    article = validate_article(draft, sources)
+    article = None
+    validation_error = None
+    for attempt in range(3):
+        instructions = weekly_instructions(start)
+        if attempt:
+            instructions += (
+                "上一稿未通过原文证据校验。请重新生成整篇文章；每条 evidence 必须从对应来源的 "
+                "excerpt 中逐字复制连续的 12 至 80 个字符，保留原标点与空格。"
+            )
+        draft = model_client(sources, 7, model, api_key, instructions)
+        try:
+            article = validate_article(draft, sources)
+            break
+        except ValueError as error:
+            validation_error = error
+    if article is None:
+        raise validation_error or ValueError("weekly article did not validate")
     for _ in range(3):
         cards = card_client(sources, model, api_key)
         if all(cards.get(group) for group in ("news", "watch", "learn")):

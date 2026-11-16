@@ -16,6 +16,40 @@ from update_ai_news import RSS_SOURCES, fetch_text
 
 
 class WeeklyEditionTests(unittest.TestCase):
+    def test_weekly_article_retries_bad_citation_without_publishing_it(self):
+        rows = [{"date": "2026-11-10", "sourceName": f"Source {i % 3}",
+                 "sourceUrl": f"https://example.com/{i}", "title": f"Original {i}",
+                 "bodyText": "Original source text. " * 8, "sourceGrade": "A",
+                 "category": "core", "qualityScore": 80} for i in range(6)]
+        calls = []
+
+        def article_client(sources, _days, _model, _key, instructions):
+            calls.append(instructions)
+            evidence = "Invented source evidence" if len(calls) == 1 else "Original source text."
+            return {"title": "A weekly research interpretation", "subtitle": "What changed and why it matters",
+                    "sections": [{"heading": f"Section {i}", "paragraphs": [{
+                        "text": "A cautious interpretation of the original research. " * 4,
+                        "citations": [{"sourceId": sources[i]["id"], "evidence": evidence}]
+                    }]} for i in range(2)]}
+
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            news = root / "news.json"
+            news.write_text(json.dumps({"items": rows}), encoding="utf-8")
+            with patch("generate_weekly.verify_dates", return_value=rows), \
+                 patch.dict("os.environ", {"DEEPSEEK_API_KEY": "test-key", "AI_NEWS_MODEL": "deepseek-flash"}):
+                published = publish_complete_week(
+                    date(2026, 11, 9), news_file=news, out_dir=root / "weekly",
+                    model_client=article_client,
+                    card_client=lambda *_: {group: [{"src": ["S1"]}]
+                                             for group in ("news", "watch", "learn")})
+            self.assertTrue(published)
+            self.assertEqual(len(calls), 2)
+            self.assertIn("逐字复制", calls[1])
+            edition = json.loads((root / "weekly" / "2026-W46.json").read_text(encoding="utf-8"))
+            self.assertEqual(edition["sections"][0]["paragraphs"][0]["citations"][0]["evidence"],
+                             "Original source text.")
+
     def test_weekly_publication_requires_six_usable_originals_and_three_sources(self):
         rows = [{"date": "2026-11-10", "sourceName": f"Source {i % 3}",
                  "sourceUrl": f"https://example.com/{i}", "title": f"Original {i}",
