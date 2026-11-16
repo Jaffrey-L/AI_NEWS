@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 import os
 from pathlib import Path
 import re
@@ -26,6 +27,11 @@ CARD_SCHEMA = {
                                  "evidence": {"type": "string"}}}}
         for key in BUCKETS},
 }
+WEEKLY_CARD_SCHEMA = deepcopy(CARD_SCHEMA)
+for _group in BUCKETS:
+    _item_schema = WEEKLY_CARD_SCHEMA["properties"][_group]["items"]
+    _item_schema["required"].append("bodyEvidence")
+    _item_schema["properties"]["bodyEvidence"] = {"type": "string"}
 
 
 def select_amazon_card_sources(sources: list[dict]) -> list[dict]:
@@ -90,7 +96,7 @@ def merged_amazon_cards(sources: list[dict], collected: dict) -> dict:
     return validate_cards(raw, sources)
 
 
-def validate_cards(raw: dict, sources: list[dict]) -> dict:
+def validate_cards(raw: dict, sources: list[dict], *, require_body_evidence: bool = False) -> dict:
     """Reject invented or misplaced citations before any edition is published."""
     if not isinstance(raw, dict) or set(raw) != set(BUCKETS):
         raise ValueError("invalid card groups")
@@ -103,7 +109,10 @@ def validate_cards(raw: dict, sources: list[dict]) -> dict:
             raise ValueError("invalid card count")
         output[bucket] = []
         for item in entries:
-            if not isinstance(item, dict) or set(item) != {"text", "sourceId", "evidence"}:
+            expected_fields = {"text", "sourceId", "evidence"}
+            if require_body_evidence:
+                expected_fields.add("bodyEvidence")
+            if not isinstance(item, dict) or set(item) != expected_fields:
                 raise ValueError("invalid card")
             source_id = item["sourceId"]
             source = known.get(source_id)
@@ -119,8 +128,13 @@ def validate_cards(raw: dict, sources: list[dict]) -> dict:
                 raise ValueError("card text is too short or long")
             if not urlparse(source.get("url", "")).scheme == "https" or not urlparse(source["url"]).hostname:
                 raise ValueError("card has no original HTTPS link")
-            if len(evidence) < 12 or evidence not in source.get("excerpt", ""):
+            if len(evidence) < 12 or not (
+                    evidence in source.get("excerpt", "") or evidence == source.get("title", "")):
                 raise ValueError("card evidence is absent from source")
+            if require_body_evidence:
+                body_evidence = item["bodyEvidence"].strip() if isinstance(item["bodyEvidence"], str) else ""
+                if len(body_evidence) < 12 or body_evidence not in source.get("excerpt", ""):
+                    raise ValueError("card body evidence is absent from source excerpt")
             excerpt = source["excerpt"]
             if any(number not in excerpt for number in NUMERIC_CLAIM.findall(text)):
                 raise ValueError("card introduces a number absent from source")
@@ -169,6 +183,12 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
             "必须在大事列入该来源，操作提醒可以在注意重复引用该来源；其他情况大事不足可留空。"
             "对卖家直接适用的费用变化和带电产品合规也要优先进入大事或注意。"
         )
+    else:
+        instructions += (
+            "每条卡片还必须填写 bodyEvidence：从对应来源的 excerpt 中逐字复制一段至少 12 个字符的正文，"
+            "这段正文必须直接支持卡片观点；evidence 仍逐字复制完整 title。"
+            "如果正文无法支持观点，就不要写这条卡片。"
+        )
     instructions += (
         "每条卡片里的数字、日期、百分比和金额，都要以完全相同的字符形式出现在所引用来源的 excerpt 中；"
         "不要换算、补全年份或推断截止时间。若找不到逐字证据，就不写该数字。"
@@ -177,7 +197,7 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
         "model": model, "instructions": instructions,
         "input": json.dumps({"sources": sources}, ensure_ascii=False),
         "text": {"format": {"type": "json_schema", "name": "source_linked_cards",
-                            "strict": True, "schema": CARD_SCHEMA}},
+                            "strict": True, "schema": CARD_SCHEMA if amazon else WEEKLY_CARD_SCHEMA}},
         "max_output_tokens": 1800,
     }
     if provider == "deepseek":
@@ -218,7 +238,7 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
                 if not rejection:
                     return merged_amazon_cards(sources, collected)
             else:
-                return validate_cards(raw, sources)
+                return validate_cards(raw, sources, require_body_evidence=True)
         except ValueError as exc:
             rejection = str(exc)
         if attempt == 2:
