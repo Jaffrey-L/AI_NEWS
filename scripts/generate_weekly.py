@@ -32,6 +32,7 @@ from generate_opinion import (
 )
 from update_ai_news import strip_html
 from generate_cards import request_cards
+from source_access import exclude_paid_sources, log_unknown_selected, source_requires_payment
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "data" / "weekly"
@@ -261,7 +262,8 @@ def rebuild_index(out_dir: Path = OUT_DIR) -> dict:
 
 def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Path = OUT_DIR,
                           model_client=request_article, card_client=request_cards,
-                          resolver=resolve_publication_date) -> bool:
+                          resolver=resolve_publication_date,
+                          access_checker=source_requires_payment) -> bool:
     """Publish one completed edition only after article and cards both validate."""
     if start.weekday() != 0 or start + timedelta(days=6) >= datetime.now(timezone.utc).date():
         raise ValueError("week is not complete")
@@ -276,6 +278,7 @@ def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Pat
                          out_dir / "verified-dates.json", resolver)
     selected = [item for item in items if week_start(_day(item["date"])) == start
                 and item.get("sourceName") not in unavailable_sources]
+    selected = exclude_paid_sources(selected, checker=access_checker)
     usable = {item["sourceUrl"]: item for item in selected
               if item.get("sourceUrl", "").startswith("https://")
               and len((item.get("bodyText") or item.get("summary") or "").strip()) >= 80}
@@ -284,7 +287,7 @@ def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Pat
     selected = list(usable.values())
     if len({item["sourceName"] for item in selected}) < 2:
         known = {item["sourceUrl"] for item in selected}
-        selected.extend(item for item in openai_feed_supplement({key})
+        selected.extend(item for item in exclude_paid_sources(openai_feed_supplement({key}), checker=access_checker)
                         if item["sourceUrl"] not in known)
     sources = select_week_sources(selected, start)
     if len({source["sourceName"] for source in sources}) < 2:
@@ -326,6 +329,7 @@ def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Pat
     source_ids.update(source_id for rows in cards.values() for card in rows for source_id in card["src"])
     article["sources"] = [{field: source[field] for field in ("id", "title", "sourceName", "publishedAt", "url")}
                           for source in sources if source["id"] in source_ids]
+    log_unknown_selected(article["sources"])
     edition = {**article, **cards, "week": key, "weekStart": start.isoformat(),
                "weekEnd": (start + timedelta(days=6)).isoformat(),
                "generatedAt": datetime.now(timezone.utc).isoformat(), "model": model,
@@ -367,7 +371,7 @@ def generate(news_file: Path = NEWS_FILE, out_dir: Path = OUT_DIR, max_weeks: in
         path = out_dir / f"{key}.json"
         if path.exists():
             continue
-        sources = select_week_sources(groups[start], start)
+        sources = select_week_sources(exclude_paid_sources(groups[start]), start)
         if len({source["sourceName"] for source in sources}) < 2:
             continue
         try:
@@ -379,6 +383,7 @@ def generate(news_file: Path = NEWS_FILE, out_dir: Path = OUT_DIR, max_weeks: in
         edition = {**article, "week": key, "weekStart": start.isoformat(),
                    "weekEnd": (start + timedelta(days=6)).isoformat(),
                    "generatedAt": datetime.now(timezone.utc).isoformat(), "model": model}
+        log_unknown_selected(article["sources"])
         _write_json_atomic(path, edition)
         produced += 1
         print(f"Published {key} from {len(article['sources'])} cited originals.", flush=True)

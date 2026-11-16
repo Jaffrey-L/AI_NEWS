@@ -153,13 +153,48 @@ class AmazonWeeklyChecks(unittest.TestCase):
                                                                  {"title": "new Monday"}]) as generated,
                   patch.dict(os.environ, {"AI_NEWS_MODEL": "test", "DEEPSEEK_API_KEY": "test"})):
                 updater.refresh_amazon(date(2026, 11, 16),
-                    card_client=lambda *args, **kwargs: {"news": [], "watch": [], "learn": []})
+                    card_client=lambda *args, **kwargs: {"news": [], "watch": [], "learn": []},
+                    access_checker=lambda _: False)
             self.assertEqual(generated.call_count, 2)
             archived = json.loads((data / "amazon-weekly" / "2026-W46.json").read_text(encoding="utf-8"))
             self.assertEqual(archived["article"]["title"], "final Sunday")
             self.assertEqual(archived["date"], "2026-11-15")
             current = json.loads((data / "amazon.json").read_text(encoding="utf-8"))["ai"]
             self.assertEqual(current["week"], "2026-W47")
+
+    def test_amazon_cards_and_article_do_not_receive_paid_original(self):
+        def item(suffix):
+            return {"title": f"亚马逊物流政策更新，卖家需留意发货 {suffix}",
+                    "date": "2026-11-12", "sourceName": "AMZ123",
+                    "sourceUrl": f"https://example.com/{suffix}",
+                    "summary": "卖家需要核对原文中的具体安排。",
+                    "bodyText": "物流政策变化，卖家应核对具体时间。" * 6}
+        rows = [item("free"), item("paid")]
+        with tempfile.TemporaryDirectory() as directory:
+            data = Path(directory)
+            (data / "amazon.json").write_text(json.dumps({"articles": []}), encoding="utf-8")
+
+            def collect():
+                (data / "amazon.json").write_text(json.dumps({"articles": rows}), encoding="utf-8")
+
+            seen = []
+
+            def cards(sources, *_args, **_kwargs):
+                seen.extend(source["url"] for source in sources)
+                return {"news": [], "watch": [], "learn": []}
+
+            with (patch.object(updater, "DATA", data),
+                  patch.object(updater.update_amazon_news, "main", side_effect=collect),
+                  patch.object(weekly, "generate", return_value={"title": "new issue"}) as generated,
+                  patch.dict(os.environ, {"AI_NEWS_MODEL": "test", "DEEPSEEK_API_KEY": "test"})):
+                updater.refresh_amazon(date(2026, 11, 12), card_client=cards,
+                                       access_checker=lambda url: url.endswith("/paid"))
+            self.assertEqual(seen, ["https://example.com/free"])
+            self.assertEqual([source["url"] for source in generated.call_args.args[0]], seen)
+            result = json.loads((data / "amazon.json").read_text(encoding="utf-8"))
+            self.assertEqual([row["sourceUrl"] for row in result["articles"]], seen)
+            published = result["ai"]
+            self.assertEqual([source["url"] for source in published["sources"]], seen)
 
     def test_aws_is_ai_source_only(self):
         self.assertIn("AWS 机器学习博客", [source["name"] for source in update_ai_news.RSS_SOURCES])
