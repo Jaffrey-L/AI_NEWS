@@ -173,6 +173,9 @@ function renderWeek(){
     ul.appendChild(li);
   });
   p1.appendChild(ul);
+  (cur.unavailableSources || []).forEach(function(name){
+    p1.appendChild(el('p','note',name.replace(/ RSS$/, '') + ' 本周未能获取'));
+  });
   aside.appendChild(p1);
 
   var p2 = el('div','panel');
@@ -218,6 +221,7 @@ function wireSrcHover(){
 var ST = DATA.srcStatus;
 
 function feedState(f){
+  if (f.currentIssueUnavailable) return { cls:'dot-scan', txt:'本期未能获取' };
   return f.cited > 0
     ? { cls:'dot-live', txt:'已引用 ' + f.cited + ' 篇' }
     : { cls:'dot-scan', txt:f.firstEligibleWeek && WEEKS[0].week < f.firstEligibleWeek

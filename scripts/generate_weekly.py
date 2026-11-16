@@ -270,9 +270,18 @@ def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Pat
     if path.exists():
         return False
     payload = json.loads(news_file.read_text(encoding="utf-8"))
+    unavailable_sources = sorted(name for name, row in payload.get("sourceCoverage", {}).items()
+                                 if str(row.get("status", "")).startswith("failed"))
     items = verify_dates(payload.get("items", []) + payload.get("archiveItems", []),
                          out_dir / "verified-dates.json", resolver)
-    selected = [item for item in items if week_start(_day(item["date"])) == start]
+    selected = [item for item in items if week_start(_day(item["date"])) == start
+                and item.get("sourceName") not in unavailable_sources]
+    usable = {item["sourceUrl"]: item for item in selected
+              if item.get("sourceUrl", "").startswith("https://")
+              and len((item.get("bodyText") or item.get("summary") or "").strip()) >= 80}
+    if len(usable) < 6 or len({item["sourceName"] for item in usable.values()}) < 3:
+        raise ValueError("fewer than six usable originals from three independent sources")
+    selected = list(usable.values())
     if len({item["sourceName"] for item in selected}) < 2:
         known = {item["sourceUrl"] for item in selected}
         selected.extend(item for item in openai_feed_supplement({key})
@@ -289,14 +298,20 @@ def publish_complete_week(start: date, news_file: Path = NEWS_FILE, out_dir: Pat
         raise RuntimeError("model and provider key must be configured")
     draft = model_client(sources, 7, model, api_key, weekly_instructions(start))
     article = validate_article(draft, sources)
-    cards = card_client(sources, model, api_key)
+    for _ in range(3):
+        cards = card_client(sources, model, api_key)
+        if all(cards.get(group) for group in ("news", "watch", "learn")):
+            break
+    else:
+        raise ValueError("weekly cards do not cover all three reader questions")
     source_ids = {source["id"] for source in article["sources"]}
     source_ids.update(source_id for rows in cards.values() for card in rows for source_id in card["src"])
     article["sources"] = [{field: source[field] for field in ("id", "title", "sourceName", "publishedAt", "url")}
                           for source in sources if source["id"] in source_ids]
     edition = {**article, **cards, "week": key, "weekStart": start.isoformat(),
                "weekEnd": (start + timedelta(days=6)).isoformat(),
-               "generatedAt": datetime.now(timezone.utc).isoformat(), "model": model}
+               "generatedAt": datetime.now(timezone.utc).isoformat(), "model": model,
+               "unavailableSources": unavailable_sources}
     _write_json_atomic(path, edition)
     rebuild_index(out_dir)
     return True
