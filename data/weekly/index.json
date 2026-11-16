@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-11-11T07:15:35.505197+00:00",
+  "updatedAt": "2026-11-16T04:45:58.077712+00:00",
   "weeks": [
+    {
+      "week": "2026-W46",
+      "weekStart": "2026-11-09",
+      "weekEnd": "2026-11-15",
+      "title": "从“会用模型”到“会接流程”：本周 AI 落地的主线",
+      "subtitle": "2026-11-09 至 2026-11-15｜GS Caltex 的 MLOps 交接、Gemini Decision 1 的单遍决策，以及 Claude 一次性写出插件",
+      "sourceCount": 7,
+      "path": "./data/weekly/2026-W46.json"
+    },
     {
       "week": "2026-W45",
       "weekStart": "2026-11-02",
