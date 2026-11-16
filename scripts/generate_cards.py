@@ -103,6 +103,7 @@ def validate_cards(raw: dict, sources: list[dict], *, require_body_evidence: boo
     known = {source["id"]: source for source in sources}
     output = {}
     seen = {}
+    seen_weekly_text = set()
     for bucket in BUCKETS:
         entries = raw[bucket]
         if not isinstance(entries, list) or len(entries) > 3:
@@ -118,7 +119,7 @@ def validate_cards(raw: dict, sources: list[dict], *, require_body_evidence: boo
             source = known.get(source_id)
             text = item["text"].strip() if isinstance(item["text"], str) else ""
             evidence = item["evidence"].strip() if isinstance(item["evidence"], str) else ""
-            repeated = source_id in seen and not (
+            repeated = not require_body_evidence and source_id in seen and not (
                 seen[source_id] == source.get("bucket") and bucket in source.get("alsoBuckets", []))
             if not source:
                 raise ValueError("card cites an unknown source")
@@ -126,6 +127,11 @@ def validate_cards(raw: dict, sources: list[dict], *, require_body_evidence: boo
                 raise ValueError("card repeats a source in an unsupported group")
             if not 12 <= len(text) <= 240:
                 raise ValueError("card text is too short or long")
+            if require_body_evidence:
+                normalized_text = re.sub(r"[\W_]+", "", text.casefold())
+                if normalized_text in seen_weekly_text:
+                    raise ValueError("weekly card repeats the same content")
+                seen_weekly_text.add(normalized_text)
             if not urlparse(source.get("url", "")).scheme == "https" or not urlparse(source["url"]).hostname:
                 raise ValueError("card has no original HTTPS link")
             if len(evidence) < 12 or not (
@@ -187,7 +193,7 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
         instructions += (
             "每条卡片还必须填写 bodyEvidence：从对应来源的 excerpt 中逐字复制一段至少 12 个字符的正文，"
             "这段正文必须直接支持卡片观点；evidence 仍逐字复制完整 title。"
-            "如果正文无法支持观点，就不要写这条卡片。"
+            "如果正文无法支持观点，就不要写这条卡片。同一来源可以用于不同栏目，但观点必须不同，不要重复同一内容。"
         )
     instructions += (
         "每条卡片里的数字、日期、百分比和金额，都要以完全相同的字符形式出现在所引用来源的 excerpt 中；"
