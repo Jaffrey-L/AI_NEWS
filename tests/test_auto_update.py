@@ -106,6 +106,23 @@ class CardChecks(unittest.TestCase):
         self.assertEqual(validate_cards({"news": [], "watch": [card], "learn": []},
                                         [source], require_body_evidence=True)["watch"][0]["src"], ["S1"])
 
+    def test_weekly_source_can_support_distinct_cross_group_viewpoints(self):
+        source = {"id": "S1", "url": "https://example.com/original",
+                  "title": "A report explains two separate developments",
+                  "excerpt": "The report describes a new policy and a separate practical method for teams."}
+        common = {"sourceId": "S1", "evidence": source["title"],
+                  "bodyEvidence": "The report describes a new policy and a separate practical method"}
+        cards = {"news": [{**common, "text": "The report describes a new policy for teams."}],
+                 "watch": [],
+                 "learn": [{**common, "text": "The report also describes a separate practical method."}]}
+        result = validate_cards(cards, [source], require_body_evidence=True)
+        self.assertEqual(result["news"][0]["src"], ["S1"])
+        self.assertEqual(result["learn"][0]["src"], ["S1"])
+
+        cards["learn"][0]["text"] = "The report describes a new policy for teams!"
+        with self.assertRaisesRegex(ValueError, "repeats the same content"):
+            validate_cards(cards, [source], require_body_evidence=True)
+
     def test_unsupported_number_gets_specific_retry_feedback(self):
         def response(text):
             return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
