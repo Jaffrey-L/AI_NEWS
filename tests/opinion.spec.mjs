@@ -47,13 +47,29 @@ test("Amazon has a sourced full reading and three short groups", async ({ page }
   await expect(page.locator("#v-amazon")).not.toContainText("公众号");
 });
 
+test("Amazon archive is available from the top picker and a direct link", async ({ page }) => {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.locator('.tab[data-v="amazon"]').click();
+  await expect(page.locator("#ampick")).toBeVisible();
+  await expect(page.locator("#ampick option")).toHaveCount(2);
+  await page.locator("#ampick").selectOption("2026-W46");
+  await expect(page.locator("#v-amazon .hero")).toContainText("已归档");
+  await expect(page).toHaveURL(/amazon=2026-W46/);
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await expect(page.locator('.tab[data-v="amazon"]')).toHaveClass(/on/);
+  await expect(page.locator("#ampick")).toHaveValue("2026-W46");
+  await expect(page.locator("#v-amazon .hero")).toContainText("已归档");
+  await page.locator("#ampick").selectOption("2026-W47");
+  await expect(page.locator("#v-amazon .hero")).toContainText("本周进行中");
+});
+
 test("AWS is an AI source and uncited feeds have accurate status", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.locator('.tab[data-v="sources"]').click();
   await expect(page.locator(".amazon-archive-link")).toHaveCount(0);
   await expect(page.locator("#v-sources")).toContainText("雨果网");
   await expect(page.locator("#v-sources")).toContainText("AWS 机器学习博客");
-  await expect(page.locator("#v-sources")).toContainText("新接入，下期起参与");
+  await expect(page.locator("#v-sources")).toContainText("已引用 1 篇");
   await expect(page.locator("#v-sources")).not.toContainText("近 9 期未引用");
   await expect(page.locator("#v-sources")).toContainText("已引用 2 篇");
   await expect(page.locator("#v-sources")).not.toContainText("公众号");
