@@ -372,7 +372,10 @@ function amazonTitle(article){
 
 var amazonSelectedWeek = null;
 function selectAmazonWeek(week){
+  var issues = [DATA.amazon.ai || {}].concat(DATA.amazon.weeks || []);
+  if (!issues.some(function(issue){ return issue.week === week; })) return;
   amazonSelectedWeek = week;
+  document.getElementById('ampick').value = week;
   var view = document.getElementById('v-amazon');
   delete view.dataset.done;
   renderAmazon();
@@ -577,8 +580,9 @@ document.getElementById('tabs').addEventListener('click', function(e){
   document.getElementById('v-amazon').classList.toggle('hide', v !== 'amazon');
   document.getElementById('v-journey').classList.toggle('hide', v !== 'journey');
   document.getElementById('wkpick').classList.toggle('hide', v !== 'week');
+  document.getElementById('ampick').classList.toggle('hide', v !== 'amazon');
   if (v === 'sources') renderSources();
-  if (v === 'amazon') renderAmazon();
+  if (v === 'amazon') selectAmazonWeek(amazonSelectedWeek || amazonPicker.value);
   if (v === 'journey') renderJourney();
   window.scrollTo({top:0, behavior:'smooth'});
 });
@@ -591,8 +595,23 @@ WEEKS.forEach(function(w){
 });
 sel.addEventListener('change', function(){ selectWeek(sel.value); });
 
+var amazonPicker = document.getElementById('ampick');
+[DATA.amazon.ai || {}].concat(DATA.amazon.weeks || []).forEach(function(issue, index){
+  if (!issue.week || !issue.article) return;
+  var option = document.createElement('option');
+  option.value = issue.week;
+  option.textContent = issue.week + (index === 0 ? ' · 本周' : ' · 往期');
+  amazonPicker.appendChild(option);
+});
+amazonPicker.addEventListener('change', function(){ selectAmazonWeek(amazonPicker.value); });
+
 document.getElementById('updated').textContent = '更新于 ' + (DATA.builtAt||'').slice(0,10);
 
+var initialAmazonWeek = new URLSearchParams(location.search).get('amazon');
 var m = location.search.match(/week=(2026-W\d+)/);
 var start = m ? m[1] : WEEKS[0].week;
 selectWeek(start);
+if (initialAmazonWeek && Array.from(amazonPicker.options).some(function(option){ return option.value === initialAmazonWeek; })) {
+  document.querySelector('#tabs [data-v="amazon"]').click();
+  selectAmazonWeek(initialAmazonWeek);
+}
