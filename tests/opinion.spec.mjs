@@ -63,6 +63,23 @@ test("Amazon archive is available from the top picker and a direct link", async 
   await expect(page.locator("#v-amazon .hero")).toContainText("本周进行中");
 });
 
+test("Amazon refresh failure notice appears only for the current issue", async ({ page }) => {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.locator('.tab[data-v="amazon"]').click();
+  await page.locator("#ampick").selectOption("2026-W46");
+  const currentDate = await page.evaluate(() => window.AI_NEWS_DATA.amazon.ai.date);
+  const [, month, day] = currentDate.match(/^\d{4}-(\d{2})-(\d{2})$/);
+  const notice = `今日更新延迟，当前为 ${Number(month)}月${Number(day)}日内容`;
+  await page.evaluate(() => { window.AI_NEWS_DATA.updateStatus.amazon = { state: "failed" }; });
+
+  await page.locator("#ampick").selectOption("2026-W47");
+  await expect(page.locator("#v-amazon")).toContainText(notice);
+  await page.locator("#ampick").selectOption("2026-W46");
+  await expect(page.locator("#v-amazon")).not.toContainText("今日更新延迟");
+  await page.locator("#ampick").selectOption("2026-W47");
+  await expect(page.locator("#v-amazon")).toContainText(notice);
+});
+
 test("AWS is an AI source and uncited feeds have accurate status", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.locator('.tab[data-v="sources"]').click();
