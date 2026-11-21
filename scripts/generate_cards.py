@@ -60,31 +60,53 @@ def select_amazon_card_sources(sources: list[dict]) -> list[dict]:
     return [s for s in readable if any(s in selected[bucket] for bucket in BUCKETS)]
 
 
-def collect_amazon_cards(raw: dict, sources: list[dict], collected: dict) -> str:
+def collect_amazon_cards(raw: dict, sources: list[dict], collected: dict,
+                         diagnostic: dict | None = None) -> str:
     """Keep only independently valid, distinct cards across model attempts."""
+    if diagnostic is not None:
+        diagnostic.update(produced_ids=[], accepted_ids=[], rejected=[], missing_ids=[])
     if not isinstance(raw, dict) or set(raw) != set(BUCKETS):
+        if diagnostic is not None:
+            diagnostic["rejected"].append({"source_id": None, "reason": "invalid card groups"})
         return "invalid card groups"
     known = {source["id"]: source for source in sources}
     rejection = ""
     for bucket in BUCKETS:
         if not isinstance(raw[bucket], list):
+            if diagnostic is not None:
+                diagnostic["rejected"].append({"source_id": None, "reason": "invalid card count"})
             return "invalid card count"
         for item in raw[bucket]:
             if not isinstance(item, dict):
+                if diagnostic is not None:
+                    diagnostic["rejected"].append({"source_id": None, "reason": "invalid card"})
                 continue
             source_id = item.get("sourceId")
             source = known.get(source_id)
+            safe_id = source_id if source else None
+            if diagnostic is not None:
+                diagnostic["produced_ids"].append(safe_id)
             if not source or source.get("bucket") != bucket or source_id in collected[bucket]:
+                if diagnostic is not None:
+                    reason = ("unknown source" if not source else "source belongs to another bucket"
+                              if source.get("bucket") != bucket else "source already accepted")
+                    diagnostic["rejected"].append({"source_id": safe_id, "reason": reason})
                 continue
             try:
                 validate_cards({group: [item] if group == bucket else []
                                 for group in BUCKETS}, [source])
             except ValueError as exc:
                 rejection = str(exc)
+                if diagnostic is not None:
+                    diagnostic["rejected"].append({"source_id": safe_id, "reason": rejection})
                 continue
             collected[bucket][source_id] = item
+            if diagnostic is not None:
+                diagnostic["accepted_ids"].append(source_id)
     missing = [source["id"] for source in sources
                if source["id"] not in collected[source["bucket"]]]
+    if diagnostic is not None:
+        diagnostic["missing_ids"] = missing
     if missing:
         return f"{rejection}; missing distinct source IDs: {', '.join(missing)}".strip("; ")
     return ""
@@ -239,19 +261,30 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
             raise ValueError("card model returned no text")
         try:
             raw = json.loads(output_text)
-            if os.environ.get("AI_NEWS_REVIEW_DIAGNOSTICS") == "1":
+            if not amazon and os.environ.get("AI_NEWS_REVIEW_DIAGNOSTICS") == "1":
                 review = Path(__file__).resolve().parents[1] / "review"
                 review.mkdir(exist_ok=True)
                 (review / f"{'amazon' if amazon else 'weekly'}-card-attempt-{attempt + 1}.json").write_text(
                     json.dumps(raw, ensure_ascii=False, indent=2), encoding="utf-8")
             if amazon:
-                rejection = collect_amazon_cards(raw, sources, collected)
+                diagnostic = {"attempt": attempt + 1}
+                rejection = collect_amazon_cards(raw, sources, collected, diagnostic)
+                print("amazon_card_attempt " + json.dumps(diagnostic, ensure_ascii=False))
                 if not rejection:
                     return merged_amazon_cards(sources, collected)
             else:
                 return validate_cards(raw, sources, require_body_evidence=True)
         except ValueError as exc:
             rejection = str(exc)
+            if amazon and isinstance(exc, json.JSONDecodeError):
+                rejection = "model output was not valid JSON"
+                missing = [source["id"] for source in sources
+                           if source["id"] not in collected[source["bucket"]]]
+                print("amazon_card_attempt " + json.dumps({
+                    "attempt": attempt + 1, "produced_ids": [], "accepted_ids": [],
+                    "rejected": [{"source_id": None, "reason": rejection}],
+                    "missing_ids": missing,
+                }, ensure_ascii=False))
         if attempt == 2:
             raise ValueError(rejection)
     raise ValueError("card model failed validation")
