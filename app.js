@@ -34,10 +34,18 @@ function srcUrl(w, id){
   for (var i=0;i<w.sources.length;i++) if (w.sources[i].id === id) return w.sources[i].url;
   return '';
 }
-function updateFailure(tab){
+function updateFailure(tab, selectedIssue){
   var status = (DATA.updateStatus || {})[tab];
-  return status && status.state === 'failed' ?
-    el('div','empty','本周更新失败，显示的是 ' + (status.shownWeek || '上一期')) : null;
+  if (!status || status.state !== 'failed') return null;
+  if (tab === 'amazon'){
+    if (selectedIssue !== DATA.amazon.ai) return null;
+    var date = ((DATA.amazon || {}).ai || {}).date || '';
+    var parts = /^\d{4}-(\d{2})-(\d{2})$/.exec(date);
+    return el('div','empty', parts ?
+      '今日更新延迟，当前为 ' + Number(parts[1]) + '月' + Number(parts[2]) + '日内容' :
+      '今日更新延迟，当前展示上一期内容');
+  }
+  return el('div','empty','本周更新失败，显示的是 ' + (status.shownWeek || '上一期'));
 }
 
 /* ---------- 来源统计：只按已发布内容算 ---------- */
@@ -386,12 +394,12 @@ function renderAmazon(){
   var v = document.getElementById('v-amazon');
   if (v.dataset.done) return;
   v.innerHTML = '';
-  var failed = updateFailure('amazon');
-  if (failed) v.appendChild(failed);
   var current = DATA.amazon.ai || {};
   var archive = DATA.amazon.weeks || [];
   var issues = [current].concat(archive);
   var issue = issues.find(function(row){ return row.week === amazonSelectedWeek; }) || current;
+  var failed = updateFailure('amazon', issue);
+  if (failed) v.appendChild(failed);
   var day = issue.date || (DATA.amazon.updatedAt || '').slice(0,10);
   var monday = new Date(day + 'T00:00:00Z');
   monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
