@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 from copy import deepcopy
 from datetime import date, datetime, timezone
@@ -15,6 +14,17 @@ from generate_opinion import _write_json_atomic, request_article, validate_artic
 ROOT = Path(__file__).resolve().parents[1]
 ARCHIVE = ROOT / "data" / "amazon-weekly"
 HEADINGS = ("政策与合规", "物流与费用", "平台与行业", "卖家实践", "本周判断")
+
+
+class UnsupportedNumberError(ValueError):
+    def __init__(self, number: str, section: int, paragraph: int, source_ids: list[str]):
+        self.number = number
+        self.section = section
+        self.paragraph = paragraph
+        self.source_ids = source_ids
+        super().__init__(
+            f"Amazon article introduces an unsupported number {number} "
+            f"(section {section}, paragraph {paragraph}; cited IDs: {', '.join(source_ids)})")
 
 
 def instructions(day: date) -> str:
@@ -63,8 +73,8 @@ def validate_amazon_article(raw: dict, sources: list[dict]) -> dict:
                  for paragraph in section["paragraphs"] for citation in paragraph["citations"]}
     if priority - cited_ids:
         raise ValueError("Amazon article omits priority sources: " + ", ".join(sorted(priority - cited_ids)))
-    for section in article["sections"]:
-        for paragraph in section["paragraphs"]:
+    for section_index, section in enumerate(article["sections"], start=1):
+        for paragraph_index, paragraph in enumerate(section["paragraphs"], start=1):
             if re.search(r"(?:收到|接到)通知前.{0,6}(?:无需|不用|不必)(?:采取任何行动|操作|处理)?", paragraph["text"]):
                 raise ValueError("Amazon authorization paragraph repeats a disallowed no-action claim")
             cited = [source_map[citation["sourceId"]] for citation in paragraph["citations"]]
@@ -73,9 +83,10 @@ def validate_amazon_article(raw: dict, sources: list[dict]) -> dict:
                     raise ValueError("title-only source overclaims the article body")
             evidence = " ".join(source["excerpt"] + " " + source["publishedAt"] for source in cited)
             joined_units = re.sub(r"(?<=\d)\s+(?=(?:天|年|月|日|%|美元|欧元|元))", "", evidence)
-            if any(number not in evidence and number not in joined_units
-                   for number in NUMERIC_CLAIM.findall(paragraph["text"])):
-                raise ValueError("Amazon article introduces an unsupported number")
+            for number in NUMERIC_CLAIM.findall(paragraph["text"]):
+                if number not in evidence and number not in joined_units:
+                    source_ids = [citation["sourceId"] for citation in paragraph["citations"]]
+                    raise UnsupportedNumberError(number, section_index, paragraph_index, source_ids)
             for patent_range in re.findall(r"US\s*D\d+\s*S\s*至\s*US\s*D\d+\s*S",
                                            paragraph["text"], re.I):
                 if patent_range not in evidence:
@@ -118,15 +129,16 @@ def generate(sources: list[dict], day: date, model: str, api_key: str,
                        "正文的数字、日期、金额必须以完全相同的字符出现在所引来源里。")
         try:
             raw = client(sources, 7, model, api_key, prompt)
-            if os.environ.get("AI_NEWS_REVIEW_DIAGNOSTICS") == "1":
-                review = ROOT / "review"
-                review.mkdir(exist_ok=True)
-                (review / f"amazon-auto-attempt-{attempt + 1}.json").write_text(
-                    json.dumps(raw, ensure_ascii=False, indent=2), encoding="utf-8")
             article = validate_amazon_article(raw, sources)
             break
         except ValueError as exc:
             rejection = str(exc)
+            if isinstance(exc, UnsupportedNumberError):
+                print("amazon_article_attempt " + json.dumps({
+                    "attempt": attempt + 1, "number": exc.number,
+                    "section": exc.section, "paragraph": exc.paragraph,
+                    "source_ids": exc.source_ids,
+                }, ensure_ascii=False))
             if attempt == 2:
                 raise
     return {**article, "generatedAt": datetime.now(timezone.utc).isoformat(), "model": model}

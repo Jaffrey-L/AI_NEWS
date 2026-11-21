@@ -1,5 +1,7 @@
 import json
 import io
+import os
+from contextlib import redirect_stdout
 import sys
 import tempfile
 import unittest
@@ -71,6 +73,53 @@ class CardChecks(unittest.TestCase):
             with self.assertRaises(ValueError):
                 request_cards([self.source], "deepseek-flash", "test-key", amazon=True)
         self.assertEqual(model_request.call_count, 3)
+
+    def test_amazon_attempt_logs_distinguish_missing_and_rejected_without_model_text(self):
+        def response(groups):
+            return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
+                {"type": "output_text", "text": json.dumps(groups)}]}]}).encode("utf-8"))
+
+        empty = {"news": [], "watch": [], "learn": []}
+        invalid = {"news": [], "watch": [{**self.card, "evidence": "SECRET MODEL TEXT"}],
+                   "learn": []}
+        valid = {"news": [], "watch": [{**self.card, "evidence": self.source["title"]}],
+                 "learn": []}
+        output = io.StringIO()
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[
+            response(empty), response(invalid), response(valid),
+        ]), patch.dict(os.environ, {"AI_NEWS_REVIEW_DIAGNOSTICS": "1"}), \
+                patch("pathlib.Path.write_text") as write, redirect_stdout(output):
+            cards = request_cards([self.source], "deepseek-flash", "test-key", amazon=True)
+        write.assert_not_called()
+        self.assertEqual(cards["watch"][0]["src"], ["A1"])
+        self.assertNotIn("SECRET MODEL TEXT", output.getvalue())
+        rows = [json.loads(line.removeprefix("amazon_card_attempt ")) for line in output.getvalue().splitlines()
+                if line.startswith("amazon_card_attempt ")]
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(rows[0]["missing_ids"], ["A1"])
+        self.assertEqual(rows[0]["produced_ids"], [])
+        self.assertEqual(rows[1]["produced_ids"], ["A1"])
+        self.assertEqual(rows[1]["rejected"][0], {"source_id": "A1", "reason": "card evidence is absent from source"})
+        self.assertEqual(rows[2]["accepted_ids"], ["A1"])
+
+    def test_amazon_invalid_json_attempt_is_logged_without_raw_output(self):
+        def response(text):
+            return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
+                {"type": "output_text", "text": text}]}]}).encode("utf-8"))
+
+        valid = json.dumps({"news": [], "watch": [{**self.card, "evidence": self.source["title"]}],
+                            "learn": []})
+        output = io.StringIO()
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[
+            response("{SECRET MODEL TEXT"), response(valid),
+        ]), redirect_stdout(output):
+            request_cards([self.source], "deepseek-flash", "test-key", amazon=True)
+        rows = [json.loads(line.removeprefix("amazon_card_attempt ")) for line in output.getvalue().splitlines()
+                if line.startswith("amazon_card_attempt ")]
+        self.assertEqual([row["attempt"] for row in rows], [1, 2])
+        self.assertEqual(rows[0]["rejected"], [{"source_id": None, "reason": "model output was not valid JSON"}])
+        self.assertEqual(rows[0]["missing_ids"], ["A1"])
+        self.assertNotIn("SECRET MODEL TEXT", output.getvalue())
 
     def test_weekly_cards_retry_invalid_evidence_without_weakening_validation(self):
         weekly_source = {**self.source, "id": "S1",
