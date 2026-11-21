@@ -1,6 +1,7 @@
 import json
 import gzip
 import io
+from contextlib import redirect_stdout
 import os
 import sys
 import tempfile
@@ -53,6 +54,36 @@ class AmazonWeeklyChecks(unittest.TestCase):
         self.article["sections"][0]["paragraphs"][0]["citations"][0]["evidence"] = "原文没有这个证据短语"
         with self.assertRaisesRegex(ValueError, "evidence"):
             weekly.validate_amazon_article(self.article, self.sources)
+
+    def test_unsupported_number_identifies_location_without_article_text(self):
+        article = deepcopy(self.article)
+        article["sections"][0]["paragraphs"][0]["text"] += " 7777"
+        with self.assertRaises(ValueError) as failure:
+            weekly.validate_amazon_article(article, self.sources)
+        message = str(failure.exception)
+        self.assertIn("unsupported number 7777", message)
+        self.assertIn("section 1, paragraph 1", message)
+        self.assertIn("A1", message)
+        self.assertNotIn(article["sections"][0]["paragraphs"][0]["text"], message)
+
+    def test_article_retry_logs_each_unsupported_number_without_model_text(self):
+        attempts = []
+        for number in ("7777", "8888", "9999"):
+            article = deepcopy(self.article)
+            article["sections"][0]["paragraphs"][0]["text"] += " SECRET MODEL TEXT " + number
+            attempts.append(article)
+        output = io.StringIO()
+        with redirect_stdout(output), patch.dict(os.environ, {"AI_NEWS_REVIEW_DIAGNOSTICS": "1"}), \
+                patch("pathlib.Path.write_text") as write, \
+                self.assertRaisesRegex(ValueError, "unsupported number 9999"):
+            weekly.generate(self.sources, date(2026, 11, 21), "test", "test",
+                            client=lambda *_: attempts.pop(0))
+        write.assert_not_called()
+        rows = [json.loads(line.removeprefix("amazon_article_attempt "))
+                for line in output.getvalue().splitlines() if line.startswith("amazon_article_attempt ")]
+        self.assertEqual([row["attempt"] for row in rows], [1, 2, 3])
+        self.assertEqual([row["number"] for row in rows], ["7777", "8888", "9999"])
+        self.assertNotIn("SECRET MODEL TEXT", output.getvalue())
 
     def test_rejects_nonconsecutive_patents_as_a_range(self):
         sources = deepcopy(self.sources)
