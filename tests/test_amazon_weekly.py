@@ -209,18 +209,27 @@ class AmazonWeeklyChecks(unittest.TestCase):
                 (data / "amazon.json").write_text(json.dumps({"articles": rows}), encoding="utf-8")
 
             seen = []
+            output = io.StringIO()
 
             def cards(sources, *_args, **_kwargs):
                 seen.extend(source["url"] for source in sources)
                 return {"news": [], "watch": [], "learn": []}
 
-            with (patch.object(updater, "DATA", data),
+            with (redirect_stdout(output), patch.object(updater, "DATA", data),
                   patch.object(updater.update_amazon_news, "main", side_effect=collect),
                   patch.object(weekly, "generate", return_value={"title": "new issue"}) as generated,
                   patch.dict(os.environ, {"AI_NEWS_MODEL": "test", "DEEPSEEK_API_KEY": "test"})):
                 updater.refresh_amazon(date(2026, 11, 12), card_client=cards,
                                        access_checker=lambda url: url.endswith("/paid"))
             self.assertEqual(seen, ["https://example.com/free"])
+            maps = [json.loads(line.removeprefix("amazon_source_map "))
+                    for line in output.getvalue().splitlines() if line.startswith("amazon_source_map ")]
+            self.assertEqual(len(maps), 1)
+            self.assertEqual(maps[0]["edition"], "current")
+            self.assertEqual(maps[0]["sources"][0]["id"], "A1")
+            self.assertEqual(maps[0]["sources"][0]["url"], "https://example.com/free")
+            self.assertNotIn("excerpt", maps[0]["sources"][0])
+            self.assertNotIn("https://example.com/paid", output.getvalue().split("amazon_source_map ")[-1])
             self.assertEqual([source["url"] for source in generated.call_args.args[0]], seen)
             result = json.loads((data / "amazon.json").read_text(encoding="utf-8"))
             self.assertEqual([row["sourceUrl"] for row in result["articles"]], seen)

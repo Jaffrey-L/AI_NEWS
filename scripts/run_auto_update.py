@@ -161,6 +161,16 @@ def public_amazon_sources(sources: list[dict]) -> list[dict]:
     return [{key: value for key, value in source.items() if key != "excerpt"} for source in sources]
 
 
+def log_amazon_source_map(sources: list[dict], day: date, edition: str) -> None:
+    """Map run-local A IDs to public originals before model validation starts."""
+    print("amazon_source_map " + json.dumps({
+        "edition": edition, "day": day.isoformat(),
+        "sources": [{"id": source["id"], "sourceName": source["sourceName"],
+                     "title": source["title"], "url": source["url"]}
+                    for source in sources],
+    }, ensure_ascii=False))
+
+
 def refresh_amazon(day: date, card_client=request_cards,
                    article_client=generate_amazon_weekly.request_article,
                    access_checker=source_requires_payment) -> bool:
@@ -187,6 +197,7 @@ def refresh_amazon(day: date, card_client=request_cards,
         merged = {item["sourceUrl"]: item for item in before.get("articles", []) + live_articles}
         prior_day = day - timedelta(days=1)
         prior_sources = amazon_sources(exclude_paid_sources(list(merged.values()), checker=access_checker), prior_day)
+        log_amazon_source_map(prior_sources, prior_day, "prior")
         prior_cards = (old_ai.get("cards", {}) if old_ai.get("sources") == public_amazon_sources(prior_sources)
                        else card_client(prior_sources, model, key, amazon=True))
         prior_article = generate_amazon_weekly.generate(prior_sources, prior_day, model, key,
@@ -195,6 +206,7 @@ def refresh_amazon(day: date, card_client=request_cards,
         final_prior = {**old_ai, "date": prior_day.isoformat(), "sources": public_amazon_sources(prior_sources),
                        "cards": prior_cards, "article": prior_article, "model": model}
         generate_amazon_weekly.close_prior_issue(final_prior, week, DATA / "amazon-weekly")
+    log_amazon_source_map(sources, day, "current")
     if old_ai.get("week") == week and old_ai.get("sources") == public_sources:
         cards = old_ai.get("cards", {})
     else:
