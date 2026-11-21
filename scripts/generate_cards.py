@@ -276,6 +276,15 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
                 return validate_cards(raw, sources, require_body_evidence=True)
         except ValueError as exc:
             rejection = str(exc)
+            if amazon and isinstance(exc, json.JSONDecodeError):
+                rejection = "model output was not valid JSON"
+                missing = [source["id"] for source in sources
+                           if source["id"] not in collected[source["bucket"]]]
+                print("amazon_card_attempt " + json.dumps({
+                    "attempt": attempt + 1, "produced_ids": [], "accepted_ids": [],
+                    "rejected": [{"source_id": None, "reason": rejection}],
+                    "missing_ids": missing,
+                }, ensure_ascii=False))
         if attempt == 2:
             raise ValueError(rejection)
     raise ValueError("card model failed validation")
