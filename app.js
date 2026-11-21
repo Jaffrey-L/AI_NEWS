@@ -36,8 +36,15 @@ function srcUrl(w, id){
 }
 function updateFailure(tab){
   var status = (DATA.updateStatus || {})[tab];
-  return status && status.state === 'failed' ?
-    el('div','empty','本周更新失败，显示的是 ' + (status.shownWeek || '上一期')) : null;
+  if (!status || status.state !== 'failed') return null;
+  if (tab === 'amazon'){
+    var date = ((DATA.amazon || {}).ai || {}).date || '';
+    var parts = /^\d{4}-(\d{2})-(\d{2})$/.exec(date);
+    return el('div','empty', parts ?
+      '今日更新延迟，当前为 ' + Number(parts[1]) + '月' + Number(parts[2]) + '日内容' :
+      '今日更新延迟，当前展示上一期内容');
+  }
+  return el('div','empty','本周更新失败，显示的是 ' + (status.shownWeek || '上一期'));
 }
 
 /* ---------- 来源统计：只按已发布内容算 ---------- */
