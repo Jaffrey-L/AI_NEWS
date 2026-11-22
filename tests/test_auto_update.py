@@ -232,6 +232,43 @@ class CardChecks(unittest.TestCase):
         self.assertEqual([item["src"] for item in cards["watch"]], [["A2"], ["A3"]])
         self.assertEqual([item["src"] for item in cards["news"]], [["A1"]])
         self.assertEqual(model_request.call_count, 2)
+        first_request = json.loads(model_request.call_args_list[0].args[0].data)
+        retry_request = json.loads(model_request.call_args_list[1].args[0].data)
+        self.assertEqual([source["id"] for source in json.loads(first_request["input"])["sources"]],
+                         ["A1", "A2", "A3", "A4"])
+        self.assertEqual([source["id"] for source in json.loads(retry_request["input"])["sources"]], ["A3"])
+        self.assertIn("只为以下待补来源各生成一条", retry_request["instructions"])
+        self.assertIn("A3", retry_request["instructions"])
+
+    def test_amazon_retry_narrows_to_still_missing_sources(self):
+        sources = [{"id": name, "title": f"{name} original source title", "bucket": bucket,
+                    "evidenceScope": "body", "url": f"https://example.com/{name}",
+                    "excerpt": f"{name} original source title and detailed reporting."}
+                   for name, bucket in [("A1", "news"), ("A2", "watch"),
+                                        ("A3", "news"), ("A8", "learn")]]
+
+        def response(*names):
+            groups = {bucket: [] for bucket in ("news", "watch", "learn")}
+            for name in names:
+                source = next(source for source in sources if source["id"] == name)
+                groups[source["bucket"]].append({
+                    "sourceId": name, "text": f"{name}原站报道了相关变化，详情应以原文为准。",
+                    "evidence": source["title"],
+                })
+            return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
+                {"type": "output_text", "text": json.dumps(groups)}]}]}).encode("utf-8"))
+
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[
+            response("A1", "A2"), response("A8"), response("A3"),
+        ]) as model_request:
+            cards = request_cards(sources, "deepseek-flash", "test-key", amazon=True)
+
+        self.assertEqual([item["src"] for item in cards["news"]], [["A1"], ["A3"]])
+        self.assertEqual([item["src"] for item in cards["learn"]], [["A8"]])
+        self.assertEqual([[source["id"] for source in json.loads(
+            json.loads(call.args[0].data)["input"])["sources"]]
+            for call in model_request.call_args_list],
+            [["A1", "A2", "A3", "A8"], ["A3", "A8"], ["A3"]])
 
 
 class SafeRefresh(unittest.TestCase):
