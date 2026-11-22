@@ -304,8 +304,8 @@ class SafeRefresh(unittest.TestCase):
         for title in (
             "上线37天卖450万+，国产“毛绒包子”卖爆TikTok美区-AMZ123跨境导航",
             "抢抓旺季红利！eBay Live家居园艺实战攻略-AMZ123跨境导航",
-            "欧盟小包新政冲击Temu",
             "SHEIN卖家物流费用调整",
+            "新品牌上线-AMZ123跨境导航",
         ):
             with self.subTest(title=title):
                 self.assertIsNone(updater.amazon_bucket({"sourceName": "AMZ123", "title": title}))
@@ -314,6 +314,11 @@ class SafeRefresh(unittest.TestCase):
         self.assertEqual(updater.amazon_bucket({"sourceName": "AMZ123", "title": "TikTok与亚马逊卖家物流规则对比"}), "watch")
         self.assertEqual(updater.amazon_bucket({"sourceName": "AMZ123", "title": "TikTok卖家运费规则对比",
                                                 "bodyText": "正文比较TikTok和亚马逊的物流费用。"}), "watch")
+        self.assertIsNone(updater.amazon_bucket({"sourceName": "AMZ123", "title": "TikTok卖家物流费用调整",
+                                                 "bodyText": "TikTok" + "规则" * 700 + "和亚马逊不同。"}))
+        self.assertEqual(updater.amazon_bucket({"sourceName": "AMZ123", "title": "欧盟小包新政冲击Temu"}), "watch")
+        self.assertEqual(updater.amazon_bucket({"sourceName": "AMZ123", "title": "Temu卖家物流费用调整",
+                                                "bodyText": "IOSS新规同样影响欧盟小包。"}), "watch")
 
     def test_amazon_direct_seller_action_outweighs_other_platform_news(self):
         articles = [
@@ -324,8 +329,7 @@ class SafeRefresh(unittest.TestCase):
         ]
         with patch.object(updater.update_amazon_news, "fetch_article", return_value=None):
             watch = [source["url"] for source in updater.amazon_sources(articles, date(2026, 11, 11))]
-        self.assertEqual(watch[:3], ["https://example.com/auth", "https://example.com/logistics", "https://example.com/ioss"])
-        self.assertNotIn("https://example.com/other", watch)
+        self.assertEqual(watch[:4], ["https://example.com/auth", "https://example.com/logistics", "https://example.com/ioss", "https://example.com/other"])
 
     def test_amazon_reranks_whole_week_and_includes_seller_case(self):
         def article(title, day, slug):
