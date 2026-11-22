@@ -43,15 +43,18 @@ PRACTICAL_CASE_RE = re.compile(
 
 def amazon_bucket(article: dict) -> str | None:
     name = article.get("sourceName", "")
-    title = article.get("title", "")
+    # The publisher suffix is metadata, not evidence that a story is cross-border news.
+    title = re.sub(r"\s*[-—–]\s*AMZ123跨境导航\s*$", "", article.get("title", ""), flags=re.I)
     if name.startswith("AWS ") or name.startswith("About Amazon"):
         return None
     if re.search(r"SAMPLE HOUSE|十年亚马逊生涯|红海类目", title, re.I):
         return None
-    # A competitor's own results or discounts do not become Amazon news just
-    # because a publisher adds its generic cross-border suffix to the title.
-    if re.search(r"Shopee|TikTok Shop|Lazada|速卖通|Temu", title, re.I) and not re.search(
-        r"亚马逊|Amazon|欧盟小包|IOSS", title, re.I
+    # A story led by another platform needs Amazon relevance in its title or
+    # opening text. General EU small-parcel/IOSS policies are also relevant.
+    body = article.get("bodyText") or ""
+    lead = title + "\n" + body[:1200]
+    if re.search(r"Shopee|TikTok|Lazada|速卖通|Temu|SHEIN|eBay", lead, re.I) and not re.search(
+        r"亚马逊|Amazon|欧盟小包|IOSS", lead, re.I
     ):
         return None
     if re.search(r"亚马逊.{0,12}(?:授权升级|规则变更|重大政策)|(?:SUP|SPP).{0,12}授权", title, re.I):
