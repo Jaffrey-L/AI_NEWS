@@ -210,6 +210,7 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
             "大事只选重大事件，运营案例放学习；若存在 bucket=news 的平台规则变更，"
             "必须在大事列入该来源，操作提醒可以在注意重复引用该来源；其他情况大事不足可留空。"
             "对卖家直接适用的费用变化和带电产品合规也要优先进入大事或注意。"
+            "输入来源已筛选，每个来源必须各生成一条卡片，严格放在其 bucket 中；不要漏掉来源 ID。"
         )
     else:
         instructions += (
@@ -239,11 +240,20 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
     collected = {bucket: {} for bucket in BUCKETS} if amazon else None
     for attempt in range(3):
         if attempt:
-            body["instructions"] = instructions + (
+            retry_instructions = instructions + (
                 "上次卡片未通过原文校验：" + rejection + "。请重新生成。"
                 "evidence 必须逐字复制对应来源的完整 title；卡片正文里的每个数字、日期、百分比、金额"
                 "都必须以完全相同的字符形式出现在该来源的 excerpt 中；原文没有的数字就删掉，不能换算或推断。"
             )
+            if amazon:
+                pending = [source for source in sources
+                           if source["id"] not in collected[source["bucket"]]]
+                body["input"] = json.dumps({"sources": pending}, ensure_ascii=False)
+                retry_instructions += (
+                    "请只为以下待补来源各生成一条：" + "、".join(source["id"] for source in pending) +
+                    "。不要重复已接受来源，严格按各来源 bucket 分组；没有待补来源的分组留空。"
+                )
+            body["instructions"] = retry_instructions
         request = urllib.request.Request(
             PROVIDERS[provider][0], data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
             headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}, method="POST")
