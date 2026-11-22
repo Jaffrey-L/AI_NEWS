@@ -48,10 +48,12 @@ def amazon_bucket(article: dict) -> str | None:
         return None
     if re.search(r"SAMPLE HOUSE|十年亚马逊生涯|红海类目", title, re.I):
         return None
-    # A competitor's own results or discounts do not become Amazon news just
-    # because a publisher adds its generic cross-border suffix to the title.
-    if re.search(r"Shopee|TikTok Shop|Lazada|速卖通|Temu", title, re.I) and not re.search(
-        r"亚马逊|Amazon|欧盟小包|IOSS", title, re.I
+    # Publisher suffixes such as "AMZ123跨境导航" are not Amazon content.
+    # A story led by another platform needs actual Amazon content to enter
+    # the Amazon issue; "TikTok美区" and "eBay Live" also count here.
+    body = article.get("bodyText") or ""
+    if re.search(r"Shopee|TikTok|Lazada|速卖通|Temu|SHEIN|eBay", title + "\n" + body[:1200], re.I) and not re.search(
+        r"亚马逊|Amazon", title + "\n" + body, re.I
     ):
         return None
     if re.search(r"亚马逊.{0,12}(?:授权升级|规则变更|重大政策)|(?:SUP|SPP).{0,12}授权", title, re.I):
