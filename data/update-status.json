@@ -1,9 +1,8 @@
 {
   "amazon": {
-    "state": "failed",
+    "state": "ok",
     "attemptedWeek": "2026-W48",
-    "shownWeek": "2026-W47",
-    "checkedAt": "2026-11-22T23:32:21.594102+00:00"
+    "checkedAt": "2026-11-23T03:03:51.598904+00:00"
   },
   "weekly": {
     "state": "ok",
