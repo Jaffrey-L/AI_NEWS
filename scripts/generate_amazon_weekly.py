@@ -112,7 +112,8 @@ def generate(sources: list[dict], day: date, model: str, api_key: str,
             "来源若明确写了活动提报截止日、物流管控起止日，本周判断须写出这些日期及适用边界；"
             "二手媒体消息仍应标明来源，不要写成平台正式通知。"
             "非连续的专利号或商品编号必须逐项列出，不能把首尾两个编号写成一个范围。"
-            "若来源包含2027年FBA费用调整、带电产品合规更新或301关税豁免延期，正文必须分别写到；"
+            "若来源包含FBA费用调整、带电产品合规更新或301关税豁免延期，正文必须分别写到；"
+            "年份和数字只能逐字使用所引来源摘录中的写法，不要自行补全两位年份或换算数字；"
             "费用和带电合规等直接影响卖家的变化要优先解释。"
             "授权消息不要写‘收到通知前无需操作’，可写先到管理权限核对已授权服务商。"
         )
@@ -134,6 +135,11 @@ def generate(sources: list[dict], day: date, model: str, api_key: str,
         except ValueError as exc:
             rejection = str(exc)
             if isinstance(exc, UnsupportedNumberError):
+                rejection = (
+                    f"第{exc.section}章第{exc.paragraph}段的数字『{exc.number}』"
+                    f"不在所引来源 {', '.join(exc.source_ids)} 的摘录中；"
+                    "请删去该数字，或逐字使用所引摘录中的写法，不要推算或补全年份"
+                )
                 print("amazon_article_attempt " + json.dumps({
                     "attempt": attempt + 1, "number": exc.number,
                     "section": exc.section, "paragraph": exc.paragraph,
