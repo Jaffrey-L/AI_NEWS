@@ -85,6 +85,26 @@ class AmazonWeeklyChecks(unittest.TestCase):
         self.assertEqual([row["number"] for row in rows], ["7777", "8888", "9999"])
         self.assertNotIn("SECRET MODEL TEXT", output.getvalue())
 
+    def test_article_prompt_does_not_expand_a_source_two_digit_year(self):
+        sources = deepcopy(self.sources)
+        sources[0]["title"] = "27年2月1日起，亚马逊仓储费调整"
+        sources[0]["excerpt"] += " 27年2月1日起，亚马逊仓储费调整。"
+        prompts = []
+        attempts = []
+        invalid = deepcopy(self.article)
+        invalid["sections"][0]["paragraphs"][0]["text"] += "2027年"
+        attempts.extend((invalid, deepcopy(self.article)))
+
+        def client(_sources, _sections, _model, _api_key, prompt):
+            prompts.append(prompt)
+            return attempts.pop(0)
+
+        result = weekly.generate(sources, date(2026, 11, 23), "test", "test", client=client)
+        self.assertEqual(result["title"], self.article["title"])
+        self.assertNotIn("2027年FBA费用调整", prompts[0])
+        self.assertIn("2027年", prompts[1])
+        self.assertIn("删去该数字", prompts[1])
+
     def test_rejects_nonconsecutive_patents_as_a_range(self):
         sources = deepcopy(self.sources)
         sources[0]["excerpt"] += " 共5款，US D1155683 S、US D1155698 S。"

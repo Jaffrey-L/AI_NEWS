@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-11-16T04:45:58.077712+00:00",
+  "updatedAt": "2026-11-23T00:31:03.903210+00:00",
   "weeks": [
+    {
+      "week": "2026-W47",
+      "weekStart": "2026-11-16",
+      "weekEnd": "2026-11-22",
+      "title": "本周 AI 观察：从“更聪明的模型”转向“更会省的系统”",
+      "subtitle": "2026-11-16 至 2026-11-22：openai 谈 perplexity 的度量困境，Google 与 AWS 在 token 成本上做减法，Linear 用数据说明 agent 已成主要工作来源",
+      "sourceCount": 8,
+      "path": "./data/weekly/2026-W47.json"
+    },
     {
       "week": "2026-W46",
       "weekStart": "2026-11-09",

@@ -1,0 +1,246 @@
+{
+  "title": "本周 AI 观察：从“更聪明的模型”转向“更会省的系统”",
+  "subtitle": "2026-11-16 至 2026-11-22：openai 谈 perplexity 的度量困境，Google 与 AWS 在 token 成本上做减法，Linear 用数据说明 agent 已成主要工作来源",
+  "sections": [
+    {
+      "heading": "一、度量之争：perplexity 仍是底噪，但不再等于进步",
+      "paragraphs": [
+        {
+          "text": "OpenAI 本周罕见地把一个“旧指标”重新推到台前。它承认困惑度（perplexity）是多年来追踪模型进展的主要方式，并给出理由：后续能力评测的基准变化太快，早期基准在 GPT-4 附近就基本饱和，而预训练进展仍具有信息量。这不是新发布，而是一次度量框架的自我修正——把注意力从榜单拉回基座模型本身。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "The primary way we measure progress on"
+            }
+          ]
+        },
+        {
+          "text": "更值得注意的是它对这一指标局限的坦白：跨实验室不可比、与可执行任务脱节、无法计入思维链带来的能力跃升，以及“地板未知”导致后期增益难以解读。我的判断是，这实际上是在为行业统一口径做铺垫——OpenAI 明确希望推动更多透明度，潜台词是“别再各报各的榜单”。对实际使用者而言，短期影响有限，但中长期意味着模型选型可以多一个相对稳定的参考维度，而不是只看厂商自选的评测结果。",
+          "citations": [
+            {
+              "sourceId": "S1",
+              "evidence": "Perplexity does not directly correspond to a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "二、工程主线：把 token 省下来，是本周最一致的动作",
+      "paragraphs": [
+        {
+          "text": "Google 在 Gemini API 中推出 Tool Retrieval 预览，思路直白：不要把整库工具的参数 schema 塞进每次请求，改为按需加载。它点出的痛点很具体——工具数量增长会推高输入 token、增加延迟，并降低工具选择准确率。配套设计也有考究：defer_loading 让常用工具常驻、长尾工具延后，且延后加载的 schema 出现在对话后段，因而不破坏前缀缓存的稳定性。这是一次典型的能力“做减法”，对重度 agent 开发者是直接的账单与体验改善。",
+          "citations": [
+            {
+              "sourceId": "S6",
+              "evidence": "Load tool parameter schemas on demand instead"
+            }
+          ]
+        },
+        {
+          "text": "AWS 本周的分布式 KV 缓存技能走的是同一条路线，只是发生在自托管侧：重复计算同一段上下文是纯粹的浪费，用 ElastiCache 做跨请求缓存，官方给出的量级是最多降低 40% 推理成本、把首 token 时间压缩最多 80%。与此同时，Hugging Face 的 harness adapter 用 RL 把模型对齐到具体 agent harness，其案例中 Qwen3.8-27B 在 pi harness 上从 39% 提到 55% pass@1，平均 token 从 2.9K 降到 1.5K。两件事合起来说明：今年的性能提升，越来越多来自“模型之外的工程层”。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "If we freeze those weights and add"
+            },
+            {
+              "sourceId": "S7",
+              "evidence": "Distributed KV caching with Amazon ElastiCache can"
+            }
+          ]
+        },
+        {
+          "text": "不过 harness adapter 的作者自己也留了一个诚实的问号：模型究竟学到了什么？文中强调验证器若接受错误答案，教出来的就是错误行为；太容易的任务则什么也教不会。我认为这是本周最值得记下的方法论提醒——当大家开始追求“针对我的场景定制”，数据与验证器的质量就成了新的瓶颈，而不是训练框架本身。",
+          "citations": [
+            {
+              "sourceId": "S4",
+              "evidence": "A verifier that accepts wrong answers teaches"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "三、落地侧：agent 已是主要生产者，但产品不能退化成数据库",
+      "paragraphs": [
+        {
+          "text": "Linear 的 COO 在访谈中给出一组很有分量的数字：MCP server 上线约一年半后，Linear 中超过一半的 issue 由 agent 创建。她的判断也相当锋利：如果 SaaS 公司甘于做“加一个 MCP server 的数据库”，那是大错；产品内外的 agent 工作流相比若无优势，用户就没有理由打开应用。因此她同时盯两条曲线——agent 用量与应用用量，只涨前者意味着商品化。我认为这为所有正在做 agent 集成的团队提供了一个可操作的验收标准。",
+          "citations": [
+            {
+              "sourceId": "S5",
+              "evidence": "more than half the issues created in"
+            }
+          ]
+        },
+        {
+          "text": "商业化层面，AWS 把 Meta ads 接进 Quick，覆盖从投放分析、建活动到生成可分享 deck 的流程，并明确写入类操作前需用户授权。这既说明“AI 连接器”正成为云厂商争夺企业工作流的入口，也说明权限与确认仍是产品化的硬约束，而非可省略的体验细节。",
+          "citations": [
+            {
+              "sourceId": "S3",
+              "evidence": "Before Quick creates a campaign, changes a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "四、另一面：成本下降的另一端是滥用",
+      "paragraphs": [
+        {
+          "text": "Simon Willison 转述的案例值得警惕：ChatPRD 长期遭受免费试用被滥用的“token 欺诈”，有人只为白拿 AI 用量，更多人是把 agent 转卖或用来做商业项目，最终 Claire Vo 决定全面取消免费试用。这不是孤例式的安全事故，而是任何提供 agent 能力的产品的结构性风险——一旦你的 agent 能稳定产出，它就变成了别人可以转租的生产资料。我的判断是：免费额度、速率限制与身份核验的设计，接下来会从增长手段变成必须的成本控制项。",
+          "citations": [
+            {
+              "sourceId": "S8",
+              "evidence": "Claire is winding down her free trials"
+            }
+          ]
+        },
+        {
+          "text": "同一位作者另一篇本周更新则提供了轻松的一面：他为统一 select 样式，让模型生成一个展示所有可样式化方式的页面，以便在各桌面与移动浏览器截图。这类“用模型做一次性工具”的小实践，恰好与前面的大公司工程化叙事互相印证——模型价值的很大一部分，正在于把琐碎的、一次性的工作成本压到接近零。",
+          "citations": [
+            {
+              "sourceId": "S2",
+              "evidence": "Build an HTML page that shows all"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Perplexity and Intelligence",
+      "sourceName": "OpenAI",
+      "publishedAt": "2026-11-22",
+      "url": "https://openai.com/index/perplexity-and-intelligence"
+    },
+    {
+      "id": "S2",
+      "title": "Select Styling Specimens",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-11-22",
+      "url": "https://simonwillison.net/2026/Nov/22/select-styling/"
+    },
+    {
+      "id": "S3",
+      "title": "Meta ads is now available in AWS Quick",
+      "sourceName": "AWS 机器学习博客",
+      "publishedAt": "2026-11-22",
+      "url": "https://aws.amazon.com/blogs/machine-learning/meta-ads-is-now-available-in-aws-quick/"
+    },
+    {
+      "id": "S4",
+      "title": "Introducing harness adapters: adapt your favorite model to your harness to improve performance and cost",
+      "sourceName": "Hugging Face",
+      "publishedAt": "2026-11-20",
+      "url": "https://huggingface.co/blog/harness-adapters-at-scale"
+    },
+    {
+      "id": "S5",
+      "title": "Scaling Linear’s GTM to $100M ARR — Cristina Cordova, COO",
+      "sourceName": "Latent.Space",
+      "publishedAt": "2026-11-19",
+      "url": "https://latent.space/p/linear-scaling/"
+    },
+    {
+      "id": "S6",
+      "title": "Introducing Tool Retrieval in the Gemini API",
+      "sourceName": "Google AI",
+      "publishedAt": "2026-11-19",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-api-tool-retrieval/"
+    },
+    {
+      "id": "S7",
+      "title": "Cut self-hosted LLM cost and latency with the distributed KV caching agent skill",
+      "sourceName": "AWS 机器学习博客",
+      "publishedAt": "2026-11-21",
+      "url": "https://aws.amazon.com/blogs/machine-learning/cut-self-hosted-llm-cost-and-latency-with-the-distributed-kv-caching-agent-skill/"
+    },
+    {
+      "id": "S8",
+      "title": "Token fraud is here and it’s BAD (YouTube)",
+      "sourceName": "Simon Willison",
+      "publishedAt": "2026-11-20",
+      "url": "https://simonwillison.net/2026/Nov/20/token-fraud-is-here-and-its-bad/"
+    }
+  ],
+  "news": [
+    {
+      "text": "Gemini API 推出预览版 Tool Retrieval，按需加载工具参数 schema，目的是减少输入 token 并保持工具选择准确。",
+      "src": [
+        "S6"
+      ],
+      "ai": true
+    },
+    {
+      "text": "Meta ads 的 AI connector 已接入 AWS Quick，可在同一工作流中做表现分析、创建广告系列并生成可分享的 deck。",
+      "src": [
+        "S3"
+      ],
+      "ai": true
+    },
+    {
+      "text": "Linear 称推出 MCP server 一年半后，Linear 中创建的 issue 有超过一半来自 agent。",
+      "src": [
+        "S5"
+      ],
+      "ai": true
+    }
+  ],
+  "watch": [
+    {
+      "text": "perplexity 作为跨实验室比较指标存在困难：不同开发者使用不同评测数据集和不同数据混合训练，原文只报告其主跟踪数据集上的数字。",
+      "src": [
+        "S1"
+      ],
+      "ai": true
+    },
+    {
+      "text": "harness adapter 的提升是特定模型与特定 harness、任务组合下的结果，原文数据仅来自 Qwen3.8-27B 及若干基准。",
+      "src": [
+        "S4"
+      ],
+      "ai": true
+    },
+    {
+      "text": "分布式 KV 缓存“最多降低 40% 成本、最多降低 80% 首 token 时间”是原文给出的上限表述，并非保证的普遍结果。",
+      "src": [
+        "S7"
+      ],
+      "ai": true
+    }
+  ],
+  "learn": [
+    {
+      "text": "把最常用工具保留为预先加载，只把长尾工具的 schema 设为延迟加载，可按任务需要取用。",
+      "src": [
+        "S6"
+      ],
+      "ai": true
+    },
+    {
+      "text": "延迟加载的 schema 被放在对话后段，避免改动提示词开头，从而让前缀缓存跨轮保持稳定。",
+      "src": [
+        "S6"
+      ],
+      "ai": true
+    },
+    {
+      "text": "在 harness 内用 RL 训练 LoRA adapter，训练数据、rollout 与工件都放在 Hub 上用 TRL 的 AsyncGRPOTrainer 等工具完成。",
+      "src": [
+        "S4"
+      ],
+      "ai": true
+    }
+  ],
+  "week": "2026-W47",
+  "weekStart": "2026-11-16",
+  "weekEnd": "2026-11-22",
+  "generatedAt": "2026-11-23T00:31:03.901636+00:00",
+  "model": "deepseek-flash",
+  "unavailableSources": [
+    "The Batch"
+  ]
+}
