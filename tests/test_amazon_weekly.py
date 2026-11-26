@@ -131,6 +131,37 @@ class AmazonWeeklyChecks(unittest.TestCase):
         self.assertEqual(rows, [{"attempt": n, "reason": "section_order"} for n in (1, 2, 3)])
         self.assertNotIn(invalid["sections"][0]["paragraphs"][0]["text"], output.getvalue())
 
+    def test_invalid_json_retries_with_specific_feedback_and_sanitized_log(self):
+        prompts = []
+        attempts = [weekly.ArticleJSONError("model output was not valid JSON"), deepcopy(self.article)]
+
+        def client(_sources, _sections, _model, _api_key, prompt):
+            prompts.append(prompt)
+            attempt = attempts.pop(0)
+            if isinstance(attempt, Exception):
+                raise attempt
+            return attempt
+
+        output = io.StringIO()
+        with redirect_stdout(output):
+            result = weekly.generate(self.sources, date(2026, 11, 26), "test", "test", client=client)
+        self.assertEqual(result["title"], self.article["title"])
+        self.assertIn("有效 JSON", prompts[1])
+        self.assertIn("严格符合指定 schema", prompts[1])
+        self.assertNotIn("model output was not valid JSON", prompts[1])
+        self.assertEqual(output.getvalue().strip(),
+                         'amazon_article_attempt {"attempt": 1, "reason": "invalid_json"}')
+
+        output = io.StringIO()
+        with redirect_stdout(output), self.assertRaises(weekly.ArticleJSONError):
+            weekly.generate(self.sources, date(2026, 11, 26), "test", "test",
+                            client=lambda *_: (_ for _ in ()).throw(
+                                weekly.ArticleJSONError("model output was not valid JSON")))
+        rows = [json.loads(line.removeprefix("amazon_article_attempt "))
+                for line in output.getvalue().splitlines()]
+        self.assertEqual(rows, [{"attempt": n, "reason": "invalid_json"} for n in (1, 2, 3)])
+        self.assertNotIn("model output was not valid JSON", output.getvalue())
+
     def test_rejects_nonconsecutive_patents_as_a_range(self):
         sources = deepcopy(self.sources)
         sources[0]["excerpt"] += " 共5款，US D1155683 S、US D1155698 S。"
