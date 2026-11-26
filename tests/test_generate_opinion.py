@@ -107,6 +107,16 @@ class OpinionTests(unittest.TestCase):
         self.assertEqual(request.get_header("Authorization"), "Bearer secret-test")
         self.assertEqual(request.full_url, opinion.API_URL)
 
+    def test_invalid_model_json_has_distinct_safe_error(self):
+        sources, days = opinion.select_sources(self.items, date(2026, 11, 9))
+        response = {"status": "completed", "output": [{"content": [
+            {"type": "output_text", "text": '{"secret-source-text":'}]}]}
+        with patch("urllib.request.urlopen", return_value=io.BytesIO(json.dumps(response).encode("utf-8"))):
+            with self.assertRaisesRegex(opinion.ArticleJSONError, "model output was not valid JSON") as raised:
+                opinion.request_article(sources, days, "model-test", "secret-test")
+        self.assertIsNone(raised.exception.__cause__)
+        self.assertNotIn("secret-source-text", str(raised.exception))
+
     def test_deepseek_uses_its_own_endpoint_and_key_name(self):
         sources, days = opinion.select_sources(self.items, date(2026, 11, 9))
         draft = article_for(sources)
