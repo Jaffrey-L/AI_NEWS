@@ -105,6 +105,32 @@ class AmazonWeeklyChecks(unittest.TestCase):
         self.assertIn("2027年", prompts[1])
         self.assertIn("删去该数字", prompts[1])
 
+    def test_out_of_order_article_gets_section_specific_retry_feedback(self):
+        invalid = deepcopy(self.article)
+        invalid["sections"][0], invalid["sections"][1] = (
+            invalid["sections"][1], invalid["sections"][0])
+        prompts = []
+        attempts = [invalid, deepcopy(self.article)]
+
+        def client(_sources, _sections, _model, _api_key, prompt):
+            prompts.append(prompt)
+            return attempts.pop(0)
+
+        result = weekly.generate(self.sources, date(2026, 11, 26), "test", "test", client=client)
+        self.assertEqual(result["sections"][0]["heading"], "政策与合规")
+        self.assertIn("章节顺序", prompts[0])
+        self.assertIn("政策与合规→物流与费用→平台与行业→卖家实践→本周判断", prompts[1])
+        self.assertIn("可省略没有材料的章节", prompts[1])
+        self.assertNotIn("上次引用校验没有通过", prompts[1])
+        output = io.StringIO()
+        with redirect_stdout(output), self.assertRaisesRegex(ValueError, "sections are out of order"):
+            weekly.generate(self.sources, date(2026, 11, 26), "test", "test",
+                            client=lambda *_: deepcopy(invalid))
+        rows = [json.loads(line.removeprefix("amazon_article_attempt "))
+                for line in output.getvalue().splitlines() if line.startswith("amazon_article_attempt ")]
+        self.assertEqual(rows, [{"attempt": n, "reason": "section_order"} for n in (1, 2, 3)])
+        self.assertNotIn(invalid["sections"][0]["paragraphs"][0]["text"], output.getvalue())
+
     def test_rejects_nonconsecutive_patents_as_a_range(self):
         sources = deepcopy(self.sources)
         sources[0]["excerpt"] += " 共5款，US D1155683 S、US D1155698 S。"
