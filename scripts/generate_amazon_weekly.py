@@ -9,7 +9,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 from generate_cards import NUMERIC_CLAIM
-from generate_opinion import _write_json_atomic, request_article, validate_article
+from generate_opinion import ArticleJSONError, _write_json_atomic, request_article, validate_article
 
 ROOT = Path(__file__).resolve().parents[1]
 ARCHIVE = ROOT / "data" / "amazon-weekly"
@@ -146,6 +146,14 @@ def generate(sources: list[dict], day: date, model: str, api_key: str,
                 )
                 print("amazon_article_attempt " + json.dumps({
                     "attempt": attempt + 1, "reason": "section_order",
+                }))
+            elif isinstance(exc, ArticleJSONError):
+                rejection = (
+                    "输出不是有效 JSON。请重新生成一个完整且语法正确的 JSON 对象，"
+                    "严格符合指定 schema；不要附加解释文字、代码围栏，也不要截断内容"
+                )
+                print("amazon_article_attempt " + json.dumps({
+                    "attempt": attempt + 1, "reason": "invalid_json",
                 }))
             elif isinstance(exc, UnsupportedNumberError):
                 rejection = (

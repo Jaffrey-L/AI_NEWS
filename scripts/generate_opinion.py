@@ -213,6 +213,10 @@ def _instructions(window_days: int) -> str:
     )
 
 
+class ArticleJSONError(ValueError):
+    pass
+
+
 def request_article(sources: list[dict], window_days: int, model: str, api_key: str,
                     instructions: str | None = None) -> dict:
     provider = os.environ.get("AI_NEWS_PROVIDER", "openai").strip().lower()
@@ -248,8 +252,8 @@ def request_article(sources: list[dict], window_days: int, model: str, api_key: 
             if content.get("type") == "output_text" and content.get("text"):
                 try:
                     return json.loads(content["text"])
-                except json.JSONDecodeError as error:
-                    raise ValueError("model output was not valid JSON") from error
+                except json.JSONDecodeError:
+                    raise ArticleJSONError("model output was not valid JSON") from None
     raise ValueError("model response contained no article text")
 
 
