@@ -71,6 +71,7 @@ def collect_amazon_cards(raw: dict, sources: list[dict], collected: dict,
         return "invalid card groups"
     known = {source["id"]: source for source in sources}
     rejection = ""
+    rejected_by_source = {}
     for bucket in BUCKETS:
         if not isinstance(raw[bucket], list):
             if diagnostic is not None:
@@ -91,12 +92,15 @@ def collect_amazon_cards(raw: dict, sources: list[dict], collected: dict,
                     reason = ("unknown source" if not source else "source belongs to another bucket"
                               if source.get("bucket") != bucket else "source already accepted")
                     diagnostic["rejected"].append({"source_id": safe_id, "reason": reason})
+                if source and source_id not in collected[source["bucket"]]:
+                    rejected_by_source[source_id] = "source belongs to another bucket"
                 continue
             try:
                 validate_cards({group: [item] if group == bucket else []
                                 for group in BUCKETS}, [source])
             except ValueError as exc:
                 rejection = str(exc)
+                rejected_by_source[source_id] = rejection
                 if diagnostic is not None:
                     diagnostic["rejected"].append({"source_id": safe_id, "reason": rejection})
                 continue
@@ -108,7 +112,9 @@ def collect_amazon_cards(raw: dict, sources: list[dict], collected: dict,
     if diagnostic is not None:
         diagnostic["missing_ids"] = missing
     if missing:
-        return f"{rejection}; missing distinct source IDs: {', '.join(missing)}".strip("; ")
+        reasons = "; ".join(f"{source_id}: {rejected_by_source[source_id]}"
+                            for source_id in missing if source_id in rejected_by_source)
+        return f"{reasons or rejection}; missing distinct source IDs: {', '.join(missing)}".strip("; ")
     return ""
 
 
@@ -251,7 +257,8 @@ def request_cards(sources: list[dict], model: str, api_key: str, *, amazon: bool
                 body["input"] = json.dumps({"sources": pending}, ensure_ascii=False)
                 retry_instructions += (
                     "请只为以下待补来源各生成一条：" + "、".join(source["id"] for source in pending) +
-                    "。不要重复已接受来源，严格按各来源 bucket 分组；没有待补来源的分组留空。"
+                    "。逐项修正上面列出的各来源错误：不要写建议，无法在摘录中逐字找到的数字就删除。"
+                    "不要重复已接受来源，严格按各来源 bucket 分组；没有待补来源的分组留空。"
                 )
             body["instructions"] = retry_instructions
         request = urllib.request.Request(
