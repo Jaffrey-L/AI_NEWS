@@ -189,6 +189,31 @@ class CardChecks(unittest.TestCase):
         retry_body = json.loads(model_request.call_args_list[1].args[0].data)
         self.assertIn("card introduces a number absent from source", retry_body["instructions"])
 
+    def test_amazon_retry_reports_each_missing_source_error(self):
+        sources = [
+            {"id": "A2", "url": "https://example.com/a2", "bucket": "watch",
+             "title": "Black Friday orders change", "excerpt": "Black Friday orders changed for merchants."},
+            {"id": "A9", "url": "https://example.com/a9", "bucket": "watch",
+             "title": "Spain tax registration update", "excerpt": "Spain changed its seller tax registration rules."},
+        ]
+
+        def response(first, second):
+            groups = {"news": [], "watch": [
+                {"sourceId": "A2", "text": first, "evidence": sources[0]["title"]},
+                {"sourceId": "A9", "text": second, "evidence": sources[1]["title"]},
+            ], "learn": []}
+            return io.BytesIO(json.dumps({"status": "completed", "output": [{"content": [
+                {"type": "output_text", "text": json.dumps(groups)}]}]}).encode("utf-8"))
+
+        with patch("generate_cards.urllib.request.urlopen", side_effect=[
+            response("建议卖家提前调整价格应对黑五。", "原文称西班牙税号政策将在2027年更新。"),
+            response("原文报道黑五订单波动，涉及卖家经营情况。", "原文报道西班牙站税号要求发生变化。"),
+        ]) as model_request:
+            request_cards(sources, "deepseek-flash", "test-key", amazon=True)
+        retry = json.loads(model_request.call_args_list[1].args[0].data)
+        self.assertIn("A2: card adds advice instead of reporting the source", retry["instructions"])
+        self.assertIn("A9: card introduces a number absent from source", retry["instructions"])
+
     def test_amazon_watch_cards_prioritize_deadlines_and_logistics(self):
         titles = ["秘鲁拟调整进口门槛", "黑五 Deal 提报截止时间", "深圳 APEC 发货管控",
                   "亚马逊旺季连更两项利好政策", "IOSS 长期改革"]
