@@ -55,6 +55,35 @@ class AmazonWeeklyChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "evidence"):
             weekly.validate_amazon_article(self.article, self.sources)
 
+    def test_dollar_symbol_rejection_points_retry_to_exact_source_spelling(self):
+        sources = deepcopy(self.sources)
+        sources[1]["excerpt"] += " 日均广告花费从 $419.24 降至 $368.96。"
+        invalid = deepcopy(self.article)
+        invalid["sections"][1]["paragraphs"][0]["text"] += " 日均广告花费419.24美元。"
+        valid = deepcopy(self.article)
+        valid["sections"][1]["paragraphs"][0]["text"] += " 日均广告花费$419.24。"
+        with self.assertRaisesRegex(ValueError, "unsupported number 419.24美元"):
+            weekly.validate_amazon_article(invalid, sources)
+        prompts = []
+        attempts = [invalid, valid]
+
+        def client(_sources, _sections, _model, _api_key, prompt):
+            prompts.append(prompt)
+            return attempts.pop(0)
+
+        result = weekly.generate(sources, date(2026, 11, 27), "test", "test", client=client)
+        self.assertEqual(result["title"], self.article["title"])
+        self.assertIn("419.24美元", prompts[1])
+        self.assertIn("$419.24", prompts[1])
+        self.assertIn("原样", prompts[1])
+
+        uncited = deepcopy(self.article)
+        uncited["sections"][0]["paragraphs"][0]["text"] += " 日均广告花费419.24美元。"
+        prompts.clear()
+        attempts = [uncited, deepcopy(self.article)]
+        weekly.generate(sources, date(2026, 11, 27), "test", "test", client=client)
+        self.assertNotIn("$419.24", prompts[1])
+
     def test_unsupported_number_identifies_location_without_article_text(self):
         article = deepcopy(self.article)
         article["sections"][0]["paragraphs"][0]["text"] += " 7777"
