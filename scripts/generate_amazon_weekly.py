@@ -31,6 +31,20 @@ class SectionOrderError(ValueError):
     pass
 
 
+def cited_dollar_spelling(number: str, source_ids: list[str], sources: list[dict]) -> str:
+    """Find the exact $ spelling behind a rejected Chinese-dollar amount."""
+    if not number.endswith("美元"):
+        return ""
+    amount = number[:-2]
+    pattern = rf"\$\s*{re.escape(amount)}(?![\d.,])"
+    for source in sources:
+        if source["id"] in source_ids:
+            match = re.search(pattern, source["excerpt"])
+            if match:
+                return match.group(0)
+    return ""
+
+
 def instructions(day: date) -> str:
     return (
         "你为亚马逊卖家写本周中文解读全文，标题和副标题简洁。只依据给定的公开原文标题与正文摘录，"
@@ -161,6 +175,9 @@ def generate(sources: list[dict], day: date, model: str, api_key: str,
                     f"不在所引来源 {', '.join(exc.source_ids)} 的摘录中；"
                     "请删去该数字，或逐字使用所引摘录中的写法，不要推算或补全年份"
                 )
+                source_spelling = cited_dollar_spelling(exc.number, exc.source_ids, sources)
+                if source_spelling:
+                    rejection += f"；所引摘录中的金额写作『{source_spelling}』，请保留该符号和数值原样写入"
                 print("amazon_article_attempt " + json.dumps({
                     "attempt": attempt + 1, "number": exc.number,
                     "section": exc.section, "paragraph": exc.paragraph,
